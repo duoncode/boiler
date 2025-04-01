@@ -17,11 +17,6 @@ class TestCase extends BaseTestCase
 	public const DEFAULT_DIR = self::ROOT_DIR . 'default';
 	public const DS = DIRECTORY_SEPARATOR;
 
-	public function __construct(?string $name = null, array $data = [], $dataName = '')
-	{
-		parent::__construct($name, $data, $dataName);
-	}
-
 	public function fulltrim(string $text): string
 	{
 		return trim(
@@ -75,3 +70,4 @@ class TestCase extends BaseTestCase
 		}
 	}
 }
+

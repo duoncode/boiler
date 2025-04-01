@@ -30,14 +30,14 @@
 	},
 	"require": {
 		"php": ">=8.2",
-		"symfony/html-sanitizer": "^7.1",
-		"ernst/coverlyzer": "^0.1.1"
+		"symfony/html-sanitizer": "^7.1"
 	},
 	"require-dev": {
+		"ernst/coverlyzer": "^0.2",
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-		"phpunit/phpunit": "^10.5",
+		"phpunit/phpunit": "^12.0",
 		"staabm/annotate-pull-request-from-checkstyle": "^1.8",
-		"duon/dev": "^1.1",
+		"duon/dev": "dev-main",
 		"vimeo/psalm": "^6.10",
 		"phpmd/phpmd": "^2.15"
 	},
