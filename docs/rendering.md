@@ -1,6 +1,6 @@
 # Rendering Templates
 
-After you created an [`\FiveOrbs\Boiler\Engine`](engine.md) object, you can
+After you created an [`\Duon\Boiler\Engine`](engine.md) object, you can
 render templates using its `render()` method.
 
 Throughout this page we assume the following directory structure ...
@@ -24,7 +24,7 @@ path
 ... and the [`Engine`](engine.md) initialized in this way:
 
 ```php
-$engine = new \FiveOrbs\Boiler\Engine(
+$engine = new \Duon\Boiler\Engine(
 	[
 		'theme' => '/path/to/theme',
 		'templates' => '/path/to/templates',

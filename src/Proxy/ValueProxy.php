@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler\Proxy;
+namespace Duon\Boiler\Proxy;
 
-use FiveOrbs\Boiler\Exception\RuntimeException;
-use FiveOrbs\Boiler\Sanitizer;
-use FiveOrbs\Boiler\Wrapper;
+use Duon\Boiler\Exception\RuntimeException;
+use Duon\Boiler\Sanitizer;
+use Duon\Boiler\Wrapper;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 /** @psalm-api */

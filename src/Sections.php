@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler;
+namespace Duon\Boiler;
 
-use FiveOrbs\Boiler\Exception\LogicException;
+use Duon\Boiler\Exception\LogicException;
 
 class Sections
 {

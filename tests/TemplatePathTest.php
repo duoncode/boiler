@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler\Tests;
+namespace Duon\Boiler\Tests;
 
-use FiveOrbs\Boiler\Exception\LookupException;
-use FiveOrbs\Boiler\TemplatePath;
+use Duon\Boiler\Exception\LookupException;
+use Duon\Boiler\TemplatePath;
 use PHPUnit\Framework\Attributes\TestDox;
 
 final class TemplatePathTest extends TestCase

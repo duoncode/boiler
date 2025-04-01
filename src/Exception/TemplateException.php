@@ -2,6 +2,6 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler\Exception;
+namespace Duon\Boiler\Exception;
 
 interface TemplateException {}

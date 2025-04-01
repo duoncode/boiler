@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler\Tests;
+namespace Duon\Boiler\Tests;
 
-use FiveOrbs\Boiler\Exception\LookupException;
-use FiveOrbs\Boiler\Proxy\ValueProxy;
-use FiveOrbs\Boiler\Template;
-use FiveOrbs\Boiler\Tests\TestCase;
-use FiveOrbs\Boiler\Tests\WhitelistBase;
-use FiveOrbs\Boiler\Tests\Whitelisted;
+use Duon\Boiler\Exception\LookupException;
+use Duon\Boiler\Proxy\ValueProxy;
+use Duon\Boiler\Template;
+use Duon\Boiler\Tests\TestCase;
+use Duon\Boiler\Tests\WhitelistBase;
+use Duon\Boiler\Tests\Whitelisted;
 use ParseError;
 
 final class TemplateTest extends TestCase

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler\Tests;
+namespace Duon\Boiler\Tests;
 
-use FiveOrbs\Boiler\Proxy\ArrayProxy;
-use FiveOrbs\Boiler\Proxy\IteratorProxy;
-use FiveOrbs\Boiler\Proxy\ValueProxy;
-use FiveOrbs\Boiler\Wrapper;
+use Duon\Boiler\Proxy\ArrayProxy;
+use Duon\Boiler\Proxy\IteratorProxy;
+use Duon\Boiler\Proxy\ValueProxy;
+use Duon\Boiler\Wrapper;
 use Traversable;
 
 final class WrapperTest extends TestCase

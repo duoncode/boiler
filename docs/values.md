@@ -1,6 +1,6 @@
 # Displaying Values
 
-If you pass a value of type `FiveOrbs\Boiler\Value` to `e`/`escape` it will
+If you pass a value of type `Duon\Boiler\Value` to `e`/`escape` it will
 automatically be unwrapped before it is passed to {{php('htmlspecialchars')}}.
 
 ## Changing the arguments passed to {{php('htmlspecialchars')}}

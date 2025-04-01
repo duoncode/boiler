@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler\Tests;
+namespace Duon\Boiler\Tests;
 
-use FiveOrbs\Boiler\Proxy\ArrayProxy;
-use FiveOrbs\Boiler\Proxy\IteratorProxy;
-use FiveOrbs\Boiler\Proxy\ValueProxy;
+use Duon\Boiler\Proxy\ArrayProxy;
+use Duon\Boiler\Proxy\IteratorProxy;
+use Duon\Boiler\Proxy\ValueProxy;
 
 final class IteratorProxyTest extends TestCase
 {

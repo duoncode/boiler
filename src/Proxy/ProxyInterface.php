@@ -2,6 +2,6 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler\Proxy;
+namespace Duon\Boiler\Proxy;
 
 interface ProxyInterface {}

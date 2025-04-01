@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler\Tests;
+namespace Duon\Boiler\Tests;
 
-use FiveOrbs\Boiler\Exception\RuntimeException;
-use FiveOrbs\Boiler\Proxy\ValueProxy;
+use Duon\Boiler\Exception\RuntimeException;
+use Duon\Boiler\Proxy\ValueProxy;
 use PHPUnit\Framework\Attributes\TestDox;
 use ValueError;
 

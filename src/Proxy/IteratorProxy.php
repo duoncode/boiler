@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler\Proxy;
+namespace Duon\Boiler\Proxy;
 
-use FiveOrbs\Boiler\Wrapper;
+use Duon\Boiler\Wrapper;
 use Iterator;
 use IteratorIterator;
 

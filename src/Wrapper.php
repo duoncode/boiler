@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler;
+namespace Duon\Boiler;
 
-use FiveOrbs\Boiler\Proxy\ArrayProxy;
-use FiveOrbs\Boiler\Proxy\IteratorProxy;
-use FiveOrbs\Boiler\Proxy\ProxyInterface;
-use FiveOrbs\Boiler\Proxy\ValueProxy;
+use Duon\Boiler\Proxy\ArrayProxy;
+use Duon\Boiler\Proxy\IteratorProxy;
+use Duon\Boiler\Proxy\ProxyInterface;
+use Duon\Boiler\Proxy\ValueProxy;
 use Traversable;
 
 class Wrapper

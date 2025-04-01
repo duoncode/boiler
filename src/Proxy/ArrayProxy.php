@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler\Proxy;
+namespace Duon\Boiler\Proxy;
 
 use ArrayAccess;
 use Countable;
-use FiveOrbs\Boiler\Exception\OutOfBoundsException;
-use FiveOrbs\Boiler\Exception\RuntimeException;
-use FiveOrbs\Boiler\Exception\UnexpectedValueException;
-use FiveOrbs\Boiler\Wrapper;
+use Duon\Boiler\Exception\OutOfBoundsException;
+use Duon\Boiler\Exception\RuntimeException;
+use Duon\Boiler\Exception\UnexpectedValueException;
+use Duon\Boiler\Wrapper;
 use Iterator;
 
 /**

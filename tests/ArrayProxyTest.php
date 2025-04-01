@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler\Tests;
+namespace Duon\Boiler\Tests;
 
-use FiveOrbs\Boiler\Exception\OutOfBoundsException;
-use FiveOrbs\Boiler\Exception\RuntimeException;
-use FiveOrbs\Boiler\Exception\UnexpectedValueException;
-use FiveOrbs\Boiler\Proxy\ArrayProxy;
-use FiveOrbs\Boiler\Proxy\IteratorProxy;
-use FiveOrbs\Boiler\Proxy\ValueProxy;
+use Duon\Boiler\Exception\OutOfBoundsException;
+use Duon\Boiler\Exception\RuntimeException;
+use Duon\Boiler\Exception\UnexpectedValueException;
+use Duon\Boiler\Proxy\ArrayProxy;
+use Duon\Boiler\Proxy\IteratorProxy;
+use Duon\Boiler\Proxy\ValueProxy;
 
 final class ArrayProxyTest extends TestCase
 {

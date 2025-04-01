@@ -1,9 +1,9 @@
 {
-	"name": "fiveorbs/boiler-bench",
+	"name": "duon/boiler-bench",
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"require": {
-		"fiveorbs/boiler": "@dev",
+		"duon/boiler": "@dev",
 		"league/plates": "^3",
 		"twig/twig": "^3",
 		"eftec/bladeone": "^4"

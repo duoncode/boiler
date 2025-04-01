@@ -26,18 +26,18 @@ The only required parameter of the constructor is the path to a directory where
 your templates reside:
 
 ```php
-$engine = new \FiveOrbs\Boiler\Engine('/path/to/templates');
+$engine = new \Duon\Boiler\Engine('/path/to/templates');
 ```
 
 If the directory does not exists, Boiler throws
-a `\FiveOrbs\Boiler\Exception\DirectoryNotFound` exception.
+a `\Duon\Boiler\Exception\DirectoryNotFound` exception.
 
 ### Using multiple directories
 
 If you have multiple directories, pass them in an array:
 
 ```php
-$engine = new \FiveOrbs\Boiler\Engine(['/path/to/templates', '/path/to/additional']);
+$engine = new \Duon\Boiler\Engine(['/path/to/templates', '/path/to/additional']);
 ```
 
 **Note**: The directories are searched in order.
@@ -53,7 +53,7 @@ the list of directories as associative array where the keys serve as
 namespaces:
 
 ```php
-$engine = new \FiveOrbs\Boiler\Engine([
+$engine = new \Duon\Boiler\Engine([
 	'first' => '/path/to/templates', 
 	'second' => '/path/to/additional'
 ]);
@@ -66,7 +66,7 @@ Check [*Rendering Templates*](rendering.md) to see it in action.
 You can assign default values which are available in all templates:
 
 ```php
-$engine = new \FiveOrbs\Boiler\Engine('/path/to/dir', ['value' => 'default value']);
+$engine = new \Duon\Boiler\Engine('/path/to/dir', ['value' => 'default value']);
 ```
 
 ### Turning off autoescaping
@@ -75,10 +75,10 @@ If you don't want to use the autoescaping feature, e. g. to improve the
 performance of your application, you can turn it off globally:
 
 ```php
-$engine = new \FiveOrbs\Boiler\Engine('/path/to/dir', [], false);
+$engine = new \Duon\Boiler\Engine('/path/to/dir', [], false);
 
 // better:
-$engine = new \FiveOrbs\Boiler\Engine('/path/to/dir', autoescape: false);
+$engine = new \Duon\Boiler\Engine('/path/to/dir', autoescape: false);
 ```
 
 ## Rendering Templates
@@ -132,5 +132,5 @@ $filePath = $engine->getFile('template');
 ```php
 $template = $engine->template('template');
 
-assert($template instanceof \FiveOrbs\Boiler\Template);
+assert($template instanceof \Duon\Boiler\Template);
 ```

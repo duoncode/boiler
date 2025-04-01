@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler;
+namespace Duon\Boiler;
 
 /** @psalm-api */
 class LayoutContext extends TemplateContext

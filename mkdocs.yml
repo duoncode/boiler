@@ -1,4 +1,4 @@
-site_name: FiveOrbs Boiler
+site_name: Duon Boiler
 copyright: © 2022-2024 ebene fünf GmbH
 nav:
   - 'Introduction': index.md
@@ -11,8 +11,8 @@ nav:
   - sections.md
   - template.md
 theme:
-    name: fiveorbs
-repo_url: https://github.com/fiveorbs/boiler
+    name: duon
+repo_url: https://github.com/duon/boiler
 extra:
     project: Boiler
 plugins:

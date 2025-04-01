@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler\Tests;
+namespace Duon\Boiler\Tests;
 
-use FiveOrbs\Boiler\Proxy\ValueProxy;
-use FiveOrbs\Boiler\Template;
-use FiveOrbs\Boiler\TemplateContext;
-use FiveOrbs\Boiler\Tests\TestCase;
+use Duon\Boiler\Proxy\ValueProxy;
+use Duon\Boiler\Template;
+use Duon\Boiler\TemplateContext;
+use Duon\Boiler\Tests\TestCase;
 
 final class TemplateContextTest extends TestCase
 {

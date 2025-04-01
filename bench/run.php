@@ -60,7 +60,7 @@ function benchBoiler(): string
     $start = microtime(true);
 
     for ($i = 0; $i < RUNS; $i++) {
-        $engine = FiveOrbs\Boiler\Engine::create('./boiler');
+        $engine = Duon\Boiler\Engine::create('./boiler');
         $t = $engine->render('page', CONTEXT);
     }
 
@@ -91,7 +91,7 @@ function benchBoilerUnescaped(): string
     $start = microtime(true);
 
     for ($i = 0; $i < RUNS; $i++) {
-        $engine = FiveOrbs\Boiler\Engine::unescaped('./boiler');
+        $engine = Duon\Boiler\Engine::unescaped('./boiler');
         $t = $engine->render('pagenoescape', CONTEXT);
     }
 

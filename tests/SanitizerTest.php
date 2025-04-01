@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler\Tests;
+namespace Duon\Boiler\Tests;
 
-use FiveOrbs\Boiler\Sanitizer;
+use Duon\Boiler\Sanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 final class SanitizerTest extends TestCase

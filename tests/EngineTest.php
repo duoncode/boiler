@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Boiler\Tests;
+namespace Duon\Boiler\Tests;
 
-use FiveOrbs\Boiler\Engine;
-use FiveOrbs\Boiler\Exception\LogicException;
-use FiveOrbs\Boiler\Exception\LookupException;
-use FiveOrbs\Boiler\Exception\RuntimeException;
-use FiveOrbs\Boiler\Exception\UnexpectedValueException;
-use FiveOrbs\Boiler\Proxy\ValueProxy;
-use FiveOrbs\Boiler\Tests\TestCase;
+use Duon\Boiler\Engine;
+use Duon\Boiler\Exception\LogicException;
+use Duon\Boiler\Exception\LookupException;
+use Duon\Boiler\Exception\RuntimeException;
+use Duon\Boiler\Exception\UnexpectedValueException;
+use Duon\Boiler\Proxy\ValueProxy;
+use Duon\Boiler\Tests\TestCase;
 use ParseError;
 use PHPUnit\Framework\Attributes\TestDox;
 
