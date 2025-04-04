@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\LookupException;
+use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Exception\RuntimeException;
 use Throwable;
 
@@ -160,9 +161,8 @@ class Template
 
 			return new Content($content, $templateContext);
 		} catch (Throwable $e) {
-			throw new ($e::class)(
+			throw new RenderException(
 				"Template rendering error ({$this->path}): " . $e->getMessage(),
-				$e->getCode(),
 				previous: $e,
 			);
 		} finally {
@@ -199,4 +199,3 @@ class Template
 		return $content;
 	}
 }
-

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Duon\Boiler\Tests;
 
 use Duon\Boiler\Exception\LookupException;
+use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Proxy\ValueProxy;
 use Duon\Boiler\Template;
 use Duon\Boiler\Tests\TestCase;
@@ -166,10 +167,11 @@ final class TemplateTest extends TestCase
 
 	public function testRenderError(): void
 	{
-		$this->throws(ParseError::class, 'Template rendering error');
+		$this->throws(RenderException::class, 'Template rendering error');
 
 		$template = new Template($this->templates . 'rendererror.php');
 
 		$template->render();
 	}
 }
+

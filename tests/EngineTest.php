@@ -7,6 +7,7 @@ namespace Duon\Boiler\Tests;
 use Duon\Boiler\Engine;
 use Duon\Boiler\Exception\LogicException;
 use Duon\Boiler\Exception\LookupException;
+use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ValueProxy;
@@ -384,7 +385,7 @@ final class EngineTest extends TestCase
 
 	public function testNestedSectionsError(): void
 	{
-		$this->throws(LogicException::class);
+		$this->throws(RenderException::class);
 
 		$engine = Engine::create($this->templates());
 
@@ -393,7 +394,7 @@ final class EngineTest extends TestCase
 
 	public function testClosingUnopenedSectionError(): void
 	{
-		$this->throws(LogicException::class);
+		$this->throws(RenderException::class);
 
 		$engine = Engine::create($this->templates());
 
@@ -594,7 +595,7 @@ final class EngineTest extends TestCase
 
 	public function testRenderErrorParseError(): void
 	{
-		$this->throws(ParseError::class);
+		$this->throws(RenderException::class);
 
 		$engine = Engine::create($this->templates());
 
@@ -616,7 +617,7 @@ final class EngineTest extends TestCase
 
 	public function testUnknownCustomMethod(): void
 	{
-		$this->throws(UnexpectedValueException::class, 'upper');
+		$this->throws(RenderException::class, 'upper');
 
 		$engine = Engine::create($this->templates());
 
