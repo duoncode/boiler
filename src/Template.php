@@ -163,7 +163,7 @@ class Template
 			throw new ($e::class)(
 				"Template rendering error ({$this->path}): " . $e->getMessage(),
 				$e->getCode(),
-				$e,
+				previous: $e,
 			);
 		} finally {
 			while (ob_get_level() > $level) {
@@ -199,3 +199,4 @@ class Template
 		return $content;
 	}
 }
+
