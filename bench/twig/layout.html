@@ -5,11 +5,34 @@
     <meta charset="utf-8">
     <title>{{ title }}</title>
     <link rel="stylesheet" href="css/style.css">
-{% block script %}{% endblock %}
+    {% block script %}{% endblock %}
 </head>
 
 <body id="home">
-{% block body %}{% endblock %}
+    <header>
+        <nav>
+            {% if isLoggedIn %}
+                <span>Welcome, {{ user.name }}</span>
+                {% if isAdmin %}
+                    <a href="/admin">Admin Panel</a>
+                {% endif %}
+            {% else %}
+                <a href="/login">Login</a>
+            {% endif %}
+        </nav>
+        <div class="breadcrumbs">
+            {% for crumb in breadcrumbs %}
+                <a href="{{ crumb.url }}">{{ crumb.label }}</a>
+                <span>/</span>
+            {% endfor %}
+        </div>
+    </header>
+    <main>
+        {% block body %}{% endblock %}
+    </main>
+    <footer>
+        <p>Total Products: {{ stats.totalProducts }}</p>
+    </footer>
 </body>
 
 </html>

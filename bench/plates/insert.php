@@ -1,10 +1,11 @@
-<div>
+<aside class="sidebar">
     <h2><?= $this->e($title) ?></h2>
-    <p>
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-        nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-        sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
-        rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
-        ipsum dolor sit amet.
-    </p>
-</div>
+    <div class="user-summary">
+        <p>Logged in as: <?= $this->e($user['name']) ?></p>
+        <p>Location: <?= $this->e($user['profile']['location']) ?></p>
+    </div>
+    <div class="quick-stats">
+        <p>Products: <?= $stats['totalProducts'] ?></p>
+        <p>Orders: <?= $stats['totalOrders'] ?></p>
+    </div>
+</aside>

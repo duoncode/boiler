@@ -14,9 +14,42 @@ if (!is_dir('./cache/bladeone')) {
 const RUNS = 10000;
 const ITERATIONS = 5;
 const CONTEXT = [
-    'title' => 'Engine',
-    'array' => ['string1', 'string2', '<b>string3</b>'],
-    'htmlval' => '<p>lorem ipsum</p>'
+    'title' => 'Product Catalog',
+    'isLoggedIn' => true,
+    'isAdmin' => false,
+    'user' => [
+        'id' => 42,
+        'name' => 'John Doe',
+        'email' => 'john@example.com',
+        'profile' => [
+            'bio' => '<script>alert("xss")</script>Web developer & designer',
+            'avatar' => '/img/avatars/john.jpg',
+            'location' => 'New York, NY',
+        ],
+    ],
+    'products' => [
+        ['id' => 1, 'name' => 'Laptop Pro', 'price' => 1299.99, 'inStock' => true, 'tags' => ['electronics', 'computers']],
+        ['id' => 2, 'name' => 'Wireless Mouse', 'price' => 49.95, 'inStock' => true, 'tags' => ['electronics', 'accessories']],
+        ['id' => 3, 'name' => 'USB-C Hub', 'price' => 79.00, 'inStock' => false, 'tags' => ['electronics', 'accessories']],
+        ['id' => 4, 'name' => 'Mechanical Keyboard', 'price' => 159.99, 'inStock' => true, 'tags' => ['electronics', 'accessories']],
+        ['id' => 5, 'name' => '27" Monitor', 'price' => 399.00, 'inStock' => true, 'tags' => ['electronics', 'displays']],
+        ['id' => 6, 'name' => 'Webcam HD', 'price' => 89.99, 'inStock' => false, 'tags' => ['electronics', 'video']],
+        ['id' => 7, 'name' => 'Desk Lamp', 'price' => 45.00, 'inStock' => true, 'tags' => ['office', 'lighting']],
+        ['id' => 8, 'name' => 'Ergonomic Chair', 'price' => 549.00, 'inStock' => true, 'tags' => ['office', 'furniture']],
+        ['id' => 9, 'name' => 'Standing Desk', 'price' => 699.00, 'inStock' => false, 'tags' => ['office', 'furniture']],
+        ['id' => 10, 'name' => 'Notebook Set', 'price' => 24.99, 'inStock' => true, 'tags' => ['office', 'supplies']],
+    ],
+    'stats' => [
+        'totalProducts' => 156,
+        'totalOrders' => 1247,
+        'revenue' => 98432.50,
+    ],
+    'announcement' => '<p class="alert"><strong>Holiday Sale:</strong> 20% off all items!</p>',
+    'breadcrumbs' => [
+        ['label' => 'Home', 'url' => '/'],
+        ['label' => 'Products', 'url' => '/products'],
+        ['label' => 'Electronics', 'url' => '/products/electronics'],
+    ],
 ];
 
 class BenchResult
@@ -211,17 +244,8 @@ function benchBoilerUnescapedRealistic(): BenchResult
 
 function fulltrim(string $text): string
 {
-    return trim(
-        preg_replace(
-            '/> </',
-            '><',
-            preg_replace(
-                '/\s+/',
-                ' ',
-                preg_replace('/\n/', '', $text)
-            )
-        )
-    );
+    // Remove all whitespace for comparison - engines differ in indentation
+    return preg_replace('/\s+/', '', $text);
 }
 
 function main(): void
