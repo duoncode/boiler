@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/vendor/autoload.php';
 
-if (!is_dir('./cache')) {
-    mkdir('./cache', 0755, true);
+if (!is_dir(__DIR__ . '/cache')) {
+    mkdir(__DIR__ . '/cache', 0755, true);
 }
-if (!is_dir('./cache/bladeone')) {
-    mkdir('./cache/bladeone', 0755, true);
+if (!is_dir(__DIR__ . '/cache/bladeone')) {
+    mkdir(__DIR__ . '/cache/bladeone', 0755, true);
 }
 
 const RUNS = 10000;
@@ -97,9 +97,9 @@ class BenchResult
 function benchTwigRealistic(): BenchResult
 {
     $result = new BenchResult('Twig');
-    $loader = new \Twig\Loader\FilesystemLoader('./twig');
+    $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/twig');
     $engine = new \Twig\Environment($loader, [
-        'cache' => './cache/twig',
+        'cache' => __DIR__ . '/cache/twig',
     ]);
 
     // Warmup - populate cache, trigger autoloading
@@ -129,7 +129,7 @@ function benchTwigRealistic(): BenchResult
 function benchBladeOneRealistic(): BenchResult
 {
     $result = new BenchResult('BladeOne');
-    $engine = new \eftec\bladeone\BladeOne('./bladeone', './cache/bladeone');
+    $engine = new \eftec\bladeone\BladeOne(__DIR__ . '/bladeone', __DIR__ . '/cache/bladeone');
 
     // Warmup
     $engine->run('page', CONTEXT);
@@ -158,7 +158,7 @@ function benchBladeOneRealistic(): BenchResult
 function benchBoilerRealistic(): BenchResult
 {
     $result = new BenchResult('Boiler');
-    $engine = Duon\Boiler\Engine::create('./boiler');
+    $engine = Duon\Boiler\Engine::create(__DIR__ . '/boiler');
 
     // Warmup
     $engine->render('page', CONTEXT);
@@ -187,7 +187,7 @@ function benchBoilerRealistic(): BenchResult
 function benchPlatesRealistic(): BenchResult
 {
     $result = new BenchResult('Plates');
-    $engine = new League\Plates\Engine('./plates');
+    $engine = new League\Plates\Engine(__DIR__ . '/plates');
 
     // Warmup
     $engine->render('page', CONTEXT);
@@ -216,7 +216,7 @@ function benchPlatesRealistic(): BenchResult
 function benchBoilerUnescapedRealistic(): BenchResult
 {
     $result = new BenchResult('Boiler');
-    $engine = Duon\Boiler\Engine::unescaped('./boiler');
+    $engine = Duon\Boiler\Engine::unescaped(__DIR__ . '/boiler');
 
     // Warmup
     $engine->render('pagenoescape', CONTEXT);
