@@ -11,94 +11,202 @@ if (!is_dir('./cache/bladeone')) {
     mkdir('./cache/bladeone', 0755, true);
 }
 
-const SHOWTEXT = false;
 const RUNS = 10000;
+const ITERATIONS = 5;
 const CONTEXT = [
     'title' => 'Engine',
     'array' => ['string1', 'string2', '<b>string3</b>'],
     'htmlval' => '<p>lorem ipsum</p>'
 ];
 
-
-function benchTwig(): string
+class BenchResult
 {
-    $start = microtime(true);
+    public string $name;
+    public string $output;
+    public float $min = PHP_FLOAT_MAX;
+    public float $max = 0.0;
+    public float $total = 0.0;
+    public int $count = 0;
+    public int $peakMemory = 0;
 
-    for ($i = 0; $i < RUNS; $i++) {
-        $loader = new \Twig\Loader\FilesystemLoader('./twig');
-        $engine = new \Twig\Environment($loader, [
-            'cache' => './cache/twig',
-        ]);
-        $t = $engine->render('page.html', CONTEXT);
+    public function __construct(string $name)
+    {
+        $this->name = $name;
     }
 
-    $end = microtime(true);
-    print "Twig:      " . (string)($end - $start) . "\n";
+    public function add(float $time, int $memory): void
+    {
+        $this->min = min($this->min, $time);
+        $this->max = max($this->max, $time);
+        $this->total += $time;
+        $this->count++;
+        $this->peakMemory = max($this->peakMemory, $memory);
+    }
 
-    return fulltrim($t);
+    public function avg(): float
+    {
+        return $this->count > 0 ? $this->total / $this->count : 0;
+    }
+
+    public function print(): void
+    {
+        printf(
+            "%-12s avg: %6.3fs  min: %6.3fs  max: %6.3fs  mem: %5.1fMB\n",
+            $this->name . ':',
+            $this->avg(),
+            $this->min,
+            $this->max,
+            $this->peakMemory / 1024 / 1024
+        );
+    }
 }
 
-
-function benchBladeOne(): string
+function benchTwigRealistic(): BenchResult
 {
-    $start = microtime(true);
+    $result = new BenchResult('Twig');
+    $loader = new \Twig\Loader\FilesystemLoader('./twig');
+    $engine = new \Twig\Environment($loader, [
+        'cache' => './cache/twig',
+    ]);
 
-    for ($i = 0; $i < RUNS; $i++) {
-        $engine = new \eftec\bladeone\BladeOne('./bladeone', './cache/bladeone');
-        $t = $engine->run('page', CONTEXT);
+    // Warmup - populate cache, trigger autoloading
+    $engine->render('page.html', CONTEXT);
+    gc_collect_cycles();
+
+    for ($iter = 0; $iter < ITERATIONS; $iter++) {
+        $memBefore = memory_get_usage();
+        $start = hrtime(true);
+
+        for ($i = 0; $i < RUNS; $i++) {
+            $t = $engine->render('page.html', CONTEXT);
+        }
+
+        $elapsed = (hrtime(true) - $start) / 1e9;
+        $memPeak = memory_get_peak_usage();
+
+        $result->add($elapsed, $memPeak);
+        $result->output = $t;
+
+        gc_collect_cycles();
     }
 
-    $end = microtime(true);
-    print "BladeOne:  " . (string)($end - $start) . "\n";
-
-    return fulltrim($t);
+    return $result;
 }
 
-
-function benchBoiler(): string
+function benchBladeOneRealistic(): BenchResult
 {
-    $start = microtime(true);
+    $result = new BenchResult('BladeOne');
+    $engine = new \eftec\bladeone\BladeOne('./bladeone', './cache/bladeone');
 
-    for ($i = 0; $i < RUNS; $i++) {
-        $engine = Duon\Boiler\Engine::create('./boiler');
-        $t = $engine->render('page', CONTEXT);
+    // Warmup
+    $engine->run('page', CONTEXT);
+    gc_collect_cycles();
+
+    for ($iter = 0; $iter < ITERATIONS; $iter++) {
+        $memBefore = memory_get_usage();
+        $start = hrtime(true);
+
+        for ($i = 0; $i < RUNS; $i++) {
+            $t = $engine->run('page', CONTEXT);
+        }
+
+        $elapsed = (hrtime(true) - $start) / 1e9;
+        $memPeak = memory_get_peak_usage();
+
+        $result->add($elapsed, $memPeak);
+        $result->output = $t;
+
+        gc_collect_cycles();
     }
 
-    $end = microtime(true);
-    print "Boiler:    " . (string)($end - $start) . "\n";
-
-    return fulltrim($t);
+    return $result;
 }
 
-function benchPlates(): string
+function benchBoilerRealistic(): BenchResult
 {
-    $start = microtime(true);
+    $result = new BenchResult('Boiler');
+    $engine = Duon\Boiler\Engine::create('./boiler');
 
-    for ($i = 0; $i < RUNS; $i++) {
-        $engine = new League\Plates\Engine('./plates');
-        $t = $engine->render('page', CONTEXT);
+    // Warmup
+    $engine->render('page', CONTEXT);
+    gc_collect_cycles();
+
+    for ($iter = 0; $iter < ITERATIONS; $iter++) {
+        $memBefore = memory_get_usage();
+        $start = hrtime(true);
+
+        for ($i = 0; $i < RUNS; $i++) {
+            $t = $engine->render('page', CONTEXT);
+        }
+
+        $elapsed = (hrtime(true) - $start) / 1e9;
+        $memPeak = memory_get_peak_usage();
+
+        $result->add($elapsed, $memPeak);
+        $result->output = $t;
+
+        gc_collect_cycles();
     }
 
-    $end = microtime(true);
-    print "Plates:    " . (string)($end - $start) . "\n";
-
-    return fulltrim($t);
+    return $result;
 }
 
-
-function benchBoilerUnescaped(): string
+function benchPlatesRealistic(): BenchResult
 {
-    $start = microtime(true);
+    $result = new BenchResult('Plates');
+    $engine = new League\Plates\Engine('./plates');
 
-    for ($i = 0; $i < RUNS; $i++) {
-        $engine = Duon\Boiler\Engine::unescaped('./boiler');
-        $t = $engine->render('pagenoescape', CONTEXT);
+    // Warmup
+    $engine->render('page', CONTEXT);
+    gc_collect_cycles();
+
+    for ($iter = 0; $iter < ITERATIONS; $iter++) {
+        $memBefore = memory_get_usage();
+        $start = hrtime(true);
+
+        for ($i = 0; $i < RUNS; $i++) {
+            $t = $engine->render('page', CONTEXT);
+        }
+
+        $elapsed = (hrtime(true) - $start) / 1e9;
+        $memPeak = memory_get_peak_usage();
+
+        $result->add($elapsed, $memPeak);
+        $result->output = $t;
+
+        gc_collect_cycles();
     }
 
-    $end = microtime(true);
-    print "Boiler:    " . (string)($end - $start) . "\n";
+    return $result;
+}
 
-    return fulltrim($t);
+function benchBoilerUnescapedRealistic(): BenchResult
+{
+    $result = new BenchResult('Boiler');
+    $engine = Duon\Boiler\Engine::unescaped('./boiler');
+
+    // Warmup
+    $engine->render('pagenoescape', CONTEXT);
+    gc_collect_cycles();
+
+    for ($iter = 0; $iter < ITERATIONS; $iter++) {
+        $memBefore = memory_get_usage();
+        $start = hrtime(true);
+
+        for ($i = 0; $i < RUNS; $i++) {
+            $t = $engine->render('pagenoescape', CONTEXT);
+        }
+
+        $elapsed = (hrtime(true) - $start) / 1e9;
+        $memPeak = memory_get_peak_usage();
+
+        $result->add($elapsed, $memPeak);
+        $result->output = $t;
+
+        gc_collect_cycles();
+    }
+
+    return $result;
 }
 
 function fulltrim(string $text): string
@@ -116,37 +224,48 @@ function fulltrim(string $text): string
     );
 }
 
-function main()
+function main(): void
 {
-    echo '---- ESCAPED ----' . PHP_EOL;
-    $e = benchTwig();
-    $p = benchBladeOne();
-    $t = benchBoiler();
+    echo "Benchmark: " . number_format(RUNS) . " renders × " . ITERATIONS . " iterations\n";
+    echo str_repeat("=", 70) . "\n\n";
 
-    echo "\n--- UNESCAPED ---\n";
-    $b = benchPlates();
-    $l = benchBoilerUnescaped();
-    assert($b === $p);
-    assert($b === $t);
-    assert($b === $e);
-    assert($b === $l);
+    // Realistic benchmark (engine reused)
+    echo "ESCAPED\n";
+    echo str_repeat("-", 70) . "\n";
 
-    if (SHOWTEXT) {
-        echo('' . PHP_EOL);
-        echo('---- BladeOne' . PHP_EOL);
-        echo($l . PHP_EOL);
-        echo('' . PHP_EOL);
-        echo('---- Plates' . PHP_EOL);
-        echo($p . PHP_EOL);
-        echo('' . PHP_EOL);
-        echo('---- Twig' . PHP_EOL);
-        echo($t . PHP_EOL);
-        echo('' . PHP_EOL);
-        echo('---- Boiler (noescape)' . PHP_EOL);
-        echo($e . PHP_EOL);
-        echo('' . PHP_EOL);
-        echo('---- Boiler' . PHP_EOL);
-        echo($b . PHP_EOL);
+    $twig = benchTwigRealistic();
+    $blade = benchBladeOneRealistic();
+    $boiler = benchBoilerRealistic();
+
+    $twig->print();
+    $blade->print();
+    $boiler->print();
+
+    echo "\nUNESCAPED\n";
+    echo str_repeat("-", 70) . "\n";
+
+    $plates = benchPlatesRealistic();
+    $boilerUn = benchBoilerUnescapedRealistic();
+
+    $plates->print();
+    $boilerUn->print();
+
+    // Verify output consistency
+    echo "\n" . str_repeat("=", 70) . "\n";
+    echo "Output verification: ";
+
+    $expected = fulltrim($plates->output);
+    $allMatch = true;
+
+    foreach ([$twig, $blade, $boiler, $boilerUn] as $result) {
+        if (fulltrim($result->output) !== $expected) {
+            echo "MISMATCH in {$result->name}!\n";
+            $allMatch = false;
+        }
+    }
+
+    if ($allMatch) {
+        echo "All outputs match ✓\n";
     }
 }
 
