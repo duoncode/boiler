@@ -63,7 +63,8 @@
 			"composer coverage",
 			"composer check-github",
 			"composer lint"
-		]
+		],
+		"benchmark": "php bench/run.php"
 	},
 	"config": {
 		"allow-plugins": {

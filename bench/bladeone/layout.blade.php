@@ -9,7 +9,30 @@
 </head>
 
 <body id="home">
-    @yield('body')
+    <header>
+        <nav>
+            @if ($isLoggedIn)
+                <span>Welcome, {{ $user['name'] }}</span>
+                @if ($isAdmin)
+                    <a href="/admin">Admin Panel</a>
+                @endif
+            @else
+                <a href="/login">Login</a>
+            @endif
+        </nav>
+        <div class="breadcrumbs">
+            @foreach ($breadcrumbs as $crumb)
+                <a href="{{ $crumb['url'] }}">{{ $crumb['label'] }}</a>
+                <span>/</span>
+            @endforeach
+        </div>
+    </header>
+    <main>
+        @yield('body')
+    </main>
+    <footer>
+        <p>Total Products: {{ $stats['totalProducts'] }}</p>
+    </footer>
 </body>
 
 </html>

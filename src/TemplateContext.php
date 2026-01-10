@@ -46,10 +46,50 @@ class TemplateContext
 
 	public function context(array $values = []): array
 	{
-		return array_map(
-			[$this, 'wrapIf'],
-			array_merge($this->context, $values),
-		);
+		$merged = array_merge($this->context, $values);
+
+		if (!$this->autoescape) {
+			return $merged;
+		}
+
+		return $this->wrapAll($merged);
+	}
+
+	protected function wrapAll(array $values): array
+	{
+		$wrapped = [];
+
+		foreach ($values as $key => $value) {
+			if ($value instanceof ProxyInterface) {
+				$wrapped[$key] = $value;
+
+				continue;
+			}
+
+			if (is_object($value)) {
+				$isWhitelisted = false;
+
+				foreach ($this->whitelist as $whitelisted) {
+					if (
+						$value::class === $whitelisted
+						|| is_subclass_of($value::class, $whitelisted)
+					) {
+						$isWhitelisted = true;
+						break;
+					}
+				}
+
+				if ($isWhitelisted) {
+					$wrapped[$key] = $value;
+
+					continue;
+				}
+			}
+
+			$wrapped[$key] = Wrapper::wrap($value);
+		}
+
+		return $wrapped;
 	}
 
 	public function add(string $key, mixed $value): mixed
@@ -139,29 +179,5 @@ class TemplateContext
 	public function has(string $name): bool
 	{
 		return $this->template->sections->has($name);
-	}
-
-	protected function wrapIf(mixed $value): mixed
-	{
-		if (!$this->autoescape) {
-			return $value;
-		}
-
-		if ($value instanceof ProxyInterface) {
-			return $value;
-		}
-
-		if (is_object($value)) {
-			foreach ($this->whitelist as $whitelisted) {
-				if (
-					$value::class === $whitelisted
-					|| is_subclass_of($value::class, $whitelisted)
-				) {
-					return $value;
-				}
-			}
-		}
-
-		return Wrapper::wrap($value);
 	}
 }

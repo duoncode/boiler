@@ -20,6 +20,9 @@ class Engine
 	/** @psalm-var Dirs */
 	protected readonly array $dirs;
 
+	/** @psalm-var array<string, non-empty-string> */
+	protected array $pathCache = [];
+
 	/**
 	 * @psalm-param DirsInput $dirs
 	 * @psalm-param list<class-string> $whitelist
@@ -115,6 +118,10 @@ class Engine
 	 */
 	public function getFile(string $path): string
 	{
+		if (isset($this->pathCache[$path])) {
+			return $this->pathCache[$path];
+		}
+
 		[$namespace, $file] = $this->getSegments($path);
 		$templatePath = $this->getTemplatePath($namespace, $file);
 
@@ -122,7 +129,7 @@ class Engine
 			throw new LookupException($templatePath->error());
 		}
 
-		return $templatePath->path();
+		return $this->pathCache[$path] = $templatePath->path();
 	}
 
 	/** @psalm-param non-empty-string $path */
