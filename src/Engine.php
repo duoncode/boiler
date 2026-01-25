@@ -124,6 +124,7 @@ final class Engine implements EngineContract
 	 *
 	 * @psalm-return non-empty-string
 	 */
+	#[Override]
 	public function getFile(string $path): string
 	{
 		if (isset($this->pathCache[$path])) {
