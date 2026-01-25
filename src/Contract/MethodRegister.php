@@ -6,6 +6,7 @@ namespace Duon\Boiler\Contract;
 
 use Duon\Boiler\CustomMethods;
 
+/** @api */
 interface MethodRegister
 {
 	/** @psalm-param non-empty-string $name */

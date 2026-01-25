@@ -6,6 +6,7 @@ namespace Duon\Boiler\Contract;
 
 use Duon\Boiler\LayoutValue;
 
+/** @api */
 interface Template extends MethodRegister
 {
 	/**

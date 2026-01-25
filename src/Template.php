@@ -6,6 +6,7 @@ namespace Duon\Boiler;
 
 use Override;
 
+/** @api */
 final class Template extends BaseTemplate
 {
 	/** @psalm-param list<class-string> $whitelist */

@@ -10,6 +10,7 @@ use Duon\Boiler\Exception\UnexpectedValueException;
 use Override;
 
 /**
+ * @api
  * @psalm-type DirsInput = non-empty-string|list<non-empty-string>|array<non-empty-string, non-empty-string>
  * @psalm-type Dirs = list<non-empty-string>|array<non-empty-string, non-empty-string>
  */

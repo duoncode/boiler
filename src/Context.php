@@ -9,6 +9,7 @@ use Duon\Boiler\Proxy\ProxyInterface;
 use Duon\Boiler\Proxy\ValueProxy;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
+/** @api */
 abstract class Context
 {
 	private const ESCAPE_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE;
