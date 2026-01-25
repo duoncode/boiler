@@ -26,7 +26,7 @@ final class Layout extends BaseTemplate
 		return $this->body;
 	}
 
-	protected function templateContext(array $context, array $whitelist, bool $autoescape): LayoutContext
+	protected function templateContext(array $context, array $whitelist, bool $autoescape): Context
 	{
 		return new LayoutContext($this, $context, $whitelist, $autoescape);
 	}

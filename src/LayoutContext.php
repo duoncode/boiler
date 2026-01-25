@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Duon\Boiler;
 
 /** @psalm-api */
-class LayoutContext extends TemplateContext
+final class LayoutContext extends Context
 {
 	protected Layout $layout;
 

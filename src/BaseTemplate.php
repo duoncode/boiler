@@ -98,6 +98,9 @@ abstract class BaseTemplate implements Template
 		$this->customMethods = $customMethods;
 	}
 
+	/** @psalm-param list<class-string> $whitelist */
+	abstract protected function templateContext(array $context, array $whitelist, bool $autoescape): Context;
+
 	/**
 	 * @psalm-param list<class-string> $whitelist
 	 */
@@ -116,12 +119,6 @@ abstract class BaseTemplate implements Template
 			$content->content,
 			$autoescape,
 		);
-	}
-
-	/** @psalm-param list<class-string> $whitelist */
-	protected function templateContext(array $context, array $whitelist, bool $autoescape): TemplateContext
-	{
-		return new TemplateContext($this, $context, $whitelist, $autoescape);
 	}
 
 	/**
