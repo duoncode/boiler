@@ -61,7 +61,7 @@ class TestCase extends BaseTestCase
 		};
 	}
 
-	public function throws(string $exception, string $message = null): void
+	public function throws(string $exception, ?string $message = null): void
 	{
 		$this->expectException($exception);
 
