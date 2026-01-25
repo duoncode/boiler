@@ -277,11 +277,11 @@ final class EngineTest extends TestCase
 			'html' => '<p>HTML</p>',
 		];
 		$result = $this->fullTrim($engine->render('complex', $context));
-		$compare = '<!DOCTYPE html><html lang="en"><head><title>Boiler App</title>' .
-			'<meta name="keywords" content="boiler"></head><body>' .
-			'<h1>Boiler App</h1><table><tr><td>&lt;b&gt;sanitize&lt;/b&gt;</td><td>1</td><td>String</td>' .
-			'<td>&lt;p&gt;Object&lt;/p&gt;</td></tr><tr><td>666</td><td>13.73</td><td>String II</td>' .
-			'<td>1</td></tr></table><p>HTML</p></body></html>';
+		$compare = '<!DOCTYPE html><html lang="en"><head><title>Boiler App</title>'
+			. '<meta name="keywords" content="boiler"></head><body>'
+			. '<h1>Boiler App</h1><table><tr><td>&lt;b&gt;sanitize&lt;/b&gt;</td><td>1</td><td>String</td>'
+			. '<td>&lt;p&gt;Object&lt;/p&gt;</td></tr><tr><td>666</td><td>13.73</td><td>String II</td>'
+			. '<td>1</td></tr></table><p>HTML</p></body></html>';
 
 		$this->assertSame($compare, $result);
 	}
@@ -322,8 +322,8 @@ final class EngineTest extends TestCase
 		$engine = Engine::create($this->templates());
 
 		$this->assertSame(
-			'<body><div class="stackedsecond"><div class="stackedfirst">' .
-				'<p>boiler</p></div></div><p>boiler</p></body>',
+			'<body><div class="stackedsecond"><div class="stackedfirst">'
+				. '<p>boiler</p></div></div><p>boiler</p></body>',
 			$this->fullTrim($engine->render(
 				'usestacked',
 				['text' => 'boiler'],
@@ -363,9 +363,9 @@ final class EngineTest extends TestCase
 		$engine = Engine::create($this->templates());
 
 		$this->assertSame(
-			'<script src="/prepend.js"></script>' .
-				'<script src="/assign.js"></script>' .
-				'<script src="/append.js"></script>',
+			'<script src="/prepend.js"></script>'
+				. '<script src="/assign.js"></script>'
+				. '<script src="/append.js"></script>',
 			$this->fullTrim($engine->render('appendprepend', ['path' => '/assign.js'])),
 		);
 	}

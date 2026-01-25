@@ -1,3 +1,3 @@
 <body>
-    <?= $this->body(); ?><p><?= $text; ?></p>
+    <?= $this->body() ?><p><?= $text; ?></p>
 </body>
