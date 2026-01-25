@@ -156,7 +156,7 @@ final class Engine implements EngineContract
 	/** @psalm-param non-empty-string $file */
 	protected function getTemplatePath(?string $namespace, string $file): TemplatePath
 	{
-		if (!is_Null($namespace)) {
+		if (!is_null($namespace)) {
 			if (array_key_exists($namespace, $this->dirs)) {
 				return new TemplatePath($this->dirs[$namespace], $file);
 			}
