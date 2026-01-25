@@ -6,28 +6,33 @@
 [![Psalm level](https://shepherd.dev/github/duoncode/boiler/level.svg?)](https://shepherd.dev/github/duoncode/boiler)
 [![Psalm coverage](https://shepherd.dev/github/duoncode/boiler/coverage.svg?)](https://shepherd.dev/github/duoncode/boiler)
 
-> [!WARNING]  
-> This template engine is under active development, so some of the
-> features listed and parts of the documentation may be still experimental,
-> subject to change, or missing.
-
-Boiler is a template engine for PHP 8.2 and above, inspired by Plates.
+Boiler is a small template engine for PHP 8.5+, inspired by Plates.
 Like Plates, it uses native PHP as its templating language rather than
-introducing a custom syntax. 
+introducing a custom syntax.
 
 Key differences from Plates:
 
 - Automatic escaping of strings and
-  [Stringable](https://www.php.net/manual/en/class.stringable.php) values for
-  enhanced security
+	[Stringable](https://www.php.net/manual/en/class.stringable.php) values for
+	enhanced security
 - Global template context, making all variables accessible throughout the
-  template
+	template
+
+Other highlights:
+
+- Layouts, inserts/partials, and sections (with append/prepend)
+- Optional HTML sanitization via `symfony/html-sanitizer`
+- Custom template methods and optional whitelisting of trusted value classes
 
 ## Installation
 
 ```console
 composer require duon/boiler
 ```
+
+## Documentation
+
+Start here: `docs/index.md`.
 
 ## Quick start
 
@@ -51,22 +56,60 @@ Then initialize the `Engine` and render your template:
 ```php
 use Duon\Boiler\Engine;
 
-$engine = new Engine('/path/to/templates');
+$engine = Engine::create('/path/to/templates');
 $html = $engine->render('page', ['id' => 13]);
 
 assert($html == '<p>ID 13</p>');
 ```
 
+## Common patterns
+
+Render from multiple directories (optionally with namespaces):
+
+```php
+$engine = Engine::create([
+	'theme' => '/path/to/theme',
+	'app' => '/path/to/templates',
+]);
+
+// Renders the first match (theme overrides app)
+$engine->render('page');
+
+// Force a specific namespace
+$engine->render('app:page');
+```
+
+Control escaping:
+
+```php
+$engine = Engine::create('/path/to/templates');
+$engine->render('page');
+$engine->renderUnescaped('page');
+
+$engine = Engine::unescaped('/path/to/templates');
+$engine->render('page');
+$engine->renderEscaped('page');
+```
+
+Template helpers available via `$this` inside templates:
+
+- `$this->layout('layout')`
+- `$this->insert('partial', ['value' => '...'])`
+- `$this->begin('name')` / `$this->append('name')` / `$this->prepend('name')` /
+  `$this->end()`
+- `$this->section('name', 'default')` / `$this->has('name')`
+- `$this->esc($value)` and `$this->clean($html)`
+
 ## Run the tests
 
 ```console
-phpunit --testdox && \
-	psalm --no-cache --show-info=true && \
-	phpcs -s -p --ignore=tests/templates src tests
+composer test
+composer check
+composer lint
 ```
 
 ## License
 
 Boiler is available under the [MIT license](LICENSE.md).
 
-Copyright © 2022-2024 ebene fünf GmbH. All rights reserved.
+Copyright © 2022-2026 ebene fünf GmbH. All rights reserved.
