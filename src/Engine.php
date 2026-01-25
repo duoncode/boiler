@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
+use Duon\Boiler\Contract\Engine as EngineContract;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 
 /**
- * @psalm-api
- *
  * @psalm-type DirsInput = non-empty-string|list<non-empty-string>|array<non-empty-string, non-empty-string>
  * @psalm-type Dirs = list<non-empty-string>|array<non-empty-string, non-empty-string>
  */
-class Engine
+final class Engine implements EngineContract
 {
 	use RegistersMethod;
 

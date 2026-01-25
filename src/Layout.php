@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-class Layout extends Template
+final class Layout extends BaseTemplate
 {
 	/**
 	 * @psalm-param non-empty-string $path

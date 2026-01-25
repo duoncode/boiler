@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
+use Duon\Boiler\Contract;
 use Duon\Boiler\Proxy\ProxyInterface;
 use Duon\Boiler\Proxy\ValueProxy;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
@@ -31,7 +32,7 @@ class TemplateContext
 	 * @psalm-param list<class-string> $whitelist
 	 */
 	public function __construct(
-		protected readonly Template $template,
+		protected readonly Contract\Template $template,
 		protected array $context,
 		public readonly array $whitelist,
 		public readonly bool $autoescape,
