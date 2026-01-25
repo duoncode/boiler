@@ -10,7 +10,6 @@ class Sections
 {
 	/** @var array<string, Section> */
 	protected array $sections = [];
-
 	protected array $capture = [];
 	protected SectionMode $sectionMode = SectionMode::Closed;
 

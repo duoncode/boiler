@@ -19,8 +19,8 @@ class CustomMethods
 
 	public function get(string $name): callable
 	{
-		return array_key_exists($name, $this->methods) ?
-			$this->methods[$name] :
-			throw new UnexpectedValueException("Custom method '{$name}' does not exist");
+		return array_key_exists($name, $this->methods)
+			? $this->methods[$name]
+			: throw new UnexpectedValueException("Custom method '{$name}' does not exist");
 	}
 }

@@ -69,7 +69,7 @@ class ValueProxy implements ProxyInterface
 	/**
 	 * @param array<array-key, string>|null|string $allowed
 	 */
-	public function strip(null|array|string $allowed = null): string
+	public function strip(array|string|null $allowed = null): string
 	{
 		return strip_tags((string) $this->value, $allowed);
 	}

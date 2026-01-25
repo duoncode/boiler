@@ -152,9 +152,9 @@ class Template
 
 			$load(
 				$this->path,
-				$autoescape ?
-					$templateContext->context() :
-					$context,
+				$autoescape
+					? $templateContext->context()
+					: $context,
 			);
 
 			$content = ob_get_clean();

@@ -106,9 +106,9 @@ class Engine
 	): string {
 		$template = $this->template($path);
 
-		return $autoescape ?
-			$template->renderEscaped(array_merge($this->defaults, $context), $this->whitelist) :
-			$template->renderUnescaped(array_merge($this->defaults, $context), $this->whitelist);
+		return $autoescape
+			? $template->renderEscaped(array_merge($this->defaults, $context), $this->whitelist)
+			: $template->renderUnescaped(array_merge($this->defaults, $context), $this->whitelist);
 	}
 
 	/**
@@ -145,7 +145,7 @@ class Engine
 	}
 
 	/** @psalm-param non-empty-string $file */
-	protected function getTemplatePath(string|null $namespace, string $file): TemplatePath
+	protected function getTemplatePath(?string $namespace, string $file): TemplatePath
 	{
 		if (!is_Null($namespace)) {
 			if (array_key_exists($namespace, $this->dirs)) {
@@ -220,14 +220,14 @@ class Engine
 			}
 
 			throw new LookupException(
-				"Invalid template format: '{$path}'. " .
-					"Use 'namespace:template/path or template/path'.",
+				"Invalid template format: '{$path}'. "
+					. "Use 'namespace:template/path or template/path'.",
 			);
 		}
 
 		throw new LookupException(
-			"Invalid template format: '{$path}'. " .
-				"Use 'namespace:template/path or template/path'.",
+			"Invalid template format: '{$path}'. "
+				. "Use 'namespace:template/path or template/path'.",
 		);
 	}
 }

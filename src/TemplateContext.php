@@ -142,9 +142,9 @@ class TemplateContext
 			engine: $this->template->engine,
 		);
 
-		echo $this->autoescape ?
-			$template->renderEscaped($this->context($context), $this->whitelist) :
-			$template->renderUnescaped($this->context($context), $this->whitelist);
+		echo $this->autoescape
+			? $template->renderEscaped($this->context($context), $this->whitelist)
+			: $template->renderUnescaped($this->context($context), $this->whitelist);
 	}
 
 	public function begin(string $name): void
