@@ -98,6 +98,7 @@ abstract class BaseTemplate implements Template
 		throw new RuntimeException('Template error: layout already set');
 	}
 
+	#[Override]
 	public function layout(): ?LayoutValue
 	{
 		return $this->layout;

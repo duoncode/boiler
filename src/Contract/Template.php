@@ -22,4 +22,9 @@ interface Template extends MethodRegister
 	 * Defines a layout template that will be wrapped around this instance.
 	 */
 	public function setLayout(LayoutValue $layout): void;
+
+	/**
+	 * Returns the layout definition if set.
+	 */
+	public function layout(): ?LayoutValue;
 }
