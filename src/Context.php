@@ -43,10 +43,16 @@ abstract class Context
 		return $this->wrapAll($merged);
 	}
 
+	/**
+	 * @psalm-param array<array-key, mixed> $values
+	 * @psalm-return array<array-key, mixed>
+	 */
 	protected function wrapAll(array $values): array
 	{
+		/** @var array<array-key, mixed> */
 		$wrapped = [];
 
+		/** @var mixed $value */
 		foreach ($values as $key => $value) {
 			if ($value instanceof ProxyInterface) {
 				$wrapped[$key] = $value;
@@ -74,6 +80,7 @@ abstract class Context
 				}
 			}
 
+			/** @psalm-suppress MixedAssignment wrapper returns mixed by design */
 			$wrapped[$key] = Wrapper::wrap($value);
 		}
 
