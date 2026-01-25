@@ -11,6 +11,7 @@ use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Wrapper;
 use Iterator;
+use Override;
 
 /**
  * @api
@@ -42,11 +43,13 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, ProxyInterface
 		return $this->array;
 	}
 
+	#[Override]
 	public function rewind(): void
 	{
 		$this->position = 0;
 	}
 
+	#[Override]
 	public function current(): mixed
 	{
 		return Wrapper::wrap($this->array[$this->key()]);
@@ -55,22 +58,26 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, ProxyInterface
 	/**
 	 * @psalm-return array-key
 	 */
+	#[Override]
 	public function key(): mixed
 	{
 		return $this->keys[$this->position];
 	}
 
+	#[Override]
 	public function next(): void
 	{
 		$this->position++;
 	}
 
+	#[Override]
 	public function valid(): bool
 	{
 		return isset($this->keys[$this->position]);
 	}
 
 	/** @param array-key $offset */
+	#[Override]
 	public function offsetExists(mixed $offset): bool
 	{
 		// isset is significantly faster than array_key_exists but
@@ -79,6 +86,7 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, ProxyInterface
 	}
 
 	/** @param array-key $offset */
+	#[Override]
 	public function offsetGet(mixed $offset): mixed
 	{
 		if ($this->offsetExists($offset)) {
@@ -90,6 +98,7 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, ProxyInterface
 		throw new OutOfBoundsException("Undefined array key {$key}");
 	}
 
+	#[Override]
 	public function offsetSet(mixed $offset, mixed $value): void
 	{
 		if (is_int($offset)) {
@@ -101,11 +110,13 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, ProxyInterface
 		$this->array[] = $value;
 	}
 
+	#[Override]
 	public function offsetUnset(mixed $offset): void
 	{
 		unset($this->array[$offset]);
 	}
 
+	#[Override]
 	public function count(): int
 	{
 		return count($this->array);

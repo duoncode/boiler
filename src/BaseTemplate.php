@@ -10,6 +10,7 @@ use Duon\Boiler\Engine as BoilerEngine;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Exception\RuntimeException;
+use Override;
 use Throwable;
 
 abstract class BaseTemplate implements Template
@@ -51,6 +52,7 @@ abstract class BaseTemplate implements Template
 	/**
 	 * @psalm-param list<class-string> $whitelist
 	 */
+	#[Override]
 	public function render(array $context = [], array $whitelist = []): string
 	{
 		return $this->renderTemplate($context, $whitelist, autoescape: $this->engine->autoescape);
@@ -77,6 +79,7 @@ abstract class BaseTemplate implements Template
 	 *
 	 * Typically it’s placed at the top of the file.
 	 */
+	#[Override]
 	public function setLayout(LayoutValue $layout): void
 	{
 		if ($this->layout === null) {

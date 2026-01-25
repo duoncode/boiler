@@ -7,6 +7,7 @@ namespace Duon\Boiler\Proxy;
 use Duon\Boiler\Wrapper;
 use Iterator;
 use IteratorIterator;
+use Override;
 
 /**
  * @psalm-api
@@ -21,6 +22,7 @@ use IteratorIterator;
 class IteratorProxy extends IteratorIterator implements ProxyInterface
 {
 	/** @psalm-suppress MixedInferredReturnType a proxy has to wrap everything */
+	#[Override]
 	public function current(): mixed
 	{
 		$value = parent::current();

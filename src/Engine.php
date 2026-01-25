@@ -7,6 +7,7 @@ namespace Duon\Boiler;
 use Duon\Boiler\Contract\Engine as EngineContract;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\UnexpectedValueException;
+use Override;
 
 /**
  * @psalm-type DirsInput = non-empty-string|list<non-empty-string>|array<non-empty-string, non-empty-string>
@@ -61,6 +62,7 @@ final class Engine implements EngineContract
 	}
 
 	/** @psalm-param non-empty-string $path */
+	#[Override]
 	public function template(string $path): Template
 	{
 		if (!preg_match('/^[\w\.\/:_-]+$/u', $path)) {
@@ -74,6 +76,7 @@ final class Engine implements EngineContract
 	}
 
 	/** @psalm-param non-empty-string $path */
+	#[Override]
 	public function render(
 		string $path,
 		array $context = [],

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
+use Override;
+
 final class Layout extends BaseTemplate
 {
 	/**
@@ -26,6 +28,7 @@ final class Layout extends BaseTemplate
 		return $this->body;
 	}
 
+	#[Override]
 	protected function templateContext(array $context, array $whitelist, bool $autoescape): Context
 	{
 		return new LayoutContext($this, $context, $whitelist, $autoescape);
