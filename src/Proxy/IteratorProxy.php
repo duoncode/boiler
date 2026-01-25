@@ -21,7 +21,6 @@ use Override;
  */
 class IteratorProxy extends IteratorIterator implements ProxyInterface
 {
-	/** @psalm-suppress MixedInferredReturnType a proxy has to wrap everything */
 	#[Override]
 	public function current(): mixed
 	{
