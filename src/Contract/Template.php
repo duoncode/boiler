@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace Duon\Boiler\Contract;
 
 use Duon\Boiler\LayoutValue;
+use Duon\Boiler\Sections;
 
 /** @api */
 interface Template extends MethodRegister
 {
+	public Engine $engine { get; }
+	public Sections $sections { get; }
+
 	/**
 	 * @psalm-param list<class-string> $whitelist
 	 */

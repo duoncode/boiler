@@ -9,7 +9,11 @@ use Duon\Boiler\Proxy\ProxyInterface;
 use Duon\Boiler\Proxy\ValueProxy;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
-/** @api */
+/**
+ * @api
+ *
+ * @psalm-suppress NoInterfaceProperties Psalm false-positive until interface hooks are supported
+ */
 abstract class Context
 {
 	private const ESCAPE_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE;

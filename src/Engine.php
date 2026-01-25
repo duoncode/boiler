@@ -20,9 +20,13 @@ final class Engine implements EngineContract
 
 	/** @psalm-var Dirs */
 	protected readonly array $dirs;
-
 	/** @psalm-var array<string, non-empty-string> */
 	protected array $pathCache = [];
+
+	public private(set) bool $autoescape {
+		get => $this->autoescape;
+		set(bool $value) => $this->autoescape = $value;
+	}
 
 	/**
 	 * @psalm-param DirsInput $dirs
@@ -30,10 +34,11 @@ final class Engine implements EngineContract
 	 */
 	public function __construct(
 		array|string $dirs,
-		public readonly bool $autoescape,
+		bool $autoescape,
 		protected readonly array $defaults,
 		protected readonly array $whitelist,
 	) {
+		$this->autoescape = $autoescape;
 		$this->dirs = $this->prepareDirs($dirs);
 		$this->customMethods = new CustomMethods();
 	}

@@ -13,14 +13,24 @@ use Duon\Boiler\Exception\RuntimeException;
 use Override;
 use Throwable;
 
+/**
+ * @psalm-suppress NoInterfaceProperties Psalm false-positive until interface hooks are supported
+ */
 abstract class BaseTemplate implements Template
 {
 	use RegistersMethod;
 
-	public readonly Engine $engine;
-	public readonly Sections $sections;
 	protected ?LayoutValue $layout = null;
 	protected CustomMethods $customMethods;
+
+	public private(set) Engine $engine {
+		get => $this->engine;
+		set(Engine $value) => $this->engine = $value;
+	}
+	public private(set) Sections $sections {
+		get => $this->sections;
+		set(Sections $value) => $this->sections = $value;
+	}
 
 	public function __construct(
 		public readonly string $path,
