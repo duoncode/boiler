@@ -123,8 +123,6 @@ abstract class BaseTemplate implements Template
 
 	/**
 	 * @psalm-param list<class-string> $whitelist
-	 * @SuppressWarnings(PHPMD.LongVariable)
-	 * @SuppressWarnings(PHPMD.CamelCaseVariableName)
 	 */
 	protected function getContent(array $context, array $whitelist, bool $autoescape): Content
 	{

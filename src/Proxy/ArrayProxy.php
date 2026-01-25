@@ -13,25 +13,19 @@ use Duon\Boiler\Wrapper;
 use Iterator;
 
 /**
- * @psalm-api
+ * @api
  *
  * @psalm-type ArrayCallable = callable(mixed, mixed):int
  * @psalm-type FilterCallable = callable(mixed):mixed
  *
  * @template-implements ArrayAccess<array-key, mixed>
  * @template-implements Iterator<mixed>
- *
- * To implement ArrayAccess, Iterator and Countable alone you
- * have to add 10 methods. Together with the custom methods,
- * it exceeds phpmd's max value of 10 public methods.
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class ArrayProxy implements ArrayAccess, Iterator, Countable, ProxyInterface
 {
-	private int $position;
-
 	/** @psalm-var list<array-key> */
 	private array $keys;
+	private int $position;
 
 	/**
 	 * @psalm-param array<array-key, mixed> $array

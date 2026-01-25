@@ -9,15 +9,6 @@ use Duon\Boiler\Proxy\ProxyInterface;
 use Duon\Boiler\Proxy\ValueProxy;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
-/**
- * @psalm-api
- *
- * The methods that can be used in the template with $this are included
- * in this class. `$this->esc` or `$this->layout`, for example.
- * Hence, it is necessary to suppress the phpmd warning because we have
- * exceeded the default maximum of 10 public methods.
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- */
 abstract class Context
 {
 	private const ESCAPE_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE;
