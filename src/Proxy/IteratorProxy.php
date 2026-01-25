@@ -30,7 +30,7 @@ class IteratorProxy extends IteratorIterator implements ProxyInterface
 		return Wrapper::wrap($value);
 	}
 
-	public function unwrap(): Iterator
+	public function unwrap(): ?Iterator
 	{
 		return $this->getInnerIterator();
 	}
