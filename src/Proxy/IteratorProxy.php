@@ -37,6 +37,8 @@ class IteratorProxy extends IteratorIterator implements ProxyInterface
 
 	public function toArray(): ArrayProxy
 	{
-		return new ArrayProxy(iterator_to_array($this->getInnerIterator()));
+		$inner = $this->getInnerIterator();
+
+		return new ArrayProxy($inner ? iterator_to_array($inner) : []);
 	}
 }
