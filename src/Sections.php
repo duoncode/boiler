@@ -31,7 +31,7 @@ final class Sections
 
 	public function end(): void
 	{
-		$content = ob_get_clean();
+		$content = (string) ob_get_clean();
 		$name = (string) array_pop($this->capture);
 
 		$this->sections[$name] = match ($this->sectionMode) {

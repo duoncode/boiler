@@ -165,7 +165,7 @@ abstract class BaseTemplate implements Template
 					: $context,
 			);
 
-			$content = ob_get_clean();
+			$content = (string) ob_get_clean();
 
 			return new Content($content, $templateContext);
 		} catch (Throwable $e) {
