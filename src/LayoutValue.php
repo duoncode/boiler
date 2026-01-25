@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-class LayoutValue
+final class LayoutValue
 {
 	/**
 	 * @psalm-param non-empty-string $layout

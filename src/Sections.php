@@ -6,7 +6,8 @@ namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\LogicException;
 
-class Sections
+/** @api */
+final class Sections
 {
 	/** @var array<string, Section> */
 	protected array $sections = [];

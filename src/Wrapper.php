@@ -10,7 +10,7 @@ use Duon\Boiler\Proxy\ProxyInterface;
 use Duon\Boiler\Proxy\ValueProxy;
 use Traversable;
 
-class Wrapper
+final class Wrapper
 {
 	public static function wrap(mixed $value): mixed
 	{

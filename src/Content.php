@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-class Content
+final class Content
 {
 	public function __construct(
 		public readonly string $content,

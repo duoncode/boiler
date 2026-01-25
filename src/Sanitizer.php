@@ -7,7 +7,7 @@ namespace Duon\Boiler;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
-class Sanitizer
+final class Sanitizer
 {
 	protected HtmlSanitizer $sanitizer;
 

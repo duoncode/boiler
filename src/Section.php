@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-class Section
+final class Section
 {
 	/** @var list<string> */
 	protected array $prepended = [];

@@ -6,7 +6,7 @@ namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\UnexpectedValueException;
 
-class CustomMethods
+final class CustomMethods
 {
 	/** @psalm-var array<non-empty-string, callable> */
 	protected array $methods = [];
