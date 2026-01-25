@@ -24,7 +24,7 @@ path
 ... and the [`Engine`](engine.md) initialized in this way:
 
 ```php
-$engine = new \Duon\Boiler\Engine(
+$engine = \Duon\Boiler\Engine::create(
 	[
 		'theme' => '/path/to/theme',
 		'templates' => '/path/to/templates',
@@ -32,7 +32,6 @@ $engine = new \Duon\Boiler\Engine(
 	defaults: [
 		'titleSuffix' => ' - Boiler Template Engine',
 	],
-	autoescape: true,
 );
 ```
 
@@ -48,7 +47,7 @@ $html = $engine->render('page');
 $html = $engine->render('page.php');
 ```
 
-If you like to use a custom file extension add it to the name:
+If you'd like to use a custom file extension, add it to the name:
 
 ```php
 $engine->render('page.tpl');
@@ -100,9 +99,9 @@ is used by default:
 $engine->render('blog', ['value' => 13]);
 ```
 
-This can for example be used to implement themeable or customizable templates
+This can, for example, be used to implement themeable or customizable templates
 where you provide a default set of templates which can later be partially or
-completely overriden by a theme or similar.
+completely overridden by a theme or similar.
 
 You can force to render *blog* from the `templates` directory if you use
 namespaces. See the next section on how this is accomplished.
@@ -112,7 +111,7 @@ namespaces. See the next section on how this is accomplished.
 In our engine instantiation example above we pass an associative array with the
 template directories to the constructor. The keys of the array serve as
 namespaces. To render a template from a specific namespace, locate it using the
-namespace followed bei a colon followed by the template name:
+namespace followed by a colon followed by the template name:
 
 ```php
 $html = $engine->render('templates:blog', ['value' =>  13]);

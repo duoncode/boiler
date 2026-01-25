@@ -21,12 +21,12 @@ path
 <p>ID <?= $id ?></p>
 ```
 
-Now create a `Engine` instance and render the template:
+Now create an `Engine` instance and render the template:
 
 ```php
 use Duon\Boiler\Engine;
 
-$engine = new Engine('/path/to/templates');
+$engine = Engine::create('/path/to/templates');
 $html = $engine->render('page', ['id' => 13]);
 
 assert($html == '<p>ID 13</p>');

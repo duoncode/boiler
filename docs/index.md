@@ -1,6 +1,6 @@
 # Boiler Template Engine for PHP
 
-Boiler is a native >=PHP 8.2 template engine, which it is heavily inspired by
+Boiler is a native >=PHP 8.2 template engine that is heavily inspired by
 [Plates](https://platesphp.com/). Like *Plates*, Boiler does not introduce
 a new template language and instead uses PHP itself. You simply use the PHP
 statements you already know.
@@ -16,8 +16,8 @@ The main differences to *Plates* are:
 
 ## Features
 
-* Autoescaping: Prevents XSS attacs from untrusted user input by passing all
-  rendererd strings to PHP's {{php('htmlspecialchars')}} function.
+* Autoescaping: Prevents XSS attacks from untrusted user input by passing all
+  rendered strings to PHP's {{php('htmlspecialchars')}} function.
 * A simple API. Only one class, the [Engine](engine.md), is usually needed.
 * Code reuse with template [inheritance](layouts.md) and
   [inclusion](inserts.md).
