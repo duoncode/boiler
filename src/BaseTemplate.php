@@ -13,9 +13,6 @@ use Duon\Boiler\Exception\RuntimeException;
 use Override;
 use Throwable;
 
-/**
- * @psalm-suppress NoInterfaceProperties Psalm false-positive until interface hooks are supported
- */
 abstract class BaseTemplate implements Template
 {
 	use RegistersMethod;
@@ -183,7 +180,7 @@ abstract class BaseTemplate implements Template
 	/** @psalm-param list<class-string> $whitelist */
 	protected function renderLayouts(
 		Template $template,
-		TemplateContext $context,
+		Context $context,
 		array $whitelist,
 		string $content,
 		bool $autoescape,
