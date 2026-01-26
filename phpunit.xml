@@ -10,7 +10,7 @@
 			<directory suffix="Test.php">tests</directory>
 		</testsuite>
 	</testsuites>
-	<coverage includeUncoveredFiles="true" pathCoverage="false">
+	<coverage includeUncoveredFiles="true">
 		<report>
 			<html outputDirectory="coverage" lowUpperBound="20" highLowerBound="50"/>
 		</report>
