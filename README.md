@@ -1,8 +1,8 @@
 # Boiler
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/4c82c13a91064b58ad709772a12b85bf)](https://app.codacy.com/gh/duoncode/boiler/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/4c82c13a91064b58ad709772a12b85bf)](https://app.codacy.com/gh/duoncode/boiler/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/a11454828b7e478b847d2910284b7cf9)](https://app.codacy.com/gh/duoncode/boiler/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/a11454828b7e478b847d2910284b7cf9)](https://app.codacy.com/gh/duoncode/boiler/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 [![Psalm level](https://shepherd.dev/github/duoncode/boiler/level.svg?)](https://shepherd.dev/github/duoncode/boiler)
 [![Psalm coverage](https://shepherd.dev/github/duoncode/boiler/coverage.svg?)](https://shepherd.dev/github/duoncode/boiler)
 
