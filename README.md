@@ -110,6 +110,4 @@ composer mdlint
 
 ## License
 
-Boiler is available under the [MIT license](LICENSE.md).
-
-© 2022-present ebene fünf GmbH.
+This project is licensed under the [MIT license](LICENSE.md).
