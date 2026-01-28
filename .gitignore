@@ -6,11 +6,9 @@
 infection.json5
 /coverage
 /data
-/site
 /tmp
 /vendor
 /venv
-__pycache__
 clover.xml
 composer.lock
 mutants.log
