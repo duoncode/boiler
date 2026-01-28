@@ -58,7 +58,7 @@ $engine = \Duon\Boiler\Engine::create([
 ]);
 ```
 
-Check [*Rendering Templates*](rendering.md) to see it in action.
+Check [_Rendering Templates_](rendering.md) to see it in action.
 
 ### Adding default values
 
@@ -97,12 +97,12 @@ $engine->render('template');
 $engine->render('template', ['value1' => 1, 'value2' => 2]);
 ```
 
-See [*Rendering Templates*](rendering.md) for more information.
+See [_Rendering Templates_](rendering.md) for more information.
 
 ## Adding custom template methods
 
-Custom methods can be accessed in templates using `$this` (see [*Rendering
-Templates*](rendering.md)). To add a method you pass a [`Closure` or anonymous
+Custom methods can be accessed in templates using `$this` (see [_Rendering
+Templates_](rendering.md)). To add a method you pass a [`Closure` or anonymous
 function](https://www.php.net/manual/en/functions.anonymous.php) to
 `registerMethod`:
 

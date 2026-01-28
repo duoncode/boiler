@@ -37,8 +37,8 @@ $engine = \Duon\Boiler\Engine::create(
 
 ## Simple rendering
 
-To render the template *page.php* from the filesystem tree above, you reference
-it using the name *page* with or without the file extension.
+To render the template _page.php_ from the filesystem tree above, you reference
+it using the name _page_ with or without the file extension.
 
 ```php
 $html = $engine->render('page');
@@ -62,7 +62,7 @@ $html = $engine->render('page', [
 ]);
 ```
 
-If the *page.php* template would look like this:
+If the _page.php_ template would look like this:
 
 ```php
 <body>
@@ -90,8 +90,8 @@ $html = $engine->render('subdir/subtemplate', ['value' =>  13]);
 
 If a template with the same name is available in more than one of your template
 directories, the first one found is used. In our example above, there is
-a *blog* template in both `templates` and `theme`. As `theme` is the first
-entry in the array passed to [`Engine`](engine.md), *blog* from this directory
+a _blog_ template in both `templates` and `theme`. As `theme` is the first
+entry in the array passed to [`Engine`](engine.md), _blog_ from this directory
 is used by default:
 
 ```php
@@ -103,7 +103,7 @@ This can, for example, be used to implement themeable or customizable templates
 where you provide a default set of templates which can later be partially or
 completely overridden by a theme or similar.
 
-You can force to render *blog* from the `templates` directory if you use
+You can force to render _blog_ from the `templates` directory if you use
 namespaces. See the next section on how this is accomplished.
 
 ## Namespaces
