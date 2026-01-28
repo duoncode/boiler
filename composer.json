@@ -64,10 +64,10 @@
 		],
 		"benchmark": "php bench/run.php",
 		"post-install-cmd": [
-			"Duon\\Development\\ConfigSync::sync"
+			"Duon\\Development\\Config::sync"
 		],
 		"post-update-cmd": [
-			"Duon\\Development\\ConfigSync::sync"
+			"Duon\\Development\\Config::sync"
 		]
 	}
 }
