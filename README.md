@@ -1,10 +1,10 @@
 # Boiler
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/a11454828b7e478b847d2910284b7cf9)](https://app.codacy.com/gh/duoncode/boiler/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/a11454828b7e478b847d2910284b7cf9)](https://app.codacy.com/gh/duoncode/boiler/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
-[![Psalm level](https://shepherd.dev/github/duoncode/boiler/level.svg?)](https://shepherd.dev/github/duoncode/boiler)
-[![Psalm coverage](https://shepherd.dev/github/duoncode/boiler/coverage.svg?)](https://shepherd.dev/github/duoncode/boiler)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/a11454828b7e478b847d2910284b7cf9)](https://app.codacy.com/gh/duonrun/boiler/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/a11454828b7e478b847d2910284b7cf9)](https://app.codacy.com/gh/duonrun/boiler/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
+[![Psalm level](https://shepherd.dev/github/duonrun/boiler/level.svg?)](https://shepherd.dev/github/duonrun/boiler)
+[![Psalm coverage](https://shepherd.dev/github/duonrun/boiler/coverage.svg?)](https://shepherd.dev/github/duonrun/boiler)
 
 Boiler is a small template engine for PHP 8.5+, inspired by Plates.
 Like Plates, it uses native PHP as its templating language rather than
@@ -105,11 +105,11 @@ Template helpers available via `$this` inside templates:
 ```console
 composer test
 composer check
-composer lint
+composer mdlint
 ```
 
 ## License
 
 Boiler is available under the [MIT license](LICENSE.md).
 
-Copyright © 2022-2026 ebene fünf GmbH. All rights reserved.
+© 2022-present ebene fünf GmbH.
