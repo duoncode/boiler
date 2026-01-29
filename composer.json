@@ -30,7 +30,7 @@
 	},
 	"require": {
 		"php": "^8.5",
-		"symfony/html-sanitizer": "^7.0"
+		"symfony/html-sanitizer": "^7.0 || ^8.0"
 	},
 	"require-dev": {
 		"duon/dev": "^2.4"
