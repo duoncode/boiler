@@ -10,11 +10,7 @@
 		}
 	],
 	"homepage": "https://duon.run/boiler",
-	"keywords": [
-		"duon",
-		"templating",
-		"templates"
-	],
+	"keywords": ["duon", "templating", "templates"],
 	"autoload": {
 		"psr-4": {
 			"Duon\\Boiler\\": "src/"
