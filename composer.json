@@ -2,8 +2,6 @@
 	"name": "duon/boiler",
 	"description": "A PHP template engine that doesn't require you to learn a new syntax",
 	"type": "library",
-	"minimum-stability": "dev",
-	"prefer-stable": true,
 	"license": "MIT",
 	"authors": [
 		{
