@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-01-30
+
+### Added
+
+- Added Composer post-install and post-update hooks to sync Duon development configuration.
+
+### Changed
+
+- Updated `symfony/html-sanitizer` requirement to `^8.0`.
+- Simplified development and CI tooling by relying on `duon/dev` (updated to `^2.4`).
+- Removed `minimum-stability` and `prefer-stable` from `composer.json`.
+
+### Removed
+
+- Removed MkDocs-based documentation tooling.
+
 ## [0.1.1] - 2026-01-26
 
 ### Fixed
