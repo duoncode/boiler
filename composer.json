@@ -37,7 +37,7 @@
 		"test": [
 			"./vendor/bin/phpunit --testdox --no-coverage --colors=always"
 		],
-		"check": "./vendor/bin/psalm --no-cache",
+		"types": "./vendor/bin/psalm --no-cache",
 		"mdlint": "markdownlint-cli2 README.md CHANGELOG.md LICENSE.md docs/",
 		"coverage": [
 			"php -d xdebug.mode=coverage ./vendor/bin/phpunit --testdox --path-coverage --coverage-text --coverage-php=coverage/cover.php --colors=always",
@@ -45,7 +45,7 @@
 		],
 		"ci": [
 			"composer coverage",
-			"composer check",
+			"composer types",
 			"composer mdlint"
 		],
 		"benchmark": "php bench/run.php",
