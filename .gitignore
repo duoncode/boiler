@@ -5,7 +5,10 @@
 .markdownlint.jsonc
 .php*.cache
 .phpactor.json
+.php-cs-fixer.php
 infection.json5
+phpunit.xml
+psalm.xml
 /coverage
 /data
 /tmp
