@@ -31,7 +31,7 @@
 		"symfony/html-sanitizer": "^8.0"
 	},
 	"require-dev": {
-		"duon/dev": "^2.4"
+		"duon/dev": "^2.5"
 	},
 	"scripts": {
 		"test": [
@@ -48,12 +48,6 @@
 			"composer types",
 			"composer mdlint"
 		],
-		"benchmark": "php bench/run.php",
-		"post-install-cmd": [
-			"Duon\\Development\\Config::sync"
-		],
-		"post-update-cmd": [
-			"Duon\\Development\\Config::sync"
-		]
+		"benchmark": "php bench/run.php"
 	}
 }
