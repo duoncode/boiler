@@ -12,7 +12,9 @@ use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 /** @psalm-api */
 class ValueProxy implements ProxyInterface
 {
-	public function __construct(protected readonly mixed $value) {}
+	public function __construct(
+		protected readonly mixed $value,
+	) {}
 
 	public function __toString(): string
 	{
@@ -77,7 +79,7 @@ class ValueProxy implements ProxyInterface
 	public function clean(
 		?HtmlSanitizerConfig $config = null,
 	): string {
-		return (new Sanitizer($config))->clean((string) $this->value);
+		return new Sanitizer($config)->clean((string) $this->value);
 	}
 
 	public function empty(): bool

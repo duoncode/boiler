@@ -23,9 +23,16 @@ final class TemplateContextTest extends TestCase
 
 	public function testGetContext(): void
 	{
-		$tmplContext = new TemplateContext($this->template, [
-			'value1' => 'Value 1', 'value2' => '<i>Value 2</i>', 'value3' => 3,
-		], [], true);
+		$tmplContext = new TemplateContext(
+			$this->template,
+			[
+				'value1' => 'Value 1',
+				'value2' => '<i>Value 2</i>',
+				'value3' => 3,
+			],
+			[],
+			true,
+		);
 		$context = $tmplContext->context();
 
 		$this->assertInstanceOf(ValueProxy::class, $context['value1']);

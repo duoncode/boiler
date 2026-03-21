@@ -154,7 +154,7 @@ final class TemplateTest extends TestCase
 			return new ValueProxy(strtoupper($value->unwrap()));
 		});
 
-		$this->assertSame('<h2>BOILER</h2>', $this->fullTrim($template->render([ 'text' => 'Boiler', ])));
+		$this->assertSame('<h2>BOILER</h2>', $this->fullTrim($template->render(['text' => 'Boiler'])));
 	}
 
 	public function testNonExistentTemplateWithoutExtension(): void

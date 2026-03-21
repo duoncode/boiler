@@ -64,10 +64,7 @@ abstract class Context
 				$isWhitelisted = false;
 
 				foreach ($this->whitelist as $whitelisted) {
-					if (
-						$value::class === $whitelisted
-						|| is_subclass_of($value::class, $whitelisted)
-					) {
+					if ($value::class === $whitelisted || is_subclass_of($value::class, $whitelisted)) {
 						$isWhitelisted = true;
 						break;
 					}
@@ -110,7 +107,7 @@ abstract class Context
 		string $value,
 		?HtmlSanitizerConfig $config = null,
 	): string {
-		return (new Sanitizer($config))->clean($value);
+		return new Sanitizer($config)->clean($value);
 	}
 
 	/**
@@ -137,9 +134,11 @@ abstract class Context
 			engine: $this->template->engine,
 		);
 
-		echo $this->autoescape
-			? $template->renderEscaped($this->context($context), $this->whitelist)
-			: $template->renderUnescaped($this->context($context), $this->whitelist);
+		echo
+			$this->autoescape
+				? $template->renderEscaped($this->context($context), $this->whitelist)
+				: $template->renderUnescaped($this->context($context), $this->whitelist)
+		;
 	}
 
 	public function begin(string $name): void

@@ -13,28 +13,28 @@ final class ValueProxyTest extends TestCase
 {
 	public function testProxyUnwrap(): void
 	{
-		$this->assertSame('<b>boiler</b>', (new ValueProxy('<b>boiler</b>'))->unwrap());
+		$this->assertSame('<b>boiler</b>', new ValueProxy('<b>boiler</b>')->unwrap());
 	}
 
 	public function testProxyStrip(): void
 	{
-		$this->assertSame('boiler<br>plate', (new ValueProxy('<b>boiler<br>plate</b>'))->strip('<br>'));
-		$this->assertSame('boiler<br>plate', (new ValueProxy('<b>boiler<br>plate</b>'))->strip(['br']));
-		$this->assertSame('boiler<br>plate', (new ValueProxy('<b>boiler<br>plate</b>'))->strip(['<br>']));
-		$this->assertSame('boilerplate', (new ValueProxy('<b>boiler<br>plate</b>'))->strip(null));
-		$this->assertSame('boilerplate', (new ValueProxy('<b>boiler<br>plate</b>'))->strip());
+		$this->assertSame('boiler<br>plate', new ValueProxy('<b>boiler<br>plate</b>')->strip('<br>'));
+		$this->assertSame('boiler<br>plate', new ValueProxy('<b>boiler<br>plate</b>')->strip(['br']));
+		$this->assertSame('boiler<br>plate', new ValueProxy('<b>boiler<br>plate</b>')->strip(['<br>']));
+		$this->assertSame('boilerplate', new ValueProxy('<b>boiler<br>plate</b>')->strip(null));
+		$this->assertSame('boilerplate', new ValueProxy('<b>boiler<br>plate</b>')->strip());
 	}
 
 	public function testProxyClean(): void
 	{
-		$this->assertSame('<b>boiler</b>', (new ValueProxy('<b onclick="function()">boiler</b>'))->clean());
+		$this->assertSame('<b>boiler</b>', new ValueProxy('<b onclick="function()">boiler</b>')->clean());
 	}
 
 	public function testProxyEmpty(): void
 	{
-		$this->assertSame(true, (new ValueProxy(''))->empty());
-		$this->assertSame(false, (new ValueProxy('test'))->empty());
-		$this->assertSame(true, (new ValueProxy(null))->empty());
+		$this->assertSame(true, new ValueProxy('')->empty());
+		$this->assertSame(false, new ValueProxy('test')->empty());
+		$this->assertSame(true, new ValueProxy(null)->empty());
 	}
 
 	public function testStringValue(): void

@@ -31,8 +31,9 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, ProxyInterface
 	/**
 	 * @psalm-param array<array-key, mixed> $array
 	 */
-	public function __construct(private array $array)
-	{
+	public function __construct(
+		private array $array,
+	) {
 		$this->array = $array;
 		$this->keys = array_keys($array);
 		$this->position = 0;
@@ -93,7 +94,7 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, ProxyInterface
 			return Wrapper::wrap($this->array[$offset]);
 		}
 
-		$key  = is_numeric($offset) ? (string) $offset : "'{$offset}'";
+		$key = is_numeric($offset) ? (string) $offset : "'{$offset}'";
 
 		throw new OutOfBoundsException("Undefined array key {$key}");
 	}

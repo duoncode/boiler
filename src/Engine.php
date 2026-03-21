@@ -229,14 +229,12 @@ final class Engine implements EngineContract
 			}
 
 			throw new LookupException(
-				"Invalid template format: '{$path}'. "
-					. "Use 'namespace:template/path or template/path'.",
+				"Invalid template format: '{$path}'. " . "Use 'namespace:template/path or template/path'.",
 			);
 		}
 
 		throw new LookupException(
-			"Invalid template format: '{$path}'. "
-				. "Use 'namespace:template/path or template/path'.",
+			"Invalid template format: '{$path}'. " . "Use 'namespace:template/path or template/path'.",
 		);
 	}
 }

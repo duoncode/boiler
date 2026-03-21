@@ -37,12 +37,12 @@ final class SanitizerTest extends TestCase
 </article>
 <footer>Test</footer>";
 
-		$this->assertSame($clean, (new Sanitizer())->clean(self::MALFORMED));
+		$this->assertSame($clean, new Sanitizer()->clean(self::MALFORMED));
 	}
 
 	public function testCleanWithBlockExtension(): void
 	{
-		$config = (new HtmlSanitizerConfig())
+		$config = new HtmlSanitizerConfig()
 			->allowSafeElements()
 			->blockElement('header')
 			->blockElement('footer')
@@ -60,6 +60,6 @@ Test
 </article>
 Test";
 
-		$this->assertSame($clean, (new Sanitizer($config))->clean(self::MALFORMED));
+		$this->assertSame($clean, new Sanitizer($config)->clean(self::MALFORMED));
 	}
 }

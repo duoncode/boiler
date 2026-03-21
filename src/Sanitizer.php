@@ -13,7 +13,7 @@ final class Sanitizer
 
 	public function __construct(?HtmlSanitizerConfig $config = null)
 	{
-		$config = $config ?: (new HtmlSanitizerConfig())
+		$config = $config ?: new HtmlSanitizerConfig()
 			// Allow "safe" elements and attributes. All scripts will be removed
 			// as well as other dangerous behaviors like CSS injection
 			->allowSafeElements();

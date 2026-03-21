@@ -112,38 +112,42 @@ final class ArrayProxyTest extends TestCase
 		$arrval = new ArrayProxy(['B', 'a', 'C', 'c', 'A', 'b']);
 		$this->assertSame(
 			['a', 'A', 'B', 'b', 'C', 'c'],
-			$arrval->sorted(
-				'u',
-				function ($a, $b) {
-					if (strtolower($a) > strtolower($b)) {
-						return 1;
-					}
+			$arrval
+				->sorted(
+					'u',
+					function ($a, $b) {
+						if (strtolower($a) > strtolower($b)) {
+							return 1;
+						}
 
-					if (strtolower($a) < strtolower($b)) {
-						return -1;
-					}
+						if (strtolower($a) < strtolower($b)) {
+							return -1;
+						}
 
-					return 0;
-				},
-			)->unwrap(),
+						return 0;
+					},
+				)
+				->unwrap(),
 		);
 
 		$this->assertSame(
 			[1 => 'a', 4 => 'A', 0 => 'B', 5 => 'b', 2 => 'C', 3 => 'c'],
-			$arrval->sorted(
-				'ua',
-				function ($a, $b) {
-					if (strtolower($a) > strtolower($b)) {
-						return 1;
-					}
+			$arrval
+				->sorted(
+					'ua',
+					function ($a, $b) {
+						if (strtolower($a) > strtolower($b)) {
+							return 1;
+						}
 
-					if (strtolower($a) < strtolower($b)) {
-						return -1;
-					}
+						if (strtolower($a) < strtolower($b)) {
+							return -1;
+						}
 
-					return 0;
-				},
-			)->unwrap(),
+						return 0;
+					},
+				)
+				->unwrap(),
 		);
 	}
 
@@ -250,13 +254,16 @@ final class ArrayProxyTest extends TestCase
 			$new[] = $val::class;
 		}
 
-		$this->assertSame([
-			ValueProxy::class,
-			ValueProxy::class,
-			ValueProxy::class,
-			ArrayProxy::class,
-			IteratorProxy::class,
-		], $new);
+		$this->assertSame(
+			[
+				ValueProxy::class,
+				ValueProxy::class,
+				ValueProxy::class,
+				ArrayProxy::class,
+				IteratorProxy::class,
+			],
+			$new,
+		);
 	}
 
 	public function testNestedHahns(): void

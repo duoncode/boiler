@@ -16,8 +16,10 @@ final class TemplatePath
 	 * @param non-empty-string $dir
 	 * @param non-empty-string $file
 	 */
-	public function __construct(protected string $dir, string $file)
-	{
+	public function __construct(
+		protected string $dir,
+		string $file,
+	) {
 		if (strlen(trim($dir)) === 0) {
 			$this->error = 'Template directory must not be an empty string';
 
