@@ -213,7 +213,7 @@ class Engine implements EngineContract
 	/** @return list{null|non-empty-string, non-empty-string} */
 	protected function getSegments(string $path): array
 	{
-		if (strpos($path, ':') === false) {
+		if (!str_contains($path, ':')) {
 			$path = trim($path);
 			assert(!empty($path), 'Template path must not be empty after trimming');
 
