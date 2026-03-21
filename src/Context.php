@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-use Duon\Boiler\Contract;
 use Duon\Boiler\Proxy\ProxyInterface;
 use Duon\Boiler\Proxy\ValueProxy;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;

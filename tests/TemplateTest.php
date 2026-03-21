@@ -8,10 +8,6 @@ use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Proxy\ValueProxy;
 use Duon\Boiler\Template;
-use Duon\Boiler\Tests\TestCase;
-use Duon\Boiler\Tests\WhitelistBase;
-use Duon\Boiler\Tests\Whitelisted;
-use ParseError;
 
 final class TemplateTest extends TestCase
 {

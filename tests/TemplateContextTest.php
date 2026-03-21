@@ -7,7 +7,6 @@ namespace Duon\Boiler\Tests;
 use Duon\Boiler\Proxy\ValueProxy;
 use Duon\Boiler\Template;
 use Duon\Boiler\TemplateContext;
-use Duon\Boiler\Tests\TestCase;
 
 final class TemplateContextTest extends TestCase
 {

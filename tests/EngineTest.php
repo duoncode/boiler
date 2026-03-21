@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace Duon\Boiler\Tests;
 
 use Duon\Boiler\Engine;
-use Duon\Boiler\Exception\LogicException;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ValueProxy;
-use Duon\Boiler\Tests\TestCase;
-use ParseError;
 use PHPUnit\Framework\Attributes\TestDox;
 
 final class EngineTest extends TestCase
