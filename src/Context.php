@@ -60,19 +60,14 @@ abstract class Context
 			}
 
 			if (is_object($value)) {
-				$isWhitelisted = false;
-
 				foreach ($this->whitelist as $whitelisted) {
-					if ($value::class === $whitelisted || is_subclass_of($value::class, $whitelisted)) {
-						$isWhitelisted = true;
-						break;
+					if ($value::class !== $whitelisted && !is_subclass_of($value::class, $whitelisted)) {
+						continue;
 					}
-				}
 
-				if ($isWhitelisted) {
 					$wrapped[$key] = $value;
 
-					continue;
+					continue 2;
 				}
 			}
 
