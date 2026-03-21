@@ -602,9 +602,10 @@ final class EngineTest extends TestCase
 	public function testCustomTemplateMethod(): void
 	{
 		$engine = Engine::create($this->templates());
-		$engine->registerMethod('upper', static function (ValueProxy $value): ValueProxy {
-			return new ValueProxy(strtoupper($value->unwrap()));
-		});
+		$engine->registerMethod(
+			'upper',
+			static fn(ValueProxy $value): ValueProxy => new ValueProxy(strtoupper($value->unwrap())),
+		);
 
 		$this->assertSame(
 			'<h2>BOILER</h2>',

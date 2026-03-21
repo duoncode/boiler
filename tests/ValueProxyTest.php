@@ -104,9 +104,7 @@ final class ValueProxyTest extends TestCase
 
 	public function testClosureValue(): void
 	{
-		$closure = static function (): string {
-			return '<b>boiler</b><script></script>';
-		};
+		$closure = static fn(): string => '<b>boiler</b><script></script>';
 		$value = new ValueProxy($closure);
 
 		$this->assertSame('&lt;b&gt;boiler&lt;/b&gt;&lt;script&gt;&lt;/script&gt;', (string) $value());
