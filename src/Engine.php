@@ -164,7 +164,7 @@ class Engine implements EngineContract
 			throw new LookupException("Template namespace `{$namespace}` does not exist");
 		}
 
-		assert(count($this->dirs) > 0);
+		assert(count($this->dirs) > 0, 'At least one template directory must be configured');
 
 		foreach ($this->dirs as $dir) {
 			$templatePath = new TemplatePath($dir, $file);
@@ -193,7 +193,7 @@ class Engine implements EngineContract
 				);
 			}
 
-			assert(!empty($realpath));
+			assert(!empty($realpath), 'Resolved template directory path must not be empty');
 
 			return $realpath;
 		};
@@ -215,7 +215,7 @@ class Engine implements EngineContract
 	{
 		if (strpos($path, ':') === false) {
 			$path = trim($path);
-			assert(!empty($path));
+			assert(!empty($path), 'Template path must not be empty after trimming');
 
 			return [null, $path];
 		}
