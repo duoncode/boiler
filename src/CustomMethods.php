@@ -9,7 +9,7 @@ use Duon\Boiler\Exception\UnexpectedValueException;
 final class CustomMethods
 {
 	/** @psalm-var array<non-empty-string, callable> */
-	protected array $methods = [];
+	private array $methods = [];
 
 	/** @psalm-param non-empty-string $name */
 	public function add(string $name, callable $callable): void

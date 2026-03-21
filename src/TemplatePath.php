@@ -8,16 +8,16 @@ use Duon\Boiler\Exception\LookupException;
 
 final class TemplatePath
 {
-	protected bool $isValid = false;
-	protected string $path = '';
-	protected string $error = '';
+	private bool $isValid = false;
+	private string $path = '';
+	private string $error = '';
 
 	/**
 	 * @param non-empty-string $dir
 	 * @param non-empty-string $file
 	 */
 	public function __construct(
-		protected string $dir,
+		private string $dir,
 		string $file,
 	) {
 		if (strlen(trim($dir)) === 0) {
@@ -60,7 +60,7 @@ final class TemplatePath
 		return $this->isValid;
 	}
 
-	protected function validateFile(string $dir, string $file): void
+	private function validateFile(string $dir, string $file): void
 	{
 		$fullPath = $dir . DIRECTORY_SEPARATOR . $file;
 
@@ -85,7 +85,7 @@ final class TemplatePath
 	}
 
 	/** @param non-empty-string $path */
-	protected function validatePath(string $path): void
+	private function validatePath(string $path): void
 	{
 		$realpath = realpath($path);
 

@@ -7,13 +7,13 @@ namespace Duon\Boiler;
 final class Section
 {
 	/** @var list<string> */
-	protected array $prepended = [];
+	private array $prepended = [];
 
 	/** @var list<string> */
-	protected array $appended = [];
+	private array $appended = [];
 
 	public function __construct(
-		protected string $value,
+		private string $value,
 	) {}
 
 	public function prepend(string $content): self

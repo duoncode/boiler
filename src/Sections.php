@@ -9,9 +9,9 @@ use Duon\Boiler\Exception\LogicException;
 final class Sections
 {
 	/** @var array<string, Section> */
-	protected array $sections = [];
-	protected array $capture = [];
-	protected SectionMode $sectionMode = SectionMode::Closed;
+	private array $sections = [];
+	private array $capture = [];
+	private SectionMode $sectionMode = SectionMode::Closed;
 
 	public function begin(string $name): void
 	{
@@ -68,7 +68,7 @@ final class Sections
 		return isset($this->sections[$name]);
 	}
 
-	protected function open(string $name, SectionMode $mode): void
+	private function open(string $name, SectionMode $mode): void
 	{
 		if ($this->sectionMode !== SectionMode::Closed) {
 			throw new LogicException('Nested sections are not allowed');

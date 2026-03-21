@@ -9,7 +9,7 @@ use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 final class Sanitizer
 {
-	protected HtmlSanitizer $sanitizer;
+	private HtmlSanitizer $sanitizer;
 
 	public function __construct(?HtmlSanitizerConfig $config = null)
 	{
