@@ -59,25 +59,25 @@ final class ArrayProxyTest extends TestCase
 	{
 		$arrval = new ArrayProxy(['str1', 'str2']);
 
-		$this->assertSame(['str1plus', 'str2plus'], $arrval->map(fn($v) => $v . 'plus')->unwrap());
+		$this->assertSame(['str1plus', 'str2plus'], $arrval->map(static fn($v) => $v . 'plus')->unwrap());
 	}
 
 	public function testHelperFilter(): void
 	{
 		$arrval = new ArrayProxy([1, 3, 4, 2]);
 
-		$this->assertSame([1, 2], array_values($arrval->filter(fn($v) => $v < 3)->unwrap()));
+		$this->assertSame([1, 2], array_values($arrval->filter(static fn($v) => $v < 3)->unwrap()));
 	}
 
 	public function testHelperReduce(): void
 	{
 		$arrval = new ArrayProxy([1, 3, 4, 2]);
 
-		$this->assertSame(10, $arrval->reduce(fn($c, $v) => $c + $v, 0));
+		$this->assertSame(10, $arrval->reduce(static fn($c, $v) => $c + $v, 0));
 
 		$arrval = new ArrayProxy(['a', 'b', 'c']);
 
-		$this->assertSame('abc', $arrval->reduce(fn($c, $v) => $c . $v, '')->unwrap());
+		$this->assertSame('abc', $arrval->reduce(static fn($c, $v) => $c . $v, '')->unwrap());
 	}
 
 	public function testHelperSorted(): void
@@ -115,7 +115,7 @@ final class ArrayProxyTest extends TestCase
 			$arrval
 				->sorted(
 					'u',
-					function ($a, $b) {
+					static function ($a, $b) {
 						if (strtolower($a) > strtolower($b)) {
 							return 1;
 						}
@@ -135,7 +135,7 @@ final class ArrayProxyTest extends TestCase
 			$arrval
 				->sorted(
 					'ua',
-					function ($a, $b) {
+					static function ($a, $b) {
 						if (strtolower($a) > strtolower($b)) {
 							return 1;
 						}
@@ -156,7 +156,7 @@ final class ArrayProxyTest extends TestCase
 		$this->throws(UnexpectedValueException::class);
 
 		$arrval = new ArrayProxy(['B', 'a']);
-		$arrval->sorted('ut', fn($a, $b) => strtolower($a) > strtolower($b));
+		$arrval->sorted('ut', static fn($a, $b) => strtolower($a) > strtolower($b));
 	}
 
 	public function testHelperSortedUserdefinedThrowsNoCallable(): void
@@ -222,7 +222,7 @@ final class ArrayProxyTest extends TestCase
 				return '';
 			}
 		};
-		$iterator = (function () {
+		$iterator = (static function () {
 			yield 1;
 		})();
 		$arrval = new ArrayProxy(['string', $obj, $stringable, [1, 2], $iterator]);
@@ -243,7 +243,7 @@ final class ArrayProxyTest extends TestCase
 				return '';
 			}
 		};
-		$iterator = (function () {
+		$iterator = (static function () {
 			yield 1;
 		})();
 		$arrval = new ArrayProxy(['string', $obj, $stringable, [1, 2], $iterator]);

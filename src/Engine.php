@@ -184,7 +184,7 @@ class Engine implements EngineContract
 	 */
 	protected function prepareDirs(array|string $dirs): array
 	{
-		$preparePath = function (string $dir): string {
+		$preparePath = static function (string $dir): string {
 			$realpath = realpath($dir);
 
 			if ($realpath === false) {
@@ -203,7 +203,7 @@ class Engine implements EngineContract
 		}
 
 		return array_map(
-			function ($dir) use ($preparePath) {
+			static function ($dir) use ($preparePath) {
 				return $preparePath($dir);
 			},
 			$dirs,
@@ -220,7 +220,7 @@ class Engine implements EngineContract
 			return [null, $path];
 		}
 
-		$segments = array_map(fn($seg) => trim($seg), explode(':', $path));
+		$segments = array_map(static fn($seg) => trim($seg), explode(':', $path));
 
 		if (count($segments) === 2) {
 			if (($segments[0] ?? '') && ($segments[1] ?? '')) {

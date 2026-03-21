@@ -225,7 +225,7 @@ final class EngineTest extends TestCase
 	{
 		$engine = Engine::create($this->templates());
 
-		$iter = function () {
+		$iter = static function () {
 			$array = ['<b>2</b>', '<b>3</b>', '<b>4</b>'];
 
 			foreach ($array as $item) {
@@ -249,7 +249,7 @@ final class EngineTest extends TestCase
 			['obj' => $this->obj()],
 		);
 
-		$iter = function () {
+		$iter = static function () {
 			$array = [13.73, 'String II', 1];
 
 			foreach ($array as $item) {
@@ -602,7 +602,7 @@ final class EngineTest extends TestCase
 	public function testCustomTemplateMethod(): void
 	{
 		$engine = Engine::create($this->templates());
-		$engine->registerMethod('upper', function (ValueProxy $value): ValueProxy {
+		$engine->registerMethod('upper', static function (ValueProxy $value): ValueProxy {
 			return new ValueProxy(strtoupper($value->unwrap()));
 		});
 

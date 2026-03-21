@@ -35,7 +35,7 @@ final class WrapperTest extends TestCase
 
 	public function testWrapIterator(): void
 	{
-		$iterator = (function () {
+		$iterator = (static function () {
 			yield 1;
 		})();
 		$witerator = Wrapper::wrap($iterator);

@@ -104,7 +104,7 @@ final class ValueProxyTest extends TestCase
 
 	public function testClosureValue(): void
 	{
-		$closure = function (): string {
+		$closure = static function (): string {
 			return '<b>boiler</b><script></script>';
 		};
 		$value = new ValueProxy($closure);

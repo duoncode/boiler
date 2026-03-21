@@ -165,6 +165,8 @@ abstract class BaseTemplate implements Template
 		$templateContext = $this->templateContext($context, $whitelist, $autoescape);
 
 		$load = function (string $templatePath, array $context = []): void {
+			assert($this instanceof Context, 'Template loader must be bound to a template context');
+
 			// Hide $templatePath. Could be overwritten if $context['templatePath'] exists.
 			$____template_path____ = $templatePath;
 

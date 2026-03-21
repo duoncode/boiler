@@ -12,14 +12,14 @@ final class IteratorProxyTest extends TestCase
 {
 	public function testIteratorProxyWrapping(): void
 	{
-		$iterator = (function () {
+		$iterator = (static function () {
 			yield 1;
 
 			yield 'string';
 
 			yield [1, 2];
 
-			yield (function () {
+			yield (static function () {
 				yield 1;
 			})();
 		})();
@@ -39,7 +39,7 @@ final class IteratorProxyTest extends TestCase
 
 	public function testIteratorProxyUnwrap(): void
 	{
-		$iterator = (function () {
+		$iterator = (static function () {
 			yield 1;
 		})();
 
@@ -50,7 +50,7 @@ final class IteratorProxyTest extends TestCase
 
 	public function testIteratorProxyToArray(): void
 	{
-		$iterator = (function () {
+		$iterator = (static function () {
 			yield 1;
 
 			yield 2;

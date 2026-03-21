@@ -146,7 +146,7 @@ final class TemplateTest extends TestCase
 	public function testCustomTemplateMethod(): void
 	{
 		$template = new Template($this->templates . 'method.php');
-		$template->registerMethod('upper', function (ValueProxy $value): ValueProxy {
+		$template->registerMethod('upper', static function (ValueProxy $value): ValueProxy {
 			return new ValueProxy(strtoupper($value->unwrap()));
 		});
 
