@@ -33,7 +33,12 @@ final class ValueProxyTest extends TestCase
 	public function testProxyEmpty(): void
 	{
 		$this->assertSame(true, new ValueProxy('')->empty());
+		$this->assertSame(true, new ValueProxy('0')->empty());
+		$this->assertSame(true, new ValueProxy(0)->empty());
+		$this->assertSame(true, new ValueProxy(false)->empty());
+		$this->assertSame(true, new ValueProxy([])->empty());
 		$this->assertSame(false, new ValueProxy('test')->empty());
+		$this->assertSame(false, new ValueProxy(['value'])->empty());
 		$this->assertSame(true, new ValueProxy(null)->empty());
 	}
 

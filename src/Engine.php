@@ -193,7 +193,7 @@ class Engine implements EngineContract
 				);
 			}
 
-			assert(!empty($realpath), 'Resolved template directory path must not be empty');
+			assert($realpath !== '', 'Resolved template directory path must not be empty');
 
 			return $realpath;
 		};
@@ -215,7 +215,7 @@ class Engine implements EngineContract
 	{
 		if (!str_contains($path, ':')) {
 			$path = trim($path);
-			assert(!empty($path), 'Template path must not be empty after trimming');
+			assert($path !== '', 'Template path must not be empty after trimming');
 
 			return [null, $path];
 		}

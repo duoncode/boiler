@@ -32,7 +32,7 @@ final class Section
 
 	public function empty(): bool
 	{
-		return empty($this->value);
+		return $this->value === '';
 	}
 
 	public function get(): string

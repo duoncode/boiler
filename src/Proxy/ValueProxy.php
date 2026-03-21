@@ -84,6 +84,14 @@ class ValueProxy implements ProxyInterface
 
 	public function empty(): bool
 	{
-		return empty($this->value);
+		return (
+			$this->value === null
+			|| $this->value === false
+			|| $this->value === 0
+			|| $this->value === 0.0
+			|| $this->value === '0'
+			|| $this->value === ''
+			|| $this->value === []
+		);
 	}
 }

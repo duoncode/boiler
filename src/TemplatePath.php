@@ -34,7 +34,7 @@ final class TemplatePath
 			return;
 		}
 
-		assert(!empty($dir), 'Resolved template directory path must not be empty');
+		assert($dir !== '', 'Resolved template directory path must not be empty');
 
 		$this->dir = $dir;
 		$this->validateFile($dir, $file);
@@ -95,7 +95,7 @@ final class TemplatePath
 			return;
 		}
 
-		assert(!empty($realpath), 'Resolved template file path must not be empty');
+		assert($realpath !== '', 'Resolved template file path must not be empty');
 
 		$this->isValid = true;
 		$this->path = $realpath;
