@@ -81,9 +81,7 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, ProxyInterface
 	#[Override]
 	public function offsetExists(mixed $offset): bool
 	{
-		// isset is significantly faster than array_key_exists but
-		// returns false when the value exists but is null.
-		return isset($this->array[$offset]) || array_key_exists($offset, $this->array);
+		return array_key_exists($offset, $this->array);
 	}
 
 	/** @param array-key $offset */
