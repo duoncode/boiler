@@ -222,7 +222,7 @@ class Engine implements EngineContract
 
 		$segments = array_map(fn($seg) => trim($seg), explode(':', $path));
 
-		if (count($segments) == 2) {
+		if (count($segments) === 2) {
 			if (($segments[0] ?? '') && ($segments[1] ?? '')) {
 				/** @var list{non-empty-string, non-empty-string} */
 				return [$segments[0], $segments[1]];
