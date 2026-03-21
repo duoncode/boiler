@@ -97,6 +97,25 @@ final class TemplateTest extends TestCase
 		);
 	}
 
+	public function testStandaloneTemplateCanBeRenderedMultipleTimes(): void
+	{
+		$template = new Template($this->templates . 'addsection.php');
+
+		$this->assertSame(
+			'<div><p>first</p>first</div><ul><li>first</li></ul>',
+			$this->fullTrim($template->render(['text' => 'first'])),
+		);
+		$this->assertNull($template->layout());
+		$this->assertFalse($template->sections->has('list'));
+
+		$this->assertSame(
+			'<div><p>second</p>second</div><ul><li>second</li></ul>',
+			$this->fullTrim($template->render(['text' => 'second'])),
+		);
+		$this->assertNull($template->layout());
+		$this->assertFalse($template->sections->has('list'));
+	}
+
 	public function testOverwriteLayoutContext(): void
 	{
 		$template = new Template($this->templates . 'overridelayoutcontext.php');

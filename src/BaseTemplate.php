@@ -19,6 +19,7 @@ abstract class BaseTemplate implements Template
 
 	protected ?LayoutValue $layout = null;
 	protected CustomMethods $customMethods;
+	protected readonly bool $ownsSections;
 
 	public private(set) Engine $engine {
 		get => $this->engine;
@@ -34,7 +35,8 @@ abstract class BaseTemplate implements Template
 		?Sections $sections = null,
 		?Engine $engine = null,
 	) {
-		$this->sections = $sections ?: new Sections();
+		$this->ownsSections = $sections === null;
+		$this->sections = $sections ?? new Sections();
 		$this->customMethods = new CustomMethods();
 
 		if ($engine === null) {
@@ -62,7 +64,7 @@ abstract class BaseTemplate implements Template
 	#[Override]
 	public function render(array $context = [], array $whitelist = []): string
 	{
-		return $this->renderTemplate($context, $whitelist, autoescape: $this->engine->autoescape);
+		return $this->renderIsolated($context, $whitelist, autoescape: $this->engine->autoescape);
 	}
 
 	/**
@@ -70,7 +72,7 @@ abstract class BaseTemplate implements Template
 	 */
 	public function renderEscaped(array $context = [], array $whitelist = []): string
 	{
-		return $this->renderTemplate($context, $whitelist, autoescape: true);
+		return $this->renderIsolated($context, $whitelist, autoescape: true);
 	}
 
 	/**
@@ -78,7 +80,7 @@ abstract class BaseTemplate implements Template
 	 */
 	public function renderUnescaped(array $context = [], array $whitelist = []): string
 	{
-		return $this->renderTemplate($context, $whitelist, autoescape: false);
+		return $this->renderIsolated($context, $whitelist, autoescape: false);
 	}
 
 	/**
@@ -107,6 +109,29 @@ abstract class BaseTemplate implements Template
 	public function setCustomMethods(CustomMethods $customMethods): void
 	{
 		$this->customMethods = $customMethods;
+	}
+
+	/**
+	 * @psalm-param list<class-string> $whitelist
+	 */
+	protected function renderIsolated(array $context, array $whitelist, bool $autoescape): string
+	{
+		$this->resetRenderState();
+
+		try {
+			return $this->renderTemplate($context, $whitelist, $autoescape);
+		} finally {
+			$this->resetRenderState();
+		}
+	}
+
+	protected function resetRenderState(): void
+	{
+		$this->layout = null;
+
+		if ($this->ownsSections) {
+			$this->sections = new Sections();
+		}
 	}
 
 	/** @psalm-param list<class-string> $whitelist */

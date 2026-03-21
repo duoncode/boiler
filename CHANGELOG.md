@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Reset per-render template state so a `Template` instance can be reused safely across multiple renders.
+
 ## [0.1.2](https://github.com/duonrun/boiler/releases/tag/0.1.2) (2026-01-30)
 
 ### Added

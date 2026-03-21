@@ -75,7 +75,7 @@ final class Engine implements EngineContract
 			throw new UnexpectedValueException('The template path is invalid or empty');
 		}
 
-		$template = new Template($this->getFile($path), new Sections(), $this);
+		$template = new Template($this->getFile($path), engine: $this);
 		$template->setCustomMethods($this->customMethods);
 
 		return $template;

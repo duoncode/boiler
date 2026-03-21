@@ -623,4 +623,24 @@ final class EngineTest extends TestCase
 
 		$engine->render('unknownmethod');
 	}
+
+	public function testTemplateInstancesFromEngineCanBeRenderedMultipleTimes(): void
+	{
+		$engine = Engine::create($this->templates());
+		$template = $engine->template('addsection');
+
+		$this->assertSame(
+			'<div><p>first</p>first</div><ul><li>first</li></ul>',
+			$this->fullTrim($template->render(['text' => 'first'])),
+		);
+		$this->assertNull($template->layout());
+		$this->assertFalse($template->sections->has('list'));
+
+		$this->assertSame(
+			'<div><p>second</p>second</div><ul><li>second</li></ul>',
+			$this->fullTrim($template->render(['text' => 'second'])),
+		);
+		$this->assertNull($template->layout());
+		$this->assertFalse($template->sections->has('list'));
+	}
 }
