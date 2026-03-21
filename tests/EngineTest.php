@@ -322,7 +322,7 @@ final class EngineTest extends TestCase
 		$engine = Engine::create($this->templates());
 
 		$this->assertSame(
-			'<body><div class="stackedsecond"><div class="stackedfirst">' . '<p>boiler</p></div></div><p>boiler</p></body>',
+			'<body><div class="stackedsecond"><div class="stackedfirst"><p>boiler</p></div></div><p>boiler</p></body>',
 			$this->fullTrim($engine->render(
 				'usestacked',
 				['text' => 'boiler'],
@@ -362,7 +362,7 @@ final class EngineTest extends TestCase
 		$engine = Engine::create($this->templates());
 
 		$this->assertSame(
-			'<script src="/prepend.js"></script>' . '<script src="/assign.js"></script>' . '<script src="/append.js"></script>',
+			'<script src="/prepend.js"></script><script src="/assign.js"></script><script src="/append.js"></script>',
 			$this->fullTrim($engine->render('appendprepend', ['path' => '/assign.js'])),
 		);
 	}
