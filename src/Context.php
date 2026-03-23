@@ -61,7 +61,7 @@ abstract class Context
 
 			if (is_object($value)) {
 				foreach ($this->whitelist as $whitelisted) {
-					if ($value::class !== $whitelisted && !is_subclass_of($value::class, $whitelisted)) {
+					if (!$value instanceof $whitelisted) {
 						continue;
 					}
 
