@@ -68,4 +68,14 @@ final class TemplateContextTest extends TestCase
 		$this->assertInstanceOf(StringProxy::class, $value2);
 		$this->assertSame('&lt;i&gt;Value 2&lt;/i&gt;', (string) $value2);
 	}
+
+	public function testAddingToUnescapedContextReturnsRawValue(): void
+	{
+		$tmplContext = new TemplateContext($this->template, [], [], false);
+		$value = $tmplContext->add('value', '<i>Value</i>');
+		$context = $tmplContext->context();
+
+		$this->assertSame('<i>Value</i>', $context['value']);
+		$this->assertSame('<i>Value</i>', $value);
+	}
 }

@@ -6,7 +6,6 @@ namespace Duon\Boiler\Tests;
 
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
-use Duon\Boiler\Proxy\StringProxy;
 use Duon\Boiler\Template;
 
 final class TemplateTest extends TestCase
@@ -148,10 +147,10 @@ final class TemplateTest extends TestCase
 		$template = new Template($this->templates . 'method.php');
 		$template->registerMethod(
 			'upper',
-			static fn(StringProxy $value): StringProxy => new StringProxy(strtoupper($value->unwrap())),
+			static fn(string $value): string => '<b>' . strtoupper($value) . '</b>',
 		);
 
-		$this->assertSame('<h2>BOILER</h2>', $this->fullTrim($template->render(['text' => 'Boiler'])));
+		$this->assertSame('<h2>&lt;b&gt;BOILER&lt;/b&gt;</h2>', $this->fullTrim($template->render(['text' => 'Boiler'])));
 	}
 
 	public function testNonExistentTemplateWithoutExtension(): void
