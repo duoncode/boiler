@@ -24,6 +24,10 @@ final class Wrapper
 			return $value;
 		}
 
+		if ($value === null) {
+			return null;
+		}
+
 		if ($value instanceof ProxyInterface) {
 			return $value;
 		}
@@ -38,10 +42,6 @@ final class Wrapper
 
 		if (is_object($value)) {
 			return new ObjectProxy($value);
-		}
-
-		if (is_null($value)) {
-			return null;
 		}
 
 		if (is_resource($value)) {
