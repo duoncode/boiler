@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Duon\Boiler\Tests;
 
 use Duon\Boiler\Exception\RuntimeException;
+use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\StringProxy;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -18,6 +19,13 @@ final class ObjectProxyTest extends TestCase
 		$value = new ObjectProxy($object);
 
 		$this->assertSame($object, $value->unwrap());
+	}
+
+	public function testTraversableObjectsMustUseIteratorProxy(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'iterator proxies');
+
+		new ObjectProxy(new \ArrayIterator([]));
 	}
 
 	public function testStringableValue(): void
