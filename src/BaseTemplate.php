@@ -135,7 +135,11 @@ abstract class BaseTemplate implements Template
 	}
 
 	/** @psalm-param list<class-string> $whitelist */
-	abstract protected function templateContext(array $context, array $whitelist, bool $autoescape): Context;
+	abstract protected function templateContext(
+		array $context,
+		array $whitelist,
+		bool $autoescape,
+	): Context;
 
 	/**
 	 * @psalm-param list<class-string> $whitelist

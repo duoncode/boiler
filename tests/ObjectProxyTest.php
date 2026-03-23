@@ -62,7 +62,10 @@ final class ObjectProxyTest extends TestCase
 		};
 		$value = new ObjectProxy($object);
 
-		$this->assertSame('&lt;b&gt;boiler&lt;/b&gt;&lt;script&gt;&lt;/script&gt;', (string) $value->html());
+		$this->assertSame(
+			'&lt;b&gt;boiler&lt;/b&gt;&lt;script&gt;&lt;/script&gt;',
+			(string) $value->html(),
+		);
 		$this->assertSame('<b>boiler</b>', $value->html()->clean());
 		$this->assertSame('&lt;i&gt;test&lt;/i&gt;', (string) $value('test'));
 	}

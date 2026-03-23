@@ -24,7 +24,10 @@ final class StringProxyTest extends TestCase
 
 	public function testProxyClean(): void
 	{
-		$this->assertSame('<b>boiler</b>', new StringProxy('<b onclick="function()">boiler</b>')->clean());
+		$this->assertSame(
+			'<b>boiler</b>',
+			new StringProxy('<b onclick="function()">boiler</b>')->clean(),
+		);
 	}
 
 	public function testStringValue(): void
