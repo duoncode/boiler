@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
+use Duon\Boiler\Exception\RuntimeException;
+use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\ProxyInterface;
-use Duon\Boiler\Proxy\ValueProxy;
+use Duon\Boiler\Proxy\StringProxy;
+use Stringable;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 /** @api */
@@ -78,6 +81,25 @@ abstract class Context
 		return $wrapped;
 	}
 
+	public function raw(mixed $value): mixed
+	{
+		if ($value instanceof ProxyInterface) {
+			return $value->unwrap();
+		}
+
+		if (!is_array($value)) {
+			return $value;
+		}
+
+		$raw = [];
+
+		foreach ($value as $key => $item) {
+			$raw[$key] = $this->raw($item);
+		}
+
+		return $raw;
+	}
+
 	public function add(string $key, mixed $value): mixed
 	{
 		$this->context[$key] = $value;
@@ -86,15 +108,21 @@ abstract class Context
 	}
 
 	public function esc(
-		ValueProxy|string $value,
+		StringProxy|ObjectProxy|string|Stringable $value,
 		int $flags = self::ESCAPE_FLAGS,
 		string $encoding = self::ESCAPE_ENCODING,
 	): string {
-		if ($value instanceof ValueProxy) {
-			return htmlspecialchars((string) $value->unwrap(), $flags, $encoding);
+		$value = $this->raw($value);
+
+		if (is_string($value)) {
+			return htmlspecialchars($value, $flags, $encoding);
 		}
 
-		return htmlspecialchars($value, $flags, $encoding);
+		if ($value instanceof Stringable) {
+			return htmlspecialchars((string) $value, $flags, $encoding);
+		}
+
+		throw new RuntimeException('Value cannot be escaped as string');
 	}
 
 	public function clean(

@@ -4,26 +4,27 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
+use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
+use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\ProxyInterface;
-use Duon\Boiler\Proxy\ValueProxy;
+use Duon\Boiler\Proxy\StringProxy;
 use Traversable;
 
 final class Wrapper
 {
 	public static function wrap(mixed $value): mixed
 	{
-		if (is_scalar($value)) {
-			if (is_string($value)) {
-				return new ValueProxy($value);
-			}
+		if (is_string($value)) {
+			return new StringProxy($value);
+		}
 
+		if (is_int($value) || is_float($value) || is_bool($value)) {
 			return $value;
 		}
 
 		if ($value instanceof ProxyInterface) {
-			// Don't wrap already wrapped values again
 			return $value;
 		}
 
@@ -35,10 +36,18 @@ final class Wrapper
 			return new IteratorProxy($value);
 		}
 
+		if (is_object($value)) {
+			return new ObjectProxy($value);
+		}
+
 		if (is_null($value)) {
 			return null;
 		}
 
-		return new ValueProxy($value);
+		if (is_resource($value)) {
+			throw new UnexpectedValueException('Template values of type resource are not supported');
+		}
+
+		throw new UnexpectedValueException('Unsupported template value type');
 	}
 }

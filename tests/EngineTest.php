@@ -9,7 +9,7 @@ use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Proxy\ValueProxy;
+use Duon\Boiler\Proxy\StringProxy;
 use PHPUnit\Framework\Attributes\TestDox;
 
 final class EngineTest extends TestCase
@@ -195,7 +195,7 @@ final class EngineTest extends TestCase
 		);
 	}
 
-	public function testEmptyHelperMethod(): void
+	public function testRawHelperSupportsExplicitStringChecks(): void
 	{
 		$engine = Engine::create($this->templates());
 
@@ -604,7 +604,7 @@ final class EngineTest extends TestCase
 		$engine = Engine::create($this->templates());
 		$engine->registerMethod(
 			'upper',
-			static fn(ValueProxy $value): ValueProxy => new ValueProxy(strtoupper($value->unwrap())),
+			static fn(StringProxy $value): StringProxy => new StringProxy(strtoupper($value->unwrap())),
 		);
 
 		$this->assertSame(
