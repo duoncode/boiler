@@ -31,7 +31,10 @@ abstract class Context
 	{
 		$callable = $this->template->getMethods()->get($name);
 
-		return $callable(...$args);
+		/** @var array<array-key, mixed> $args */
+		$args = $this->raw($args);
+
+		return $this->templateValue($callable(...$args));
 	}
 
 	public function context(array $values = []): array
@@ -104,7 +107,7 @@ abstract class Context
 	{
 		$this->context[$key] = $value;
 
-		return Wrapper::wrap($value);
+		return $this->templateValue($value);
 	}
 
 	public function esc(
@@ -123,6 +126,13 @@ abstract class Context
 		}
 
 		throw new RuntimeException('Value cannot be escaped as string');
+	}
+
+	private function templateValue(mixed $value): mixed
+	{
+		return $this->autoescape
+			? Wrapper::wrap($value)
+			: $this->raw($value);
 	}
 
 	public function clean(
