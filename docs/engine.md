@@ -112,6 +112,12 @@ $engine->registerMethod('upper', function (string $value): string {
 });
 ```
 
+Boiler unwraps proxy arguments before it calls your method, so you work with raw
+PHP values instead of proxy objects.
+
+In escaped renders, Boiler wraps the return value again before it is used in the
+template. In unescaped renders, Boiler returns the raw value.
+
 ## Other useful Engine methods
 
 ### Check if a template exists
