@@ -1,7 +1,26 @@
-# Displaying Values
+# Displaying values
 
-If you pass a value of type `Duon\Boiler\Proxy\ValueProxy` to `esc` it will
-automatically be unwrapped before it is passed to {{php('htmlspecialchars')}}.
+Boiler wraps strings and objects before it exposes them to escaped templates.
+Use `$this->raw($value)` or `->unwrap()` when you need the original value for a
+comparison or other explicit logic.
+
+Strings are wrapped as `Duon\Boiler\Proxy\StringProxy`. Non-traversable objects
+are wrapped as `Duon\Boiler\Proxy\ObjectProxy`. Arrays and traversables use
+specialized array and iterator proxies.
+
+If you pass a `StringProxy` or `ObjectProxy` to `esc`, Boiler unwraps it before
+it calls {{php('htmlspecialchars')}}.
+
+## Working with raw values
+
+Use the template helper `raw` when you need the original value instead of the
+wrapped proxy:
+
+```php
+<?php if ($this->raw($title) !== '') { ?>
+	<h1><?= $title ?></h1>
+<?php } ?>
+```
 
 ## Changing the arguments passed to {{php('htmlspecialchars')}}
 
