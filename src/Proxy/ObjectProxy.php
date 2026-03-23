@@ -7,6 +7,7 @@ namespace Duon\Boiler\Proxy;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Wrapper;
+use Override;
 use Stringable;
 use Traversable;
 
@@ -79,6 +80,7 @@ final class ObjectProxy implements ProxyInterface
 		throw new RuntimeException('No such method');
 	}
 
+	#[Override]
 	public function unwrap(): object
 	{
 		return $this->value;

@@ -21,6 +21,7 @@ use Override;
  *
  * @template-implements ArrayAccess<array-key, mixed>
  * @template-implements Iterator<mixed>
+ * @implements ProxyInterface<array<array-key, mixed>>
  */
 class ArrayProxy implements ArrayAccess, Iterator, Countable, ProxyInterface
 {
@@ -39,6 +40,7 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, ProxyInterface
 		$this->position = 0;
 	}
 
+	#[Override]
 	public function unwrap(): array
 	{
 		return $this->array;
