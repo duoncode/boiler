@@ -18,6 +18,7 @@ use Override;
  * @template TIterator as \Traversable<TKey, TValue>
  *
  * @template-extends IteratorIterator<TKey, TValue, TIterator>
+ * @implements ProxyInterface<Iterator<TKey, TValue>|null>
  */
 class IteratorProxy extends IteratorIterator implements ProxyInterface
 {
@@ -30,6 +31,7 @@ class IteratorProxy extends IteratorIterator implements ProxyInterface
 		return Wrapper::wrap($value);
 	}
 
+	#[Override]
 	public function unwrap(): ?Iterator
 	{
 		return $this->getInnerIterator();

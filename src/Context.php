@@ -94,13 +94,7 @@ abstract class Context
 			return $value;
 		}
 
-		$raw = [];
-
-		foreach ($value as $key => $item) {
-			$raw[$key] = $this->raw($item);
-		}
-
-		return $raw;
+		return $this->rawArray($value);
 	}
 
 	public function add(string $key, mixed $value): mixed
@@ -115,7 +109,13 @@ abstract class Context
 		int $flags = self::ESCAPE_FLAGS,
 		string $encoding = self::ESCAPE_ENCODING,
 	): string {
-		$value = $this->raw($value);
+		if ($value instanceof StringProxy) {
+			return htmlspecialchars($value->unwrap(), $flags, $encoding);
+		}
+
+		if ($value instanceof ObjectProxy) {
+			$value = $value->unwrap();
+		}
 
 		if (is_string($value)) {
 			return htmlspecialchars($value, $flags, $encoding);
@@ -126,6 +126,15 @@ abstract class Context
 		}
 
 		throw new RuntimeException('Value cannot be escaped as string');
+	}
+
+	/**
+	 * @param array<array-key, mixed> $value
+	 * @return array<array-key, mixed>
+	 */
+	private function rawArray(array $value): array
+	{
+		return array_map($this->raw(...), $value);
 	}
 
 	private function templateValue(mixed $value): mixed

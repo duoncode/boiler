@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Duon\Boiler\Proxy;
 
 use Duon\Boiler\Sanitizer;
+use Override;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 /**
@@ -26,6 +27,7 @@ final class StringProxy implements ProxyInterface
 		return htmlspecialchars($this->value, self::ESCAPE_FLAGS, self::ESCAPE_ENCODING);
 	}
 
+	#[Override]
 	public function unwrap(): string
 	{
 		return $this->value;
