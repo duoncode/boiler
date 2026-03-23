@@ -164,9 +164,9 @@ abstract class BaseTemplate implements Template
 	{
 		$templateContext = $this->templateContext($context, $whitelist, $autoescape);
 
+		/** @mago-expect lint:prefer-static-closure Closure::call() binds $this to the template context at runtime. */
 		$load = function (string $templatePath, array $context = []): void {
-			assert($this instanceof Context, 'Template loader must be bound to a template context');
-
+			// Must stay non-static so Closure::call() can bind $this to the template context.
 			// Hide $templatePath. Could be overwritten if $context['templatePath'] exists.
 			$____template_path____ = $templatePath;
 
@@ -176,14 +176,13 @@ abstract class BaseTemplate implements Template
 			include $____template_path____;
 		};
 
-		/** @var callable */
-		$load = $load->bindTo($templateContext);
 		$level = ob_get_level();
 
 		try {
 			ob_start();
 
-			$load(
+			$load->call(
+				$templateContext,
 				$this->path,
 				$autoescape
 					? $templateContext->context()
