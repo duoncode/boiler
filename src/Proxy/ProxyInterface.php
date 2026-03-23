@@ -4,4 +4,9 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Proxy;
 
-interface ProxyInterface {}
+/** @template-covariant TValue */
+interface ProxyInterface
+{
+	/** @return TValue */
+	public function unwrap(): mixed;
+}
