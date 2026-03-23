@@ -150,7 +150,10 @@ final class TemplateTest extends TestCase
 			static fn(string $value): string => '<b>' . strtoupper($value) . '</b>',
 		);
 
-		$this->assertSame('<h2>&lt;b&gt;BOILER&lt;/b&gt;</h2>', $this->fullTrim($template->render(['text' => 'Boiler'])));
+		$this->assertSame(
+			'<h2>&lt;b&gt;BOILER&lt;/b&gt;</h2>',
+			$this->fullTrim($template->render(['text' => 'Boiler'])),
+		);
 	}
 
 	public function testNonExistentTemplateWithoutExtension(): void
