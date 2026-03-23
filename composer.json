@@ -43,6 +43,7 @@
 			"./vendor/bin/coverlyzer coverage/cover.php"
 		],
 		"ci": [
+			"composer lint",
 			"composer coverage",
 			"composer types",
 			"composer mdlint"
