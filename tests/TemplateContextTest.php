@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
-use Duon\Boiler\Proxy\ValueProxy;
+use Duon\Boiler\Proxy\StringProxy;
 use Duon\Boiler\Template;
 use Duon\Boiler\TemplateContext;
 
@@ -34,9 +34,9 @@ final class TemplateContextTest extends TestCase
 		);
 		$context = $tmplContext->context();
 
-		$this->assertInstanceOf(ValueProxy::class, $context['value1']);
+		$this->assertInstanceOf(StringProxy::class, $context['value1']);
 		$this->assertSame('Value 1', (string) $context['value1']);
-		$this->assertInstanceOf(ValueProxy::class, $context['value2']);
+		$this->assertInstanceOf(StringProxy::class, $context['value2']);
 		$this->assertSame('&lt;i&gt;Value 2&lt;/i&gt;', (string) $context['value2']);
 		$this->assertSame(3, $context['value3']);
 	}
@@ -61,11 +61,11 @@ final class TemplateContextTest extends TestCase
 		$value2 = $tmplContext->add('value2', '<i>Value 2</i>');
 		$context = $tmplContext->context();
 
-		$this->assertInstanceOf(ValueProxy::class, $context['value1']);
+		$this->assertInstanceOf(StringProxy::class, $context['value1']);
 		$this->assertSame('Value 1', (string) $context['value1']);
-		$this->assertInstanceOf(ValueProxy::class, $context['value2']);
+		$this->assertInstanceOf(StringProxy::class, $context['value2']);
 		$this->assertSame('&lt;i&gt;Value 2&lt;/i&gt;', (string) $context['value2']);
-		$this->assertInstanceOf(ValueProxy::class, $value2);
+		$this->assertInstanceOf(StringProxy::class, $value2);
 		$this->assertSame('&lt;i&gt;Value 2&lt;/i&gt;', (string) $value2);
 	}
 }

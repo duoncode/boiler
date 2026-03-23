@@ -5,29 +5,45 @@ declare(strict_types=1);
 namespace Duon\Boiler\Proxy;
 
 use Duon\Boiler\Exception\RuntimeException;
-use Duon\Boiler\Sanitizer;
+use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Wrapper;
-use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
+use Stringable;
+use Traversable;
 
-/** @psalm-api */
-class ValueProxy implements ProxyInterface
+/**
+ * @api
+ *
+ * @implements ProxyInterface<object>
+ */
+final class ObjectProxy implements ProxyInterface
 {
+	private const int ESCAPE_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE;
+	private const string ESCAPE_ENCODING = 'UTF-8';
+
 	public function __construct(
-		protected readonly mixed $value,
-	) {}
+		private readonly object $value,
+	) {
+		if ($this->value instanceof Traversable) {
+			throw new UnexpectedValueException('Traversable objects must be wrapped as iterator proxies');
+		}
+	}
 
 	public function __toString(): string
 	{
+		if (!$this->value instanceof Stringable) {
+			throw new RuntimeException('Wrapped object is not stringable');
+		}
+
 		return htmlspecialchars(
 			(string) $this->value,
-			ENT_QUOTES | ENT_SUBSTITUTE,
-			'UTF-8',
+			self::ESCAPE_FLAGS,
+			self::ESCAPE_ENCODING,
 		);
 	}
 
 	public function __get(string $name): mixed
 	{
-		if (is_object($this->value) && property_exists($this->value, $name)) {
+		if ($this->hasPublicProperty($name)) {
 			return Wrapper::wrap($this->value->{$name});
 		}
 
@@ -36,7 +52,7 @@ class ValueProxy implements ProxyInterface
 
 	public function __set(string $name, mixed $value): void
 	{
-		if (is_object($this->value) && property_exists($this->value, $name)) {
+		if ($this->hasPublicProperty($name)) {
 			$this->value->{$name} = $value;
 
 			return;
@@ -63,35 +79,13 @@ class ValueProxy implements ProxyInterface
 		throw new RuntimeException('No such method');
 	}
 
-	public function unwrap(): mixed
+	public function unwrap(): object
 	{
 		return $this->value;
 	}
 
-	/**
-	 * @param array<array-key, string>|null|string $allowed
-	 */
-	public function strip(array|string|null $allowed = null): string
+	private function hasPublicProperty(string $name): bool
 	{
-		return strip_tags((string) $this->value, $allowed);
-	}
-
-	public function clean(
-		?HtmlSanitizerConfig $config = null,
-	): string {
-		return new Sanitizer($config)->clean((string) $this->value);
-	}
-
-	public function empty(): bool
-	{
-		return (
-			$this->value === null
-			|| $this->value === false
-			|| $this->value === 0
-			|| $this->value === 0.0
-			|| $this->value === '0'
-			|| $this->value === ''
-			|| $this->value === []
-		);
+		return array_key_exists($name, get_object_vars($this->value));
 	}
 }

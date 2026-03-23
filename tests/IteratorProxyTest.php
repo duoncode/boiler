@@ -6,7 +6,7 @@ namespace Duon\Boiler\Tests;
 
 use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
-use Duon\Boiler\Proxy\ValueProxy;
+use Duon\Boiler\Proxy\StringProxy;
 
 final class IteratorProxyTest extends TestCase
 {
@@ -32,7 +32,7 @@ final class IteratorProxyTest extends TestCase
 		}
 
 		$this->assertSame(1, $new[0]);
-		$this->assertInstanceOf(ValueProxy::class, $new[1]);
+		$this->assertInstanceOf(StringProxy::class, $new[1]);
 		$this->assertInstanceOf(ArrayProxy::class, $new[2]);
 		$this->assertInstanceOf(IteratorProxy::class, $new[3]);
 	}

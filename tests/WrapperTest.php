@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
+use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
-use Duon\Boiler\Proxy\ValueProxy;
+use Duon\Boiler\Proxy\ObjectProxy;
+use Duon\Boiler\Proxy\StringProxy;
 use Duon\Boiler\Wrapper;
 use Traversable;
 
@@ -20,7 +22,7 @@ final class WrapperTest extends TestCase
 
 	public function testWrapString(): void
 	{
-		$this->assertInstanceOf(ValueProxy::class, Wrapper::wrap('string'));
+		$this->assertInstanceOf(StringProxy::class, Wrapper::wrap('string'));
 	}
 
 	public function testWrapArray(): void
@@ -49,7 +51,7 @@ final class WrapperTest extends TestCase
 	{
 		$obj = new class {};
 
-		$this->assertInstanceOf(ValueProxy::class, Wrapper::wrap($obj));
+		$this->assertInstanceOf(ObjectProxy::class, Wrapper::wrap($obj));
 	}
 
 	public function testWrapStringable(): void
@@ -61,16 +63,30 @@ final class WrapperTest extends TestCase
 			}
 		};
 
-		$this->assertInstanceOf(ValueProxy::class, Wrapper::wrap($obj));
+		$this->assertInstanceOf(ObjectProxy::class, Wrapper::wrap($obj));
+	}
+
+	public function testWrapResourceThrows(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'resource');
+
+		$resource = tmpfile();
+		assert(is_resource($resource), 'tmpfile() must return a valid resource for this test');
+
+		try {
+			Wrapper::wrap($resource);
+		} finally {
+			fclose($resource);
+		}
 	}
 
 	public function testNestingWrapping(): void
 	{
-		$value = new ValueProxy('string');
+		$value = new StringProxy('string');
 
-		$this->assertInstanceOf(ValueProxy::class, Wrapper::wrap($value));
+		$this->assertInstanceOf(StringProxy::class, Wrapper::wrap($value));
 		$this->assertSame('string', Wrapper::wrap($value)->unwrap());
 		$this->assertSame(true, is_string(Wrapper::wrap($value)->unwrap()));
-		$this->assertInstanceOf(ValueProxy::class, Wrapper::wrap($value));
+		$this->assertInstanceOf(StringProxy::class, Wrapper::wrap($value));
 	}
 }
