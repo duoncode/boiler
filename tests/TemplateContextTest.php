@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
+use Duon\Boiler\Exception\RuntimeException;
+use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\StringProxy;
 use Duon\Boiler\Template;
 use Duon\Boiler\TemplateContext;
@@ -77,5 +79,41 @@ final class TemplateContextTest extends TestCase
 
 		$this->assertSame('<i>Value</i>', $context['value']);
 		$this->assertSame('<i>Value</i>', $value);
+	}
+
+	public function testEscapedContextLeavesResourcesRaw(): void
+	{
+		$resource = tmpfile();
+		assert(is_resource($resource), 'tmpfile() must return a valid resource for this test');
+
+		try {
+			$tmplContext = new TemplateContext($this->template, ['value' => $resource], [], true);
+			$context = $tmplContext->context();
+
+			$this->assertSame($resource, $context['value']);
+		} finally {
+			fclose($resource);
+		}
+	}
+
+	public function testEscapesStringableObjects(): void
+	{
+		$tmplContext = new TemplateContext($this->template, [], [], true);
+		$value = new class {
+			public function __toString(): string
+			{
+				return '<b>Value</b>';
+			}
+		};
+
+		$this->assertSame('&lt;b&gt;Value&lt;/b&gt;', $tmplContext->esc($value));
+	}
+
+	public function testEscRejectsNonStringableWrappedObjects(): void
+	{
+		$this->throws(RuntimeException::class, 'cannot be escaped as string');
+
+		$tmplContext = new TemplateContext($this->template, [], [], true);
+		$tmplContext->esc(new ObjectProxy(new class {}));
 	}
 }

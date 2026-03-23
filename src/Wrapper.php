@@ -45,7 +45,7 @@ final class Wrapper
 		}
 
 		if (is_resource($value)) {
-			throw new UnexpectedValueException('Template values of type resource are not supported');
+			return $value;
 		}
 
 		throw new UnexpectedValueException('Unsupported template value type');

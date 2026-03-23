@@ -66,18 +66,27 @@ final class WrapperTest extends TestCase
 		$this->assertInstanceOf(ObjectProxy::class, Wrapper::wrap($obj));
 	}
 
-	public function testWrapResourceThrows(): void
+	public function testWrapResourcePassthrough(): void
 	{
-		$this->throws(UnexpectedValueException::class, 'resource');
-
 		$resource = tmpfile();
 		assert(is_resource($resource), 'tmpfile() must return a valid resource for this test');
 
 		try {
-			Wrapper::wrap($resource);
+			$this->assertSame($resource, Wrapper::wrap($resource));
 		} finally {
 			fclose($resource);
 		}
+	}
+
+	public function testWrapClosedResourceThrows(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'Unsupported template value type');
+
+		$resource = tmpfile();
+		assert(is_resource($resource), 'tmpfile() must return a valid resource for this test');
+		fclose($resource);
+
+		Wrapper::wrap($resource);
 	}
 
 	public function testNestingWrapping(): void
