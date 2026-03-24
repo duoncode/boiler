@@ -1,0 +1,17 @@
+<tr>
+    <td>{{ product.id }}</td>
+    <td>{{ product.name }}</td>
+    <td>${{ product.price|number_format(2) }}</td>
+    <td>
+        {% if product.inStock %}
+            <span class="in-stock">In Stock</span>
+        {% else %}
+            <span class="out-of-stock">Out of Stock</span>
+        {% endif %}
+    </td>
+    <td>
+        {% for tag in product.tags %}
+            <span class="tag">{{ tag }}</span>
+        {% endfor %}
+    </td>
+</tr>
