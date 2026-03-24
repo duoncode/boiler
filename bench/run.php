@@ -122,7 +122,7 @@ class BenchResult
 	public float $max = 0.0;
 	public float $total = 0.0;
 	public int $count = 0;
-	public int $peakMemory = 0;
+	public int $peakMemoryDelta = 0;
 
 	public function __construct(string $name)
 	{
@@ -135,7 +135,7 @@ class BenchResult
 		$this->max = max($this->max, $time);
 		$this->total += $time;
 		$this->count++;
-		$this->peakMemory = max($this->peakMemory, $memory);
+		$this->peakMemoryDelta = max($this->peakMemoryDelta, $memory);
 	}
 
 	public function avg(): float
@@ -146,12 +146,12 @@ class BenchResult
 	public function print(): void
 	{
 		printf(
-			"%-12s avg: %6.3fs  min: %6.3fs  max: %6.3fs  mem: %5.1fMB\n",
+			"%-12s avg: %6.3fs  min: %6.3fs  max: %6.3fs  peak+: %7s\n",
 			$this->name . ':',
 			$this->avg(),
 			$this->min,
 			$this->max,
-			($this->peakMemory / 1024) / 1024,
+			formatBytes($this->peakMemoryDelta),
 		);
 	}
 }
@@ -206,6 +206,19 @@ function iterations(): int
 	return benchmarkConfig()['iterations'];
 }
 
+function formatBytes(int $bytes): string
+{
+	if ($bytes >= (1024 * 1024)) {
+		return sprintf('%.1fMB', ($bytes / 1024) / 1024);
+	}
+
+	if ($bytes >= 1024) {
+		return sprintf('%.0fKB', $bytes / 1024);
+	}
+
+	return $bytes . 'B';
+}
+
 function benchTwigRealistic(): BenchResult
 {
 	$result = new BenchResult('Twig');
@@ -222,6 +235,7 @@ function benchTwigRealistic(): BenchResult
 	$iterations = iterations();
 
 	for ($iter = 0; $iter < $iterations; $iter++) {
+		memory_reset_peak_usage();
 		$memBefore = memory_get_usage();
 		$start = hrtime(true);
 
@@ -230,7 +244,7 @@ function benchTwigRealistic(): BenchResult
 		}
 
 		$elapsed = (hrtime(true) - $start) / 1e9;
-		$memPeak = memory_get_peak_usage();
+		$memPeak = max(0, memory_get_peak_usage() - $memBefore);
 
 		$result->add($elapsed, $memPeak);
 		$result->output = $t;
@@ -254,6 +268,7 @@ function benchBladeOneRealistic(): BenchResult
 	$iterations = iterations();
 
 	for ($iter = 0; $iter < $iterations; $iter++) {
+		memory_reset_peak_usage();
 		$memBefore = memory_get_usage();
 		$start = hrtime(true);
 
@@ -262,7 +277,7 @@ function benchBladeOneRealistic(): BenchResult
 		}
 
 		$elapsed = (hrtime(true) - $start) / 1e9;
-		$memPeak = memory_get_peak_usage();
+		$memPeak = max(0, memory_get_peak_usage() - $memBefore);
 
 		$result->add($elapsed, $memPeak);
 		$result->output = $t;
@@ -286,6 +301,7 @@ function benchBoilerRealistic(): BenchResult
 	$iterations = iterations();
 
 	for ($iter = 0; $iter < $iterations; $iter++) {
+		memory_reset_peak_usage();
 		$memBefore = memory_get_usage();
 		$start = hrtime(true);
 
@@ -294,7 +310,7 @@ function benchBoilerRealistic(): BenchResult
 		}
 
 		$elapsed = (hrtime(true) - $start) / 1e9;
-		$memPeak = memory_get_peak_usage();
+		$memPeak = max(0, memory_get_peak_usage() - $memBefore);
 
 		$result->add($elapsed, $memPeak);
 		$result->output = $t;
@@ -318,6 +334,7 @@ function benchPlatesRealistic(): BenchResult
 	$iterations = iterations();
 
 	for ($iter = 0; $iter < $iterations; $iter++) {
+		memory_reset_peak_usage();
 		$memBefore = memory_get_usage();
 		$start = hrtime(true);
 
@@ -326,7 +343,7 @@ function benchPlatesRealistic(): BenchResult
 		}
 
 		$elapsed = (hrtime(true) - $start) / 1e9;
-		$memPeak = memory_get_peak_usage();
+		$memPeak = max(0, memory_get_peak_usage() - $memBefore);
 
 		$result->add($elapsed, $memPeak);
 		$result->output = $t;
@@ -350,6 +367,7 @@ function benchBoilerUnescapedRealistic(): BenchResult
 	$iterations = iterations();
 
 	for ($iter = 0; $iter < $iterations; $iter++) {
+		memory_reset_peak_usage();
 		$memBefore = memory_get_usage();
 		$start = hrtime(true);
 
@@ -358,7 +376,7 @@ function benchBoilerUnescapedRealistic(): BenchResult
 		}
 
 		$elapsed = (hrtime(true) - $start) / 1e9;
-		$memPeak = memory_get_peak_usage();
+		$memPeak = max(0, memory_get_peak_usage() - $memBefore);
 
 		$result->add($elapsed, $memPeak);
 		$result->output = $t;
