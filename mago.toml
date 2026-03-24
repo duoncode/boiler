@@ -2,7 +2,7 @@ php-version = "8.5.0"
 
 [source]
 workspace = "."
-paths = ["src", "tests", "bench"]
+paths = ["src", "tests", "bench/run.php"]
 includes = ["vendor"]
 excludes = ["tests/templates"]
 
@@ -22,10 +22,12 @@ integrations = []
 [linter.rules]
 ambiguous-function-call = { enabled = false }
 cyclomatic-complexity = { enabled = false }
+function-name = { camel = true }
 halstead = { enabled = false }
 literal-named-argument = { enabled = false }
 no-assign-in-condition = { enabled = false }
 no-isset = { enabled = false }
 no-boolean-flag-parameter = { enabled = false }
 no-shorthand-ternary = { enabled = false }
+readable-literal = { min-digits = 7 }
 too-many-methods = { enabled = false }

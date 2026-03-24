@@ -5,10 +5,10 @@ declare(strict_types=1);
 require __DIR__ . '/vendor/autoload.php';
 
 if (!is_dir(__DIR__ . '/cache')) {
-	mkdir(__DIR__ . '/cache', 0755, true);
+	mkdir(__DIR__ . '/cache', 0o755, true);
 }
 if (!is_dir(__DIR__ . '/cache/bladeone')) {
-	mkdir(__DIR__ . '/cache/bladeone', 0755, true);
+	mkdir(__DIR__ . '/cache/bladeone', 0o755, true);
 }
 
 const DEFAULT_RUNS = 1000;
@@ -114,6 +114,7 @@ const CONTEXT = [
 	],
 ];
 
+// @mago-expect lint:file-name
 class BenchResult
 {
 	public string $name;
@@ -166,7 +167,7 @@ function benchmarkConfig(): array
 	}
 
 	$options = getopt('', ['runs:', 'iterations:']);
-	assert(is_array($options));
+	assert(is_array($options), 'getopt() must return an array of CLI options');
 
 	return $config = [
 		'runs' => intOption($options, 'runs', DEFAULT_RUNS),
@@ -436,10 +437,12 @@ function main(): int
 	$allMatch = true;
 
 	foreach ([$twig, $blade, $boiler, $boilerUn] as $result) {
-		if (fulltrim($result->output) !== $expected) {
-			echo "MISMATCH in {$result->name}!\n";
-			$allMatch = false;
+		if (fulltrim($result->output) === $expected) {
+			continue;
 		}
+
+		echo "MISMATCH in {$result->name}!\n";
+		$allMatch = false;
 	}
 
 	if ($allMatch) {
