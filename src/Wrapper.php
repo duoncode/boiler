@@ -8,7 +8,7 @@ use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
 use Duon\Boiler\Proxy\ObjectProxy;
-use Duon\Boiler\Proxy\ProxyInterface;
+use Duon\Boiler\Proxy\Proxy;
 use Duon\Boiler\Proxy\StringProxy;
 use Traversable;
 
@@ -34,7 +34,7 @@ final class Wrapper
 			return $value;
 		}
 
-		if ($value instanceof ProxyInterface) {
+		if ($value instanceof Proxy) {
 			return $value;
 		}
 

@@ -18,9 +18,9 @@ use Override;
  * @template TIterator as \Traversable<TKey, TValue>
  *
  * @template-extends IteratorIterator<TKey, TValue, TIterator>
- * @implements ProxyInterface<Iterator<TKey, TValue>|null>
+ * @implements Proxy<Iterator<TKey, TValue>|null>
  */
-class IteratorProxy extends IteratorIterator implements ProxyInterface
+class IteratorProxy extends IteratorIterator implements Proxy
 {
 	#[Override]
 	public function current(): mixed

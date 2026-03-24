@@ -14,9 +14,9 @@ use Traversable;
 /**
  * @api
  *
- * @implements ProxyInterface<object>
+ * @implements Proxy<object>
  */
-final class ObjectProxy implements ProxyInterface
+final class ObjectProxy implements Proxy
 {
 	private const int ESCAPE_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE;
 	private const string ESCAPE_ENCODING = 'UTF-8';

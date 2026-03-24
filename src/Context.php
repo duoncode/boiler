@@ -6,7 +6,7 @@ namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Proxy\ObjectProxy;
-use Duon\Boiler\Proxy\ProxyInterface;
+use Duon\Boiler\Proxy\Proxy;
 use Duon\Boiler\Proxy\StringProxy;
 use Stringable;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
@@ -66,7 +66,7 @@ abstract class Context
 
 		/** @var mixed $value */
 		foreach ($values as $key => $value) {
-			if ($value instanceof ProxyInterface) {
+			if ($value instanceof Proxy) {
 				$wrapped[$key] = $value;
 
 				continue;
@@ -93,7 +93,7 @@ abstract class Context
 
 	public function raw(mixed $value): mixed
 	{
-		if ($value instanceof ProxyInterface) {
+		if ($value instanceof Proxy) {
 			return $value->unwrap();
 		}
 
