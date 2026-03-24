@@ -71,11 +71,17 @@ class Engine implements EngineContract
 	#[Override]
 	public function template(string $path): Template
 	{
-		if (!preg_match('/^[\w\.\/:_-]+$/u', $path)) {
-			throw new UnexpectedValueException('The template path is invalid or empty');
+		$file = $this->pathCache[$path] ?? null;
+
+		if ($file === null) {
+			if (!preg_match('/^[\w\.\/:_-]+$/u', $path)) {
+				throw new UnexpectedValueException('The template path is invalid or empty');
+			}
+
+			$file = $this->getFile($path);
 		}
 
-		$template = new Template($this->getFile($path), engine: $this);
+		$template = new Template($file, engine: $this);
 		$template->setCustomMethods($this->customMethods);
 
 		return $template;
@@ -113,10 +119,13 @@ class Engine implements EngineContract
 		bool $autoescape,
 	): string {
 		$template = $this->template($path);
+		$context = $this->defaults === []
+			? $context
+			: array_merge($this->defaults, $context);
 
 		return $autoescape
-			? $template->renderEscaped(array_merge($this->defaults, $context), $this->whitelist)
-			: $template->renderUnescaped(array_merge($this->defaults, $context), $this->whitelist);
+			? $template->renderEscaped($context, $this->whitelist)
+			: $template->renderUnescaped($context, $this->whitelist);
 	}
 
 	/**

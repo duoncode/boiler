@@ -17,6 +17,9 @@ abstract class Context
 	private const int ESCAPE_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE;
 	private const string ESCAPE_ENCODING = 'UTF-8';
 
+	/** @var array<array-key, mixed>|null */
+	private ?array $wrappedContext = null;
+
 	/**
 	 * @psalm-param list<class-string> $whitelist
 	 */
@@ -39,13 +42,17 @@ abstract class Context
 
 	public function context(array $values = []): array
 	{
-		$merged = array_merge($this->context, $values);
-
 		if (!$this->autoescape) {
-			return $merged;
+			return $values === []
+				? $this->context
+				: array_merge($this->context, $values);
 		}
 
-		return $this->wrapAll($merged);
+		if ($values === []) {
+			return $this->wrappedContext();
+		}
+
+		return array_merge($this->wrappedContext(), $this->wrapAll($values));
 	}
 
 	/**
@@ -100,6 +107,7 @@ abstract class Context
 	public function add(string $key, mixed $value): mixed
 	{
 		$this->context[$key] = $value;
+		$this->wrappedContext = null;
 
 		return $this->templateValue($value);
 	}
@@ -110,6 +118,10 @@ abstract class Context
 		string $encoding = self::ESCAPE_ENCODING,
 	): string {
 		if ($value instanceof StringProxy) {
+			if ($flags === self::ESCAPE_FLAGS && $encoding === self::ESCAPE_ENCODING) {
+				return (string) $value;
+			}
+
 			return htmlspecialchars($value->unwrap(), $flags, $encoding);
 		}
 
@@ -135,6 +147,12 @@ abstract class Context
 	private function rawArray(array $value): array
 	{
 		return array_map($this->raw(...), $value);
+	}
+
+	/** @return array<array-key, mixed> */
+	private function wrappedContext(): array
+	{
+		return $this->wrappedContext ??= $this->wrapAll($this->context);
 	}
 
 	private function templateValue(mixed $value): mixed

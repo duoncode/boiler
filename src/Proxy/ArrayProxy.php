@@ -55,7 +55,9 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, ProxyInterface
 	#[Override]
 	public function current(): mixed
 	{
-		return Wrapper::wrap($this->array[$this->key()]);
+		$key = $this->keys[$this->position];
+
+		return Wrapper::wrap($this->array[$key]);
 	}
 
 	/**
@@ -90,7 +92,7 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, ProxyInterface
 	#[Override]
 	public function offsetGet(mixed $offset): mixed
 	{
-		if ($this->offsetExists($offset)) {
+		if (array_key_exists($offset, $this->array)) {
 			return Wrapper::wrap($this->array[$offset]);
 		}
 
@@ -104,17 +106,20 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, ProxyInterface
 	{
 		if (is_int($offset)) {
 			$this->array[$offset] = $value;
+			$this->keys = array_keys($this->array);
 
 			return;
 		}
 
 		$this->array[] = $value;
+		$this->keys = array_keys($this->array);
 	}
 
 	#[Override]
 	public function offsetUnset(mixed $offset): void
 	{
 		unset($this->array[$offset]);
+		$this->keys = array_keys($this->array);
 	}
 
 	#[Override]
