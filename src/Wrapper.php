@@ -20,20 +20,22 @@ final class Wrapper
 			return new StringProxy($value);
 		}
 
-		if (is_int($value) || is_float($value) || is_bool($value)) {
-			return $value;
+		if (is_array($value)) {
+			return new ArrayProxy($value);
 		}
 
-		if ($value === null) {
-			return null;
+		if (
+			$value === null
+			|| is_int($value)
+			|| is_float($value)
+			|| is_bool($value)
+			|| is_resource($value)
+		) {
+			return $value;
 		}
 
 		if ($value instanceof ProxyInterface) {
 			return $value;
-		}
-
-		if (is_array($value)) {
-			return new ArrayProxy($value);
 		}
 
 		if ($value instanceof Traversable) {
@@ -42,10 +44,6 @@ final class Wrapper
 
 		if (is_object($value)) {
 			return new ObjectProxy($value);
-		}
-
-		if (is_resource($value)) {
-			return $value;
 		}
 
 		throw new UnexpectedValueException('Unsupported template value type');
