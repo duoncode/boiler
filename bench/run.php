@@ -15,104 +15,107 @@ const DEFAULT_RUNS = 1000;
 
 const DEFAULT_ITERATIONS = 3;
 
-const CONTEXT = [
-	'title' => 'Product Catalog',
-	'isLoggedIn' => true,
-	'isAdmin' => false,
-	'user' => [
-		'id' => 42,
-		'name' => 'John Doe',
-		'email' => 'john@example.com',
-		'profile' => [
-			'bio' => '<script>alert("xss")</script>Web developer & designer',
-			'avatar' => '/img/avatars/john.jpg',
-			'location' => 'New York, NY',
+function benchmarkContext(): array
+{
+	return [
+		'title' => 'Product Catalog',
+		'isLoggedIn' => true,
+		'isAdmin' => false,
+		'user' => [
+			'id' => 42,
+			'name' => 'John Doe',
+			'email' => 'john@example.com',
+			'profile' => [
+				'bio' => '<script>alert("xss")</script>Web developer & designer',
+				'avatar' => '/img/avatars/john.jpg',
+				'location' => 'New York, NY',
+			],
 		],
-	],
-	'products' => [
-		[
-			'id' => 1,
-			'name' => 'Laptop Pro',
-			'price' => 1299.99,
-			'inStock' => true,
-			'tags' => ['electronics', 'computers'],
+		'products' => [
+			[
+				'id' => 1,
+				'name' => 'Laptop Pro',
+				'price' => 1299.99,
+				'inStock' => true,
+				'tags' => ['electronics', 'computers'],
+			],
+			[
+				'id' => 2,
+				'name' => 'Wireless Mouse',
+				'price' => 49.95,
+				'inStock' => true,
+				'tags' => ['electronics', 'accessories'],
+			],
+			[
+				'id' => 3,
+				'name' => 'USB-C Hub',
+				'price' => 79.00,
+				'inStock' => false,
+				'tags' => ['electronics', 'accessories'],
+			],
+			[
+				'id' => 4,
+				'name' => 'Mechanical Keyboard',
+				'price' => 159.99,
+				'inStock' => true,
+				'tags' => ['electronics', 'accessories'],
+			],
+			[
+				'id' => 5,
+				'name' => '27" Monitor',
+				'price' => 399.00,
+				'inStock' => true,
+				'tags' => ['electronics', 'displays'],
+			],
+			[
+				'id' => 6,
+				'name' => 'Webcam HD',
+				'price' => 89.99,
+				'inStock' => false,
+				'tags' => ['electronics', 'video'],
+			],
+			[
+				'id' => 7,
+				'name' => 'Desk Lamp',
+				'price' => 45.00,
+				'inStock' => true,
+				'tags' => ['office', 'lighting'],
+			],
+			[
+				'id' => 8,
+				'name' => 'Ergonomic Chair',
+				'price' => 549.00,
+				'inStock' => true,
+				'tags' => ['office', 'furniture'],
+			],
+			[
+				'id' => 9,
+				'name' => 'Standing Desk',
+				'price' => 699.00,
+				'inStock' => false,
+				'tags' => ['office', 'furniture'],
+			],
+			[
+				'id' => 10,
+				'name' => 'Notebook Set',
+				'price' => 24.99,
+				'inStock' => true,
+				'tags' => ['office', 'supplies'],
+			],
 		],
-		[
-			'id' => 2,
-			'name' => 'Wireless Mouse',
-			'price' => 49.95,
-			'inStock' => true,
-			'tags' => ['electronics', 'accessories'],
+		'stats' => [
+			'totalProducts' => 156,
+			'totalOrders' => 1247,
+			'revenue' => 98432.50,
 		],
-		[
-			'id' => 3,
-			'name' => 'USB-C Hub',
-			'price' => 79.00,
-			'inStock' => false,
-			'tags' => ['electronics', 'accessories'],
-		],
-		[
-			'id' => 4,
-			'name' => 'Mechanical Keyboard',
-			'price' => 159.99,
-			'inStock' => true,
-			'tags' => ['electronics', 'accessories'],
-		],
-		[
-			'id' => 5,
-			'name' => '27" Monitor',
-			'price' => 399.00,
-			'inStock' => true,
-			'tags' => ['electronics', 'displays'],
-		],
-		[
-			'id' => 6,
-			'name' => 'Webcam HD',
-			'price' => 89.99,
-			'inStock' => false,
-			'tags' => ['electronics', 'video'],
-		],
-		[
-			'id' => 7,
-			'name' => 'Desk Lamp',
-			'price' => 45.00,
-			'inStock' => true,
-			'tags' => ['office', 'lighting'],
-		],
-		[
-			'id' => 8,
-			'name' => 'Ergonomic Chair',
-			'price' => 549.00,
-			'inStock' => true,
-			'tags' => ['office', 'furniture'],
-		],
-		[
-			'id' => 9,
-			'name' => 'Standing Desk',
-			'price' => 699.00,
-			'inStock' => false,
-			'tags' => ['office', 'furniture'],
-		],
-		[
-			'id' => 10,
-			'name' => 'Notebook Set',
-			'price' => 24.99,
-			'inStock' => true,
-			'tags' => ['office', 'supplies'],
-		],
-	],
-	'stats' => [
-		'totalProducts' => 156,
-		'totalOrders' => 1247,
-		'revenue' => 98432.50,
-	],
-	'announcement' => '<p class="alert"><strong>Holiday Sale:</strong> 20% off all items!</p>',
-	'breadcrumbs' => [
-		['label' => 'Home', 'url' => '/'],
-		['label' => 'Products', 'url' => '/products'],
-		['label' => 'Electronics', 'url' => '/products/electronics'],
-	],
-];
+		'announcement' => '<p class="alert"><strong>Holiday Sale:</strong> 20% off all items!</p>',
+		'breadcrumbs' => new ArrayIterator([
+			['label' => 'Home', 'url' => '/'],
+			['label' => 'Products', 'url' => '/products'],
+			['label' => 'Electronics', 'url' => '/products/electronics'],
+		]),
+	];
+}
 
 // @mago-expect lint:file-name
 class BenchResult
@@ -227,9 +230,10 @@ function benchTwigRealistic(): BenchResult
 	$engine = new \Twig\Environment($loader, [
 		'cache' => __DIR__ . '/cache/twig',
 	]);
+	$context = benchmarkContext();
 
 	// Warmup - populate cache, trigger autoloading
-	$engine->render('page.html', CONTEXT);
+	$engine->render('page.html', $context);
 	gc_collect_cycles();
 
 	$runs = runs();
@@ -241,7 +245,7 @@ function benchTwigRealistic(): BenchResult
 		$start = hrtime(true);
 
 		for ($i = 0; $i < $runs; $i++) {
-			$t = $engine->render('page.html', CONTEXT);
+			$t = $engine->render('page.html', $context);
 		}
 
 		$elapsed = (hrtime(true) - $start) / 1e9;
@@ -260,9 +264,10 @@ function benchBladeOneRealistic(): BenchResult
 {
 	$result = new BenchResult('BladeOne');
 	$engine = new \eftec\bladeone\BladeOne(__DIR__ . '/bladeone', __DIR__ . '/cache/bladeone');
+	$context = benchmarkContext();
 
 	// Warmup
-	$engine->run('page', CONTEXT);
+	$engine->run('page', $context);
 	gc_collect_cycles();
 
 	$runs = runs();
@@ -274,7 +279,7 @@ function benchBladeOneRealistic(): BenchResult
 		$start = hrtime(true);
 
 		for ($i = 0; $i < $runs; $i++) {
-			$t = $engine->run('page', CONTEXT);
+			$t = $engine->run('page', $context);
 		}
 
 		$elapsed = (hrtime(true) - $start) / 1e9;
@@ -293,9 +298,10 @@ function benchBoilerRealistic(): BenchResult
 {
 	$result = new BenchResult('Boiler');
 	$engine = Duon\Boiler\Engine::create(__DIR__ . '/boiler');
+	$context = benchmarkContext();
 
 	// Warmup
-	$engine->render('page', CONTEXT);
+	$engine->render('page', $context);
 	gc_collect_cycles();
 
 	$runs = runs();
@@ -307,7 +313,7 @@ function benchBoilerRealistic(): BenchResult
 		$start = hrtime(true);
 
 		for ($i = 0; $i < $runs; $i++) {
-			$t = $engine->render('page', CONTEXT);
+			$t = $engine->render('page', $context);
 		}
 
 		$elapsed = (hrtime(true) - $start) / 1e9;
@@ -326,9 +332,10 @@ function benchPlatesRealistic(): BenchResult
 {
 	$result = new BenchResult('Plates');
 	$engine = new League\Plates\Engine(__DIR__ . '/plates');
+	$context = benchmarkContext();
 
 	// Warmup
-	$engine->render('page', CONTEXT);
+	$engine->render('page', $context);
 	gc_collect_cycles();
 
 	$runs = runs();
@@ -340,7 +347,7 @@ function benchPlatesRealistic(): BenchResult
 		$start = hrtime(true);
 
 		for ($i = 0; $i < $runs; $i++) {
-			$t = $engine->render('page', CONTEXT);
+			$t = $engine->render('page', $context);
 		}
 
 		$elapsed = (hrtime(true) - $start) / 1e9;
@@ -359,9 +366,10 @@ function benchBoilerUnescapedRealistic(): BenchResult
 {
 	$result = new BenchResult('Boiler');
 	$engine = Duon\Boiler\Engine::unescaped(__DIR__ . '/boiler');
+	$context = benchmarkContext();
 
 	// Warmup
-	$engine->render('pagenoescape', CONTEXT);
+	$engine->render('pagenoescape', $context);
 	gc_collect_cycles();
 
 	$runs = runs();
@@ -373,7 +381,7 @@ function benchBoilerUnescapedRealistic(): BenchResult
 		$start = hrtime(true);
 
 		for ($i = 0; $i < $runs; $i++) {
-			$t = $engine->render('pagenoescape', CONTEXT);
+			$t = $engine->render('pagenoescape', $context);
 		}
 
 		$elapsed = (hrtime(true) - $start) / 1e9;
