@@ -11,9 +11,9 @@ use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 /**
  * @api
  *
- * @implements ProxyInterface<string>
+ * @implements Proxy<string>
  */
-final class StringProxy implements ProxyInterface
+final class StringProxy implements Proxy
 {
 	private const int ESCAPE_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE;
 	private const string ESCAPE_ENCODING = 'UTF-8';

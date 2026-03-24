@@ -21,9 +21,9 @@ use Override;
  *
  * @template-implements ArrayAccess<array-key, mixed>
  * @template-implements Iterator<mixed>
- * @implements ProxyInterface<array<array-key, mixed>>
+ * @implements Proxy<array<array-key, mixed>>
  */
-class ArrayProxy implements ArrayAccess, Iterator, Countable, ProxyInterface
+class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
 {
 	/** @psalm-var list<array-key> */
 	private array $keys;
