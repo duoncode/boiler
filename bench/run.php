@@ -11,9 +11,9 @@ if (!is_dir(__DIR__ . '/cache/bladeone')) {
 	mkdir(__DIR__ . '/cache/bladeone', 0755, true);
 }
 
-const RUNS = 10000;
+const DEFAULT_RUNS = 1000;
 
-const ITERATIONS = 5;
+const DEFAULT_ITERATIONS = 3;
 
 const CONTEXT = [
 	'title' => 'Product Catalog',
@@ -156,6 +156,56 @@ class BenchResult
 	}
 }
 
+/** @return array{runs: int, iterations: int} */
+function benchmarkConfig(): array
+{
+	static $config;
+
+	if (is_array($config)) {
+		return $config;
+	}
+
+	$options = getopt('', ['runs:', 'iterations:']);
+	assert(is_array($options));
+
+	return $config = [
+		'runs' => intOption($options, 'runs', DEFAULT_RUNS),
+		'iterations' => intOption($options, 'iterations', DEFAULT_ITERATIONS),
+	];
+}
+
+/** @param array<string, mixed> $options */
+function intOption(array $options, string $name, int $default): int
+{
+	$value = $options[$name] ?? null;
+
+	if ($value === null) {
+		return $default;
+	}
+
+	if (is_array($value) || !is_string($value) || !ctype_digit($value)) {
+		throw new InvalidArgumentException("Option --{$name} must be a positive integer");
+	}
+
+	$int = (int) $value;
+
+	if ($int < 1) {
+		throw new InvalidArgumentException("Option --{$name} must be greater than 0");
+	}
+
+	return $int;
+}
+
+function runs(): int
+{
+	return benchmarkConfig()['runs'];
+}
+
+function iterations(): int
+{
+	return benchmarkConfig()['iterations'];
+}
+
 function benchTwigRealistic(): BenchResult
 {
 	$result = new BenchResult('Twig');
@@ -168,11 +218,14 @@ function benchTwigRealistic(): BenchResult
 	$engine->render('page.html', CONTEXT);
 	gc_collect_cycles();
 
-	for ($iter = 0; $iter < ITERATIONS; $iter++) {
+	$runs = runs();
+	$iterations = iterations();
+
+	for ($iter = 0; $iter < $iterations; $iter++) {
 		$memBefore = memory_get_usage();
 		$start = hrtime(true);
 
-		for ($i = 0; $i < RUNS; $i++) {
+		for ($i = 0; $i < $runs; $i++) {
 			$t = $engine->render('page.html', CONTEXT);
 		}
 
@@ -197,11 +250,14 @@ function benchBladeOneRealistic(): BenchResult
 	$engine->run('page', CONTEXT);
 	gc_collect_cycles();
 
-	for ($iter = 0; $iter < ITERATIONS; $iter++) {
+	$runs = runs();
+	$iterations = iterations();
+
+	for ($iter = 0; $iter < $iterations; $iter++) {
 		$memBefore = memory_get_usage();
 		$start = hrtime(true);
 
-		for ($i = 0; $i < RUNS; $i++) {
+		for ($i = 0; $i < $runs; $i++) {
 			$t = $engine->run('page', CONTEXT);
 		}
 
@@ -226,11 +282,14 @@ function benchBoilerRealistic(): BenchResult
 	$engine->render('page', CONTEXT);
 	gc_collect_cycles();
 
-	for ($iter = 0; $iter < ITERATIONS; $iter++) {
+	$runs = runs();
+	$iterations = iterations();
+
+	for ($iter = 0; $iter < $iterations; $iter++) {
 		$memBefore = memory_get_usage();
 		$start = hrtime(true);
 
-		for ($i = 0; $i < RUNS; $i++) {
+		for ($i = 0; $i < $runs; $i++) {
 			$t = $engine->render('page', CONTEXT);
 		}
 
@@ -255,11 +314,14 @@ function benchPlatesRealistic(): BenchResult
 	$engine->render('page', CONTEXT);
 	gc_collect_cycles();
 
-	for ($iter = 0; $iter < ITERATIONS; $iter++) {
+	$runs = runs();
+	$iterations = iterations();
+
+	for ($iter = 0; $iter < $iterations; $iter++) {
 		$memBefore = memory_get_usage();
 		$start = hrtime(true);
 
-		for ($i = 0; $i < RUNS; $i++) {
+		for ($i = 0; $i < $runs; $i++) {
 			$t = $engine->render('page', CONTEXT);
 		}
 
@@ -284,11 +346,14 @@ function benchBoilerUnescapedRealistic(): BenchResult
 	$engine->render('pagenoescape', CONTEXT);
 	gc_collect_cycles();
 
-	for ($iter = 0; $iter < ITERATIONS; $iter++) {
+	$runs = runs();
+	$iterations = iterations();
+
+	for ($iter = 0; $iter < $iterations; $iter++) {
 		$memBefore = memory_get_usage();
 		$start = hrtime(true);
 
-		for ($i = 0; $i < RUNS; $i++) {
+		for ($i = 0; $i < $runs; $i++) {
 			$t = $engine->render('pagenoescape', CONTEXT);
 		}
 
@@ -310,9 +375,18 @@ function fulltrim(string $text): string
 	return preg_replace('/\s+/', '', $text);
 }
 
-function main(): void
+function main(): int
 {
-	echo 'Benchmark: ' . number_format(RUNS) . ' renders × ' . ITERATIONS . " iterations\n";
+	try {
+		$runs = runs();
+		$iterations = iterations();
+	} catch (InvalidArgumentException $e) {
+		fwrite(STDERR, $e->getMessage() . PHP_EOL);
+
+		return 1;
+	}
+
+	echo 'Benchmark: ' . number_format($runs) . ' renders × ' . $iterations . " iterations\n";
 	echo str_repeat('=', 70) . "\n\n";
 
 	// Realistic benchmark (engine reused)
@@ -353,6 +427,8 @@ function main(): void
 	if ($allMatch) {
 		echo "All outputs match ✓\n";
 	}
+
+	return 0;
 }
 
-main();
+exit(main());
