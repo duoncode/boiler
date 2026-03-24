@@ -4,12 +4,32 @@ declare(strict_types=1);
 
 require __DIR__ . '/vendor/autoload.php';
 
-if (!is_dir(__DIR__ . '/cache')) {
-	mkdir(__DIR__ . '/cache', 0o755, true);
+function resetCacheDir(string $path): void
+{
+	if (!is_dir($path)) {
+		mkdir($path, 0o755, true);
+
+		return;
+	}
+
+	$iterator = new RecursiveIteratorIterator(
+		new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS),
+		RecursiveIteratorIterator::CHILD_FIRST,
+	);
+
+	foreach ($iterator as $entry) {
+		if ($entry->isDir() && !$entry->isLink()) {
+			rmdir($entry->getPathname());
+
+			continue;
+		}
+
+		unlink($entry->getPathname());
+	}
 }
-if (!is_dir(__DIR__ . '/cache/bladeone')) {
-	mkdir(__DIR__ . '/cache/bladeone', 0o755, true);
-}
+
+resetCacheDir(__DIR__ . '/cache/twig');
+resetCacheDir(__DIR__ . '/cache/bladeone');
 
 const DEFAULT_RUNS = 1000;
 
@@ -107,6 +127,13 @@ function benchmarkContext(): array
 			'totalProducts' => 156,
 			'totalOrders' => 1247,
 			'revenue' => 98432.50,
+		],
+		'store' => (object) [
+			'name' => 'Duon Store',
+			'support' => (object) [
+				'email' => 'support@duon.run',
+				'timezone' => 'Europe/Berlin',
+			],
 		],
 		'announcement' => '<p class="alert"><strong>Holiday Sale:</strong> 20% off all items!</p>',
 		'breadcrumbs' => new ArrayIterator([

@@ -1,10 +1,11 @@
 <?php $this->layout('layout', [
-    'title' => $title,
-    'isLoggedIn' => $isLoggedIn,
-    'isAdmin' => $isAdmin,
-    'user' => $user,
-    'stats' => $stats,
-    'breadcrumbs' => $breadcrumbs,
+	'title' => $title,
+	'isLoggedIn' => $isLoggedIn,
+	'isAdmin' => $isAdmin,
+	'user' => $user,
+	'stats' => $stats,
+	'store' => $store,
+	'breadcrumbs' => $breadcrumbs,
 ]) ?>
 
 <h1><?= $this->e($title) ?></h1>
@@ -34,20 +35,20 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($products as $product) : ?>
+            <?php foreach ($products as $product): ?>
                 <tr>
                     <td><?= $product['id'] ?></td>
                     <td><?= $this->e($product['name']) ?></td>
                     <td>$<?= number_format($product['price'], 2) ?></td>
                     <td>
-                        <?php if ($product['inStock']) : ?>
+                        <?php if ($product['inStock']): ?>
                             <span class="in-stock">In Stock</span>
-                        <?php else : ?>
+                        <?php else: ?>
                             <span class="out-of-stock">Out of Stock</span>
                         <?php endif ?>
                     </td>
                     <td>
-                        <?php foreach ($product['tags'] as $tag) : ?>
+                        <?php foreach ($product['tags'] as $tag): ?>
                             <span class="tag"><?= $this->e($tag) ?></span>
                         <?php endforeach ?>
                     </td>
@@ -58,9 +59,9 @@
 </section>
 
 <?php $this->insert('insert', [
-    'title' => $title,
-    'user' => $user,
-    'stats' => $stats,
+	'title' => $title,
+	'user' => $user,
+	'stats' => $stats,
 ]) ?>
 
 <section class="stats">
@@ -73,4 +74,4 @@
     console.log('Product page loaded');
     const userId = <?= $user['id'] ?>;
 </script>
-<?php $this->stop(); ?>
+<?php $this->stop();
