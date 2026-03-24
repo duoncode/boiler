@@ -120,6 +120,14 @@ final class TemplateContextTest extends TestCase
 		$this->assertSame('&lt;b&gt;Value&lt;/b&gt;', $tmplContext->esc($value));
 	}
 
+	public function testEscCanOverrideFlagsForStringProxy(): void
+	{
+		$tmplContext = new TemplateContext($this->template, [], [], true);
+		$value = new StringProxy('"quoted" & <tag>');
+
+		$this->assertSame('"quoted" &amp; &lt;tag&gt;', $tmplContext->esc($value, ENT_NOQUOTES));
+	}
+
 	public function testEscRejectsNonStringableWrappedObjects(): void
 	{
 		$this->throws(RuntimeException::class, 'cannot be escaped as string');

@@ -177,6 +177,15 @@ final class ArrayProxyTest extends TestCase
 		$this->assertSame(3, $arrval['key']);
 	}
 
+	public function testOffsetExistsUsesArrayKeyExistsSemantics(): void
+	{
+		$arrval = new ArrayProxy([1, null]);
+
+		$this->assertTrue($arrval->offsetExists(0));
+		$this->assertTrue($arrval->offsetExists(1));
+		$this->assertFalse($arrval->offsetExists(2));
+	}
+
 	public function testIteration(): void
 	{
 		$arrval = new ArrayProxy([1, 2, 3]);
