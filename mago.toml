@@ -10,6 +10,7 @@ excludes = ["tests/templates"]
 print-width = 100
 use-tabs = true
 array-table-style-alignment = false
+empty-line-between-same-symbols = false
 preserve-breaking-member-access-chain = true
 preserve-breaking-argument-list = true
 preserve-breaking-parameter-list = true
