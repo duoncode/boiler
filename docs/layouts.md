@@ -30,7 +30,7 @@ Create `inner.php`:
 
 ```php
 <body>
-    <?= $content ?>
+    <?= $this->body() ?>
     <footer><?= $text ?></footer>
 </body>
 ```
@@ -50,8 +50,8 @@ This produces:
 </body>
 ```
 
-The layout receives the rendered page content in `$content`. It also receives
-all values from the page template context by default.
+The layout accesses the rendered page content through `$this->body()`. It also
+receives all values from the page template context by default.
 
 ## Override layout context
 
@@ -73,7 +73,7 @@ Layouts can assign another layout:
 <?php $this->layout('outer') ?>
 
 <div class="inner">
-    <?= $content ?>
+    <?= $this->body() ?>
 </div>
 ```
 
@@ -82,7 +82,7 @@ Create `outer.php`:
 ```php
 <body>
     <main>
-        <?= $content ?>
+        <?= $this->body() ?>
     </main>
 </body>
 ```

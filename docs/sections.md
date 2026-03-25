@@ -32,7 +32,7 @@ Create `layout.php`:
 
 ```php
 <body>
-    <?= $content ?>
+    <?= $this->body() ?>
     <?= $this->section('scripts') ?>
 </body>
 ```
