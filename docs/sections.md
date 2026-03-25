@@ -50,9 +50,9 @@ Use a default when the section may be missing:
 Check for a section first when you need conditional markup:
 
 ```php
-<?php if ($this->has('scripts')) { ?>
+<?php if ($this->has('scripts')) : ?>
     <aside><?= $this->section('scripts') ?></aside>
-<?php } ?>
+<?php endif; ?>
 ```
 
 ## Append and prepend

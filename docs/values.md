@@ -33,9 +33,9 @@ This is mainly useful for explicit checks or when you need the original array of
 arguments inside your own helper logic.
 
 ```php
-<?php if ($this->unwrap($title) !== '') { ?>
+<?php if ($this->unwrap($title) !== '') : ?>
     <h1><?= $title ?></h1>
-<?php } ?>
+<?php endif; ?>
 ```
 
 ## Escape a value explicitly
@@ -103,9 +103,9 @@ same escaping behavior inside templates.
 That means this stays escaped in a normal render:
 
 ```php
-<?php foreach ($items as $item) { ?>
+<?php foreach ($items as $item) : ?>
     <li><?= $item ?></li>
-<?php } ?>
+<?php endforeach; ?>
 ```
 
 The same applies when values come from object properties, object methods, or

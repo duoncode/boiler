@@ -50,6 +50,10 @@ assert($html === '<!doctype html><html lang="en"><body><p>ID 13</p></body></html
 Boiler escapes strings automatically. If `id` were `'<b>13</b>'`, the output
 would contain `&lt;b&gt;13&lt;/b&gt;`.
 
+In templates, prefer PHP's alternative control structure syntax such as
+`if (...) : ... endif;` and `foreach (...) : ... endforeach;`. It reads better
+in mixed PHP and HTML files, and the docs use that style in template examples.
+
 ## Next steps
 
 - Read [the engine](engine.md) to learn about multiple template directories,
