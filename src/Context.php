@@ -35,7 +35,7 @@ abstract class Context
 		$callable = $this->template->getMethods()->get($name);
 
 		/** @var array<array-key, mixed> $args */
-		$args = $this->raw($args);
+		$args = $this->unwrap($args);
 
 		return $this->templateValue($callable(...$args));
 	}
@@ -91,7 +91,7 @@ abstract class Context
 		return $wrapped;
 	}
 
-	public function raw(mixed $value): mixed
+	public function unwrap(mixed $value): mixed
 	{
 		if ($value instanceof Proxy) {
 			return $value->unwrap();
@@ -101,7 +101,7 @@ abstract class Context
 			return $value;
 		}
 
-		return $this->rawArray($value);
+		return array_map($this->unwrap(...), $value);
 	}
 
 	public function add(string $key, mixed $value): mixed
@@ -140,15 +140,6 @@ abstract class Context
 		throw new RuntimeException('Value cannot be escaped as string');
 	}
 
-	/**
-	 * @param array<array-key, mixed> $value
-	 * @return array<array-key, mixed>
-	 */
-	private function rawArray(array $value): array
-	{
-		return array_map($this->raw(...), $value);
-	}
-
 	/** @return array<array-key, mixed> */
 	private function wrappedContext(): array
 	{
@@ -159,7 +150,7 @@ abstract class Context
 	{
 		return $this->autoescape
 			? Wrapper::wrap($value)
-			: $this->raw($value);
+			: $this->unwrap($value);
 	}
 
 	public function clean(

@@ -1,6 +1,6 @@
-<?php if ($this->raw($empty) !== '') { ?>
+<?php if ($this->unwrap($empty) !== '') { ?>
     <b>empty</b>
 <?php } ?>
-<?php if ($this->raw($notempty) !== '') { ?>
+<?php if ($this->unwrap($notempty) !== '') { ?>
     <?= $notempty; ?>
 <?php } ?>
