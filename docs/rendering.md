@@ -1,123 +1,152 @@
-# Rendering Templates
+# Rendering templates
 
-After you created an [`\Duon\Boiler\Engine`](engine.md) object, you can
-render templates using its `render()` method.
+After you create an [`Engine`](engine.md), you render templates with
+`render()`, `renderEscaped()`, or `renderUnescaped()`.
 
-Throughout this page we assume the following directory structure ...
+Assume the following directory structure:
 
 ```text
 path
 `-- to
-	|-- templates
-	|   |-- subdir
-	|   |   `-- subtemplate.php
-	|   |-- blog.php
-	|   |-- layout.php
-	|   |-- more.php
-	|   `-- page.php
-	|
-	`-- theme
-		|-- blog.php
-		`-- additional.php
+    |-- templates
+    |   |-- subdir
+    |   |   `-- subtemplate.php
+    |   |-- blog.php
+    |   `-- page.php
+    |
+    `-- theme
+        |-- blog.php
+        `-- additional.php
 ```
 
-... and the [`Engine`](engine.md) initialized in this way:
+And assume this engine setup:
 
 ```php
 $engine = \Duon\Boiler\Engine::create(
-	[
-		'theme' => '/path/to/theme',
-		'templates' => '/path/to/templates',
-	],
-	defaults: [
-		'titleSuffix' => ' - Boiler Template Engine',
-	],
+    [
+        'theme' => '/path/to/theme',
+        'templates' => '/path/to/templates',
+    ],
+    defaults: [
+        'titleSuffix' => ' - Boiler Template Engine',
+    ],
 );
 ```
 
-## Simple rendering
+## Render by template name
 
-To render the template _page.php_ from the filesystem tree above, you reference
-it using the name _page_ with or without the file extension.
+Reference `page.php` as `page` or `page.php`:
 
 ```php
 $html = $engine->render('page');
-
-// or
 $html = $engine->render('page.php');
 ```
 
-If you'd like to use a custom file extension, add it to the name:
+If you use a different file extension, include it explicitly:
 
 ```php
 $engine->render('page.tpl');
 ```
 
-Values available to the template must be provided as associative array:
+## Pass values to templates
+
+Provide template values as an associative array:
 
 ```php
 $html = $engine->render('page', [
-	'title' => 'The Title',
-	'content' => 'The content of the page.',
+    'title' => 'The title',
+    'content' => 'The content of the page.',
 ]);
 ```
 
-If the _page.php_ template would look like this:
+If `page.php` contains:
 
 ```php
 <body>
-	<h1><?= $title ?></h1>
-	<div><?= $content ?></div>
+    <h1><?= $title ?></h1>
+    <div><?= $content ?></div>
 </body>
 ```
 
-The result of the `render` call above would be:
+The rendered output is:
 
-```php
+```html
 <body>
-	<h1>The Title</h1>
-	<div>The content of the page.</div>
+    <h1>The title</h1>
+    <div>The content of the page.</div>
 </body>
 ```
 
-## Templates in subdirectories
+## Render templates in subdirectories
+
+Use forward slashes inside the template name:
 
 ```php
-$html = $engine->render('subdir/subtemplate', ['value' =>  13]);
+$html = $engine->render('subdir/subtemplate', ['value' => 13]);
 ```
 
-## Template overrides
+## Directory overrides
 
-If a template with the same name is available in more than one of your template
-directories, the first one found is used. In our example above, there is
-a _blog_ template in both `templates` and `theme`. As `theme` is the first
-entry in the array passed to [`Engine`](engine.md), _blog_ from this directory
-is used by default:
+If multiple template directories contain the same template, Boiler uses the
+first match. In the setup above, both `theme` and `templates` contain `blog.php`.
+Because `theme` comes first, it wins:
 
 ```php
 // renders /path/to/theme/blog.php
 $engine->render('blog', ['value' => 13]);
 ```
 
-This can, for example, be used to implement themeable or customizable templates
-where you provide a default set of templates which can later be partially or
-completely overridden by a theme or similar.
+This makes it easy to implement themes or application-level overrides for a
+shared template set.
 
-You can force to render _blog_ from the `templates` directory if you use
-namespaces. See the next section on how this is accomplished.
+## Namespaced paths
 
-## Namespaces
-
-In our engine instantiation example above we pass an associative array with the
-template directories to the constructor. The keys of the array serve as
-namespaces. To render a template from a specific namespace, locate it using the
-namespace followed by a colon followed by the template name:
+Use `namespace:template` when you want a template from a specific directory:
 
 ```php
-$html = $engine->render('templates:blog', ['value' =>  13]);
-
-// A template in a subdirectory
-$html = $engine->render('templates:subdir/subtemplate', ['value' =>  13]);
+$html = $engine->render('templates:blog', ['value' => 13]);
+$html = $engine->render('templates:subdir/subtemplate', ['value' => 13]);
 ```
 
-This way you can prevent template overriding explained in the section before.
+If the namespace does not exist, Boiler throws `LookupException`.
+
+## Path validation
+
+Boiler validates template names before lookup:
+
+- empty template names are rejected
+- invalid namespace formats such as `foo:bar:baz` are rejected
+- path traversal outside the configured template root is rejected
+
+This applies to normal renders and to helper methods such as `$this->layout()`
+and `$this->insert()`.
+
+## Common lookup errors
+
+You can expect `LookupException` for invalid lookup-related input, including:
+
+- missing template directories during engine creation
+- missing templates
+- unknown namespaces
+- invalid namespaced paths
+- templates resolved outside the configured root directory
+
+You can expect `UnexpectedValueException` when the template path itself is empty
+or contains invalid characters.
+
+## Escape mode per render
+
+Use the engine default with `render()`:
+
+```php
+$html = $engine->render('page', ['title' => '<b>Unsafe</b>']);
+```
+
+Force the mode per render when needed:
+
+```php
+$html = $engine->renderEscaped('page', ['title' => '<b>Unsafe</b>']);
+$html = $engine->renderUnescaped('page', ['title' => '<b>Unsafe</b>']);
+```
+
+Read [displaying values](values.md) for details on what Boiler escapes.

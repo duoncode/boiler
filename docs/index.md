@@ -1,28 +1,37 @@
-# Boiler Template Engine for PHP
+# Boiler template engine for PHP
 
-Boiler is a native >=PHP 8.2 template engine that is heavily inspired by
-[Plates](https://platesphp.com/). Like _Plates_, Boiler does not introduce
-a new template language and instead uses PHP itself. You simply use the PHP
-statements you already know.
+Boiler is a small template engine for PHP 8.5+, inspired by
+[Plates](https://platesphp.com/). Like Plates, it uses native PHP as its
+templating language rather than introducing a custom syntax.
 
-The main differences to _Plates_ are:
+The main differences from Plates are:
 
 - Boiler automatically escapes strings and
-  [Stringable](https://www.php.net/manual/en/class.stringable.php) values. This
-  is optional. You can turn it off globally or for single render calls.
-- The template context is global by default. That means all values available in
-  the main template are available in all included parts, like
-  [sections](sections.md), [inserts](inserts.md) or [layouts](layouts.md).
+  [Stringable](https://www.php.net/manual/en/class.stringable.php) values by
+  default. You can disable this globally or for individual render calls.
+- The template context is global by default. Values from the main template are
+  available in included templates and layouts.
 
 ## Features
 
-- Autoescaping: Prevents XSS attacks from untrusted user input by passing all
-  rendered strings to PHP's {{php('htmlspecialchars')}} function.
-- A simple API. Only one class, the [Engine](engine.md), is usually needed.
-- Code reuse with template [inheritance](layouts.md) and
-  [inclusion](inserts.md).
-- You use plain PHP in your templates. No need to learn another syntax.
-- Fully tested and statically analyzed with Psalm set to level 1.
-- Reasonable performance.
+- Automatic escaping via PHP's `htmlspecialchars()`
+- A small API centered around the [Engine](engine.md)
+- Code reuse with [layouts](layouts.md), [inserts](inserts.md), and
+  [sections](sections.md)
+- Plain PHP templates with no custom syntax
+- Optional HTML sanitization via `$this->clean()`
+- Custom template methods and optional whitelisting of trusted value classes
+- Fully tested and statically analyzed with Psalm level 1
 
-Next: [_Quick Start_](quickstart.md) or [_The Engine_](engine.md).
+## Start here
+
+If you are new to Boiler, read the docs in this order:
+
+1. [Quick start](quickstart.md)
+2. [The engine](engine.md)
+3. [Rendering templates](rendering.md)
+4. [Displaying values](values.md)
+5. [Layouts](layouts.md)
+6. [Inserts](inserts.md)
+7. [Sections](sections.md)
+8. [Template](template.md)

@@ -13,14 +13,14 @@ introducing a custom syntax.
 Key differences from Plates:
 
 - Automatic escaping of strings and
-	[Stringable](https://www.php.net/manual/en/class.stringable.php) values for
-	enhanced security
+  [Stringable](https://www.php.net/manual/en/class.stringable.php) values for
+  enhanced security
 - Global template context, making all variables accessible throughout the
-	template
+  template
 
 Other highlights:
 
-- Layouts, inserts/partials, and sections (with append/prepend)
+- Layouts, inserts/partials, and sections, including append and prepend support
 - Optional HTML sanitization via `symfony/html-sanitizer`
 - Custom template methods and optional whitelisting of trusted value classes
 
@@ -32,7 +32,18 @@ composer require duon/boiler
 
 ## Documentation
 
-Start here: `docs/index.md`.
+Start here: [docs/index.md](docs/index.md).
+
+### Topic overview
+
+- [Quick start](docs/quickstart.md)
+- [Engine](docs/engine.md)
+- [Rendering templates](docs/rendering.md)
+- [Displaying values](docs/values.md)
+- [Layouts](docs/layouts.md)
+- [Inserts](docs/inserts.md)
+- [Sections](docs/sections.md)
+- [Template](docs/template.md)
 
 ## Quick start
 
@@ -41,8 +52,8 @@ Consider this example directory structure:
 ```text
 path
 `-- to
-	`-- templates
-		`-- page.php
+    `-- templates
+        `-- page.php
 ```
 
 Create a template file at `/path/to/templates/page.php` with this content:
@@ -59,17 +70,17 @@ use Duon\Boiler\Engine;
 $engine = Engine::create('/path/to/templates');
 $html = $engine->render('page', ['id' => 13]);
 
-assert($html == '<p>ID 13</p>');
+assert($html === '<p>ID 13</p>');
 ```
 
 ## Common patterns
 
-Render from multiple directories (optionally with namespaces):
+Render from multiple directories, optionally with namespaces:
 
 ```php
 $engine = Engine::create([
-	'theme' => '/path/to/theme',
-	'app' => '/path/to/templates',
+    'theme' => '/path/to/theme',
+    'app' => '/path/to/templates',
 ]);
 
 // Renders the first match (theme overrides app)
@@ -98,8 +109,25 @@ Template helpers available via `$this` inside templates:
 - `$this->begin('name')` / `$this->append('name')` / `$this->prepend('name')` /
   `$this->end()`
 - `$this->section('name', 'default')` / `$this->has('name')`
-- `$this->raw($value)` when you need the original value instead of the escaped wrapper
+- `$this->unwrap($value)` when you need the original value instead of the escaped wrapper
 - `$this->esc($value)` and `$this->clean($html)`
+
+## Error handling
+
+Boiler fails fast when template lookup or render state is invalid.
+Common cases include:
+
+- missing template directories
+- missing templates or unknown namespaces
+- invalid template names such as malformed `namespace:template` paths
+- path traversal outside configured template roots
+- assigning more than one layout in the same template
+- nested or unclosed section capture blocks
+- calling an unknown custom template method
+
+See [rendering templates](docs/rendering.md), [layouts](docs/layouts.md),
+[sections](docs/sections.md), and [template](docs/template.md) for the relevant
+rules.
 
 ## Benchmark
 
@@ -119,8 +147,15 @@ benchmark locally and compare it with your own templates.
 
 ```console
 composer test
-composer check
+composer lint
+composer types
 composer mdlint
+```
+
+For the full verification pipeline, run:
+
+```console
+composer ci
 ```
 
 ## License
