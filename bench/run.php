@@ -4,16 +4,42 @@ declare(strict_types=1);
 
 require __DIR__ . '/vendor/autoload.php';
 
-if (!is_dir(__DIR__ . '/cache')) {
-	mkdir(__DIR__ . '/cache', 0o755, true);
-}
-if (!is_dir(__DIR__ . '/cache/bladeone')) {
-	mkdir(__DIR__ . '/cache/bladeone', 0o755, true);
-}
-
 const DEFAULT_RUNS = 1000;
-
 const DEFAULT_ITERATIONS = 3;
+const DEFAULT_LIFECYCLE = 'request';
+const LIFECYCLE_WORKER = 'worker';
+const LIFECYCLE_REQUEST = 'request';
+const LIFECYCLE_BOTH = 'both';
+
+function resetCacheDir(string $path): void
+{
+	if (!is_dir($path)) {
+		mkdir($path, 0o755, true);
+
+		return;
+	}
+
+	$iterator = new RecursiveIteratorIterator(
+		new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS),
+		RecursiveIteratorIterator::CHILD_FIRST,
+	);
+
+	foreach ($iterator as $entry) {
+		if ($entry->isDir() && !$entry->isLink()) {
+			rmdir($entry->getPathname());
+
+			continue;
+		}
+
+		unlink($entry->getPathname());
+	}
+}
+
+function resetBenchmarkCaches(): void
+{
+	resetCacheDir(__DIR__ . '/cache/twig');
+	resetCacheDir(__DIR__ . '/cache/bladeone');
+}
 
 function benchmarkContext(): array
 {
@@ -108,6 +134,13 @@ function benchmarkContext(): array
 			'totalOrders' => 1247,
 			'revenue' => 98432.50,
 		],
+		'store' => (object) [
+			'name' => 'Duon Store',
+			'support' => (object) [
+				'email' => 'support@duon.run',
+				'timezone' => 'Europe/Berlin',
+			],
+		],
 		'announcement' => '<p class="alert"><strong>Holiday Sale:</strong> 20% off all items!</p>',
 		'breadcrumbs' => new ArrayIterator([
 			['label' => 'Home', 'url' => '/'],
@@ -160,7 +193,7 @@ class BenchResult
 	}
 }
 
-/** @return array{runs: int, iterations: int} */
+/** @return array{runs: int, iterations: int, lifecycle: string} */
 function benchmarkConfig(): array
 {
 	static $config;
@@ -169,12 +202,18 @@ function benchmarkConfig(): array
 		return $config;
 	}
 
-	$options = getopt('', ['runs:', 'iterations:']);
+	$options = getopt('', ['runs:', 'iterations:', 'lifecycle:']);
 	assert(is_array($options), 'getopt() must return an array of CLI options');
 
 	return $config = [
 		'runs' => intOption($options, 'runs', DEFAULT_RUNS),
 		'iterations' => intOption($options, 'iterations', DEFAULT_ITERATIONS),
+		'lifecycle' => stringOption(
+			$options,
+			'lifecycle',
+			DEFAULT_LIFECYCLE,
+			[LIFECYCLE_WORKER, LIFECYCLE_REQUEST, LIFECYCLE_BOTH],
+		),
 	];
 }
 
@@ -200,6 +239,31 @@ function intOption(array $options, string $name, int $default): int
 	return $int;
 }
 
+/**
+ * @param array<string, mixed> $options
+ * @param list<string> $allowed
+ */
+function stringOption(array $options, string $name, string $default, array $allowed): string
+{
+	$value = $options[$name] ?? null;
+
+	if ($value === null) {
+		return $default;
+	}
+
+	if (is_array($value) || !is_string($value)) {
+		throw new InvalidArgumentException("Option --{$name} must be one of: " . implode(', ', $allowed));
+	}
+
+	$value = strtolower(trim($value));
+
+	if (!in_array($value, $allowed, true)) {
+		throw new InvalidArgumentException("Option --{$name} must be one of: " . implode(', ', $allowed));
+	}
+
+	return $value;
+}
+
 function runs(): int
 {
 	return benchmarkConfig()['runs'];
@@ -208,6 +272,21 @@ function runs(): int
 function iterations(): int
 {
 	return benchmarkConfig()['iterations'];
+}
+
+function lifecycle(): string
+{
+	return benchmarkConfig()['lifecycle'];
+}
+
+/** @return list<string> */
+function lifecycles(): array
+{
+	return (
+		lifecycle() === LIFECYCLE_BOTH
+			? [LIFECYCLE_WORKER, LIFECYCLE_REQUEST]
+			: [lifecycle()]
+	);
 }
 
 function formatBytes(int $bytes): string
@@ -223,29 +302,53 @@ function formatBytes(int $bytes): string
 	return $bytes . 'B';
 }
 
-function benchTwigRealistic(): BenchResult
+function lifecycleLabel(string $lifecycle): string
 {
-	$result = new BenchResult('Twig');
-	$loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/twig');
-	$engine = new \Twig\Environment($loader, [
-		'cache' => __DIR__ . '/cache/twig',
-	]);
+	return match ($lifecycle) {
+		LIFECYCLE_WORKER => 'worker (engine reused)',
+		LIFECYCLE_REQUEST => 'request (engine recreated per render)',
+		default => $lifecycle,
+	};
+}
+
+/**
+ * @template TEngine
+ *
+ * @param callable(): TEngine $createEngine
+ * @param callable(TEngine, array): string $render
+ */
+function benchEngine(
+	string $name,
+	callable $createEngine,
+	callable $render,
+	string $lifecycle,
+): BenchResult {
+	$result = new BenchResult($name);
 	$context = benchmarkContext();
-
-	// Warmup - populate cache, trigger autoloading
-	$engine->render('page.html', $context);
-	gc_collect_cycles();
-
 	$runs = runs();
 	$iterations = iterations();
+	$engine = $createEngine();
+
+	// Warmup - populate caches and trigger autoloading.
+	$result->output = $render($engine, $context);
+	gc_collect_cycles();
 
 	for ($iter = 0; $iter < $iterations; $iter++) {
 		memory_reset_peak_usage();
 		$memBefore = memory_get_usage();
 		$start = hrtime(true);
 
-		for ($i = 0; $i < $runs; $i++) {
-			$t = $engine->render('page.html', $context);
+		// @mago-expect lint:no-else-clause
+		if ($lifecycle === LIFECYCLE_WORKER) {
+			for ($i = 0; $i < $runs; $i++) {
+				$t = $render($engine, $context);
+			}
+		} else {
+			for ($i = 0; $i < $runs; $i++) {
+				$currentEngine = $createEngine();
+				$t = $render($currentEngine, $context);
+				unset($currentEngine);
+			}
 		}
 
 		$elapsed = (hrtime(true) - $start) / 1e9;
@@ -260,146 +363,148 @@ function benchTwigRealistic(): BenchResult
 	return $result;
 }
 
-function benchBladeOneRealistic(): BenchResult
+function benchTwigAutoEscaping(string $lifecycle): BenchResult
 {
-	$result = new BenchResult('BladeOne');
-	$engine = new \eftec\bladeone\BladeOne(__DIR__ . '/bladeone', __DIR__ . '/cache/bladeone');
-	$context = benchmarkContext();
-
-	// Warmup
-	$engine->run('page', $context);
-	gc_collect_cycles();
-
-	$runs = runs();
-	$iterations = iterations();
-
-	for ($iter = 0; $iter < $iterations; $iter++) {
-		memory_reset_peak_usage();
-		$memBefore = memory_get_usage();
-		$start = hrtime(true);
-
-		for ($i = 0; $i < $runs; $i++) {
-			$t = $engine->run('page', $context);
-		}
-
-		$elapsed = (hrtime(true) - $start) / 1e9;
-		$memPeak = max(0, memory_get_peak_usage() - $memBefore);
-
-		$result->add($elapsed, $memPeak);
-		$result->output = $t;
-
-		gc_collect_cycles();
-	}
-
-	return $result;
+	return benchEngine(
+		'Twig',
+		static fn() => new \Twig\Environment(
+			new \Twig\Loader\FilesystemLoader(__DIR__ . '/twig'),
+			['cache' => __DIR__ . '/cache/twig'],
+		),
+		static fn(\Twig\Environment $engine, array $context): string => $engine->render(
+			'page.html',
+			$context,
+		),
+		$lifecycle,
+	);
 }
 
-function benchBoilerRealistic(): BenchResult
+function benchBladeOneAutoEscaping(string $lifecycle): BenchResult
 {
-	$result = new BenchResult('Boiler');
-	$engine = Duon\Boiler\Engine::create(__DIR__ . '/boiler');
-	$context = benchmarkContext();
-
-	// Warmup
-	$engine->render('page', $context);
-	gc_collect_cycles();
-
-	$runs = runs();
-	$iterations = iterations();
-
-	for ($iter = 0; $iter < $iterations; $iter++) {
-		memory_reset_peak_usage();
-		$memBefore = memory_get_usage();
-		$start = hrtime(true);
-
-		for ($i = 0; $i < $runs; $i++) {
-			$t = $engine->render('page', $context);
-		}
-
-		$elapsed = (hrtime(true) - $start) / 1e9;
-		$memPeak = max(0, memory_get_peak_usage() - $memBefore);
-
-		$result->add($elapsed, $memPeak);
-		$result->output = $t;
-
-		gc_collect_cycles();
-	}
-
-	return $result;
+	return benchEngine(
+		'BladeOne',
+		static fn() => new \eftec\bladeone\BladeOne(__DIR__ . '/bladeone', __DIR__ . '/cache/bladeone'),
+		static fn(\eftec\bladeone\BladeOne $engine, array $context): string => $engine->run(
+			'page',
+			$context,
+		),
+		$lifecycle,
+	);
 }
 
-function benchPlatesRealistic(): BenchResult
+function benchBoilerAutoEscaping(string $lifecycle): BenchResult
 {
-	$result = new BenchResult('Plates');
-	$engine = new League\Plates\Engine(__DIR__ . '/plates');
-	$context = benchmarkContext();
-
-	// Warmup
-	$engine->render('page', $context);
-	gc_collect_cycles();
-
-	$runs = runs();
-	$iterations = iterations();
-
-	for ($iter = 0; $iter < $iterations; $iter++) {
-		memory_reset_peak_usage();
-		$memBefore = memory_get_usage();
-		$start = hrtime(true);
-
-		for ($i = 0; $i < $runs; $i++) {
-			$t = $engine->render('page', $context);
-		}
-
-		$elapsed = (hrtime(true) - $start) / 1e9;
-		$memPeak = max(0, memory_get_peak_usage() - $memBefore);
-
-		$result->add($elapsed, $memPeak);
-		$result->output = $t;
-
-		gc_collect_cycles();
-	}
-
-	return $result;
+	return benchEngine(
+		'Boiler',
+		static fn() => Duon\Boiler\Engine::create(__DIR__ . '/boiler'),
+		static fn(Duon\Boiler\Engine $engine, array $context): string => $engine->render(
+			'page',
+			$context,
+		),
+		$lifecycle,
+	);
 }
 
-function benchBoilerUnescapedRealistic(): BenchResult
+function benchPlatesManualEscaping(string $lifecycle): BenchResult
 {
-	$result = new BenchResult('Boiler');
-	$engine = Duon\Boiler\Engine::unescaped(__DIR__ . '/boiler');
-	$context = benchmarkContext();
+	return benchEngine(
+		'Plates',
+		static fn() => new League\Plates\Engine(__DIR__ . '/plates'),
+		static fn(League\Plates\Engine $engine, array $context): string => $engine->render(
+			'page',
+			$context,
+		),
+		$lifecycle,
+	);
+}
 
-	// Warmup
-	$engine->render('pagenoescape', $context);
-	gc_collect_cycles();
-
-	$runs = runs();
-	$iterations = iterations();
-
-	for ($iter = 0; $iter < $iterations; $iter++) {
-		memory_reset_peak_usage();
-		$memBefore = memory_get_usage();
-		$start = hrtime(true);
-
-		for ($i = 0; $i < $runs; $i++) {
-			$t = $engine->render('pagenoescape', $context);
-		}
-
-		$elapsed = (hrtime(true) - $start) / 1e9;
-		$memPeak = max(0, memory_get_peak_usage() - $memBefore);
-
-		$result->add($elapsed, $memPeak);
-		$result->output = $t;
-
-		gc_collect_cycles();
-	}
-
-	return $result;
+function benchBoilerManualEscaping(string $lifecycle): BenchResult
+{
+	return benchEngine(
+		'Boiler',
+		static fn() => Duon\Boiler\Engine::unescaped(__DIR__ . '/boiler'),
+		static fn(Duon\Boiler\Engine $engine, array $context): string => $engine->render(
+			'pagemanualescaping',
+			$context,
+		),
+		$lifecycle,
+	);
 }
 
 function fulltrim(string $text): string
 {
-	// Remove all whitespace for comparison - engines differ in indentation
+	// Remove all whitespace for comparison - engines differ in indentation.
 	return preg_replace('/\s+/', '', $text);
+}
+
+/** @param list<BenchResult> $results */
+function verifyOutputs(array $results): void
+{
+	echo "\n" . str_repeat('=', 70) . "\n";
+	echo 'Output verification: ';
+
+	$expected = fulltrim($results[array_key_first($results)]->output);
+	$allMatch = true;
+
+	foreach ($results as $result) {
+		if (fulltrim($result->output) === $expected) {
+			continue;
+		}
+
+		echo "MISMATCH in {$result->name}!\n";
+		$allMatch = false;
+	}
+
+	if ($allMatch) {
+		echo "All outputs match ✓\n";
+	}
+}
+
+function autoEscapingMemoryNote(string $lifecycle): string
+{
+	return $lifecycle === LIFECYCLE_WORKER
+		? "Note: peak+ is the additional peak memory after warmup for a reused\nengine. "
+		. 'Typical for worker mode (FrankenPHP, Roadrunner, etc.).'
+		: "Note: peak+ includes allocator overhead from recreating engines\nwithin one process. "
+		. 'Not typical for PHP-FPM.';
+}
+
+function runScenario(string $lifecycle): void
+{
+	resetBenchmarkCaches();
+
+	echo 'Lifecycle: ' . lifecycleLabel($lifecycle) . "\n";
+	echo str_repeat('-', 70) . "\n\n";
+
+	echo "AUTOMATIC ESCAPING\n";
+	echo str_repeat('-', 70) . "\n";
+
+	$twigAutoEscaping = benchTwigAutoEscaping($lifecycle);
+	$bladeOneAutoEscaping = benchBladeOneAutoEscaping($lifecycle);
+	$boilerAutoEscaping = benchBoilerAutoEscaping($lifecycle);
+
+	$twigAutoEscaping->print();
+	$bladeOneAutoEscaping->print();
+	$boilerAutoEscaping->print();
+	echo str_repeat('-', 70) . "\n";
+	printf("%s\n", autoEscapingMemoryNote($lifecycle));
+
+	echo "\n\nMANUAL ESCAPING\n";
+	echo str_repeat('-', 70) . "\n";
+
+	$platesManualEscaping = benchPlatesManualEscaping($lifecycle);
+	$boilerManualEscaping = benchBoilerManualEscaping($lifecycle);
+
+	$platesManualEscaping->print();
+	$boilerManualEscaping->print();
+
+	verifyOutputs([
+		$platesManualEscaping,
+		$twigAutoEscaping,
+		$bladeOneAutoEscaping,
+		$boilerAutoEscaping,
+		$boilerManualEscaping,
+	]);
 }
 
 function main(): int
@@ -416,45 +521,12 @@ function main(): int
 	echo 'Benchmark: ' . number_format($runs) . ' renders × ' . $iterations . " iterations\n";
 	echo str_repeat('=', 70) . "\n\n";
 
-	// Realistic benchmark (engine reused)
-	echo "ESCAPED\n";
-	echo str_repeat('-', 70) . "\n";
-
-	$twig = benchTwigRealistic();
-	$blade = benchBladeOneRealistic();
-	$boiler = benchBoilerRealistic();
-
-	$twig->print();
-	$blade->print();
-	$boiler->print();
-
-	echo "\nUNESCAPED\n";
-	echo str_repeat('-', 70) . "\n";
-
-	$plates = benchPlatesRealistic();
-	$boilerUn = benchBoilerUnescapedRealistic();
-
-	$plates->print();
-	$boilerUn->print();
-
-	// Verify output consistency
-	echo "\n" . str_repeat('=', 70) . "\n";
-	echo 'Output verification: ';
-
-	$expected = fulltrim($plates->output);
-	$allMatch = true;
-
-	foreach ([$twig, $blade, $boiler, $boilerUn] as $result) {
-		if (fulltrim($result->output) === $expected) {
-			continue;
+	foreach (lifecycles() as $index => $lifecycle) {
+		if ($index > 0) {
+			echo "\n";
 		}
 
-		echo "MISMATCH in {$result->name}!\n";
-		$allMatch = false;
-	}
-
-	if ($allMatch) {
-		echo "All outputs match ✓\n";
+		runScenario($lifecycle);
 	}
 
 	return 0;

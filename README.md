@@ -98,8 +98,22 @@ Template helpers available via `$this` inside templates:
 - `$this->begin('name')` / `$this->append('name')` / `$this->prepend('name')` /
   `$this->end()`
 - `$this->section('name', 'default')` / `$this->has('name')`
-- `$this->raw($value)` when you need the original value for comparisons or custom logic
+- `$this->raw($value)` when you need the original value instead of the escaped wrapper
 - `$this->esc($value)` and `$this->clean($html)`
+
+## Benchmark
+
+Boiler includes a canonical benchmark in [`bench/`](bench/) that renders a
+feature-rich catalog page with layouts, repeated partials, sections or blocks,
+mixed array, object, and iterator view data, loops, and escaping.
+
+The benchmark is meant to resemble a realistic steady-state page render and is
+used mainly to catch performance regressions during development.
+
+Results depend on PHP version, OPcache settings, hardware, and workload shape.
+They do not represent every rendering scenario and should not be treated as
+universal rankings. If you want to evaluate Boiler for your environment, run the
+benchmark locally and compare it with your own templates.
 
 ## Run the tests
 
