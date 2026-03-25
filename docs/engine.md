@@ -85,8 +85,8 @@ $engine = \Duon\Boiler\Engine::create(
 ```
 
 Use this only for values you fully trust. Whitelisted objects bypass Boiler's
-normal object wrapping and can output raw string content from methods such as
-`__toString()`.
+normal object wrapping and can output unescaped string content from methods such
+as `__toString()`.
 
 Read [displaying values](values.md) for the escaping model.
 
@@ -142,7 +142,7 @@ Boiler unwraps proxy arguments before it calls your method, so the callable
 receives normal PHP values instead of proxy objects.
 
 In escaped renders, Boiler wraps the return value again before exposing it to
-the template. In unescaped renders, it returns the raw value.
+the template. In unescaped renders, it returns the unwrapped value.
 
 ## Useful methods
 

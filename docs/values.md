@@ -21,8 +21,8 @@ Boiler uses PHP's `htmlspecialchars()` with these defaults:
 - `ENT_QUOTES | ENT_SUBSTITUTE`
 - `UTF-8`
 
-Integers, floats, booleans, `null`, resources, and similar raw scalar values are
-not converted into escaped string wrappers ahead of time.
+Integers, floats, booleans, `null`, resources, and similar scalar values are not
+converted into escaped string wrappers ahead of time.
 
 ## Unwrap values
 
@@ -93,7 +93,7 @@ $engine = \Duon\Boiler\Engine::create(
 ```
 
 Use this carefully. Whitelisted objects bypass Boiler's normal wrapping and can
-output raw string content.
+output unescaped string content.
 
 ## Working with arrays, iterators, and objects
 
@@ -118,6 +118,6 @@ values for automatic escaping.
 
 In that mode:
 
-- `<?= $value ?>` outputs raw string content
+- `<?= $value ?>` outputs unescaped string content
 - `$this->unwrap()` usually returns the same value you already have
 - `$this->clean()` is still available when you want sanitization
