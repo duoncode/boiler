@@ -2,8 +2,24 @@
 
 ## Unreleased
 
+### Breaking
+
+- Renamed `Context::raw()` to `Context::unwrap()`.
+- Changed registered template methods to receive normal PHP values instead of wrapped proxies. In escaped renders, Boiler now wraps returned values again before exposing them to templates.
+- Replaced the old `ValueProxy` wrapper with dedicated `StringProxy` and `ObjectProxy` types, and renamed `ProxyInterface` to `Proxy`.
+
+### Added
+
+- Added support for extending `Engine` and `Template` in custom integrations.
+- Added `$this->unwrap($value)` so templates can recover original values from escaped proxies.
+
+### Changed
+
+- Improved template render hot-path performance.
+
 ### Fixed
 
+- Allowed resources in template context values without triggering unsupported type errors.
 - Reset per-render template state so a `Template` instance can be reused safely across multiple renders.
 
 ## [0.1.2](https://github.com/duonrun/boiler/releases/tag/0.1.2) (2026-01-30)
