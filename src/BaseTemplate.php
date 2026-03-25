@@ -174,7 +174,7 @@ abstract class BaseTemplate implements Template
 			// Hide $templatePath. Could be overwritten if $context['templatePath'] exists.
 			$____template_path____ = $templatePath;
 
-			extract($context);
+			extract($context, EXTR_SKIP);
 
 			/** @psalm-suppress UnresolvableInclude */
 			include $____template_path____;
