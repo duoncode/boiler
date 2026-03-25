@@ -121,6 +121,19 @@ Boiler validates template names before lookup:
 This applies to normal renders and to helper methods such as `$this->layout()`
 and `$this->insert()`.
 
+## Common lookup errors
+
+You can expect `LookupException` for invalid lookup-related input, including:
+
+- missing template directories during engine creation
+- missing templates
+- unknown namespaces
+- invalid namespaced paths
+- templates resolved outside the configured root directory
+
+You can expect `UnexpectedValueException` when the template path itself is empty
+or contains invalid characters.
+
 ## Escape mode per render
 
 Use the engine default with `render()`:

@@ -79,9 +79,9 @@ in this order:
 
 Regular `begin()` content becomes the main assigned section content.
 
-## Rules
+## Error handling
 
 - Section names are strings such as `scripts` or `sidebar`.
 - Section capture blocks must be closed with `$this->end()`.
-- Nested capture blocks are not allowed.
-- Calling `$this->end()` without an open section raises an error during render.
+- Nested capture blocks are not allowed and raise a render error.
+- Calling `$this->end()` without an open section raises a render error.

@@ -61,3 +61,12 @@ $second = $template->render(['id' => 2]);
 
 Boiler resets per-render state such as assigned layouts and captured sections
 between renders.
+
+## Error handling
+
+- Boiler raises `LookupException` when the template file or its directory does
+  not exist.
+- Boiler raises `LookupException` when a standalone layout or insert cannot be
+  resolved relative to the template directory.
+- Boiler raises `RenderException` when the template itself throws during render,
+  for example because of a parse error or runtime error inside the template.

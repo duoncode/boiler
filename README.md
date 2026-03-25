@@ -20,7 +20,7 @@ Key differences from Plates:
 
 Other highlights:
 
-- Layouts, inserts/partials, and sections (with append/prepend)
+- Layouts, inserts/partials, and sections, including append and prepend support
 - Optional HTML sanitization via `symfony/html-sanitizer`
 - Custom template methods and optional whitelisting of trusted value classes
 
@@ -33,6 +33,17 @@ composer require duon/boiler
 ## Documentation
 
 Start here: [docs/index.md](docs/index.md).
+
+### Topic overview
+
+- [Quick start](docs/quickstart.md)
+- [Engine](docs/engine.md)
+- [Rendering templates](docs/rendering.md)
+- [Displaying values](docs/values.md)
+- [Layouts](docs/layouts.md)
+- [Inserts](docs/inserts.md)
+- [Sections](docs/sections.md)
+- [Template](docs/template.md)
 
 ## Quick start
 
@@ -100,6 +111,23 @@ Template helpers available via `$this` inside templates:
 - `$this->section('name', 'default')` / `$this->has('name')`
 - `$this->unwrap($value)` when you need the original value instead of the escaped wrapper
 - `$this->esc($value)` and `$this->clean($html)`
+
+## Error handling
+
+Boiler fails fast when template lookup or render state is invalid.
+Common cases include:
+
+- missing template directories
+- missing templates or unknown namespaces
+- invalid template names such as malformed `namespace:template` paths
+- path traversal outside configured template roots
+- assigning more than one layout in the same template
+- nested or unclosed section capture blocks
+- calling an unknown custom template method
+
+See [rendering templates](docs/rendering.md), [layouts](docs/layouts.md),
+[sections](docs/sections.md), and [template](docs/template.md) for the relevant
+rules.
 
 ## Benchmark
 

@@ -88,10 +88,11 @@ Create `outer.php`:
 
 Boiler renders layouts from the innermost template outward.
 
-## Rules
+## Error handling
 
 - A template can set only one layout. Calling `$this->layout()` twice raises a
   runtime error.
+- If the referenced layout cannot be found, Boiler raises `LookupException`.
 - Layout lookup follows the same rules as normal template rendering, including
   namespaces and directory overrides.
 - Standalone `Template` instances resolve layouts relative to the directory of
