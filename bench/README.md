@@ -1,8 +1,9 @@
 # Boiler benchmark
 
 This benchmark measures one feature-rich page render across Boiler, Twig,
-BladeOne, and Plates. Use it to catch regressions in a realistic steady-state
-render, not to benchmark every feature in isolation.
+BladeOne, and Plates. It is meant to approximate a realistic steady-state page
+render and is used mainly internally to catch regressions, not to benchmark
+every feature in isolation.
 
 ## What it covers
 
@@ -18,6 +19,19 @@ The benchmark renders one canonical catalog page with:
 
 The script resets compiled template caches, warms them up, and verifies that all
 engines produce equivalent output.
+
+## How to read the results
+
+Use the benchmark to answer a narrow question: did Boiler get slower on this
+canonical page render?
+
+Keep these limits in mind:
+
+- results depend on PHP version, OPcache settings, hardware, and workload shape
+- one benchmark cannot represent every template structure or application
+  architecture
+- the numbers are useful for internal regression checks and local comparisons,
+  not as universal rankings or proofs that one engine always wins
 
 ## Run the benchmark
 
