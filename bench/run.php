@@ -150,7 +150,6 @@ function benchmarkContext(): array
 	];
 }
 
-// @mago-expect lint:file-name
 class BenchResult
 {
 	public string $name;
