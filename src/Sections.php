@@ -30,6 +30,10 @@ final class Sections
 
 	public function end(): void
 	{
+		if ($this->sectionMode === SectionMode::Closed) {
+			throw new LogicException('No section started');
+		}
+
 		$content = (string) ob_get_clean();
 		$name = (string) array_pop($this->capture);
 
@@ -37,7 +41,6 @@ final class Sections
 			SectionMode::Assign => new Section($content),
 			SectionMode::Append => ($this->sections[$name] ?? new Section(''))->append($content),
 			SectionMode::Prepend => ($this->sections[$name] ?? new Section(''))->prepend($content),
-			SectionMode::Closed => throw new LogicException('No section started'),
 		};
 
 		$this->sectionMode = SectionMode::Closed;
