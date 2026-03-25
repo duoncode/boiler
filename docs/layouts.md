@@ -17,7 +17,8 @@ path
 
 ## Assign a layout
 
-Inside a template, call `$this->layout()` before outputting the layout content:
+In `page.php`, call `$this->layout()` to assign `inner.php` as the layout
+before outputting the page content:
 
 ```php
 <?php $this->layout('inner') ?>
