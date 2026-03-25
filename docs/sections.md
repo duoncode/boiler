@@ -1,1 +1,87 @@
 # Sections
+
+Sections let child templates push named content into layouts.
+They are useful for repeated slots such as scripts, styles, sidebars, or page
+headers.
+
+Assume the following directory structure:
+
+```text
+path
+`-- to
+    `-- templates
+        |-- page.php
+        `-- layout.php
+```
+
+## Define section content
+
+Create `page.php`:
+
+```php
+<?php $this->layout('layout') ?>
+
+<?php $this->begin('scripts') ?>
+<script src="/page.js"></script>
+<?php $this->end() ?>
+
+<p><?= $text ?></p>
+```
+
+Create `layout.php`:
+
+```php
+<body>
+    <?= $content ?>
+    <?= $this->section('scripts') ?>
+</body>
+```
+
+Rendering `page` inserts the captured section content into the layout.
+
+## Default content
+
+Use a default when the section may be missing:
+
+```php
+<?= $this->section('scripts', '<script src="/default.js"></script>') ?>
+```
+
+Check for a section first when you need conditional markup:
+
+```php
+<?php if ($this->has('scripts')) { ?>
+    <aside><?= $this->section('scripts') ?></aside>
+<?php } ?>
+```
+
+## Append and prepend
+
+Use `append()` or `prepend()` instead of `begin()` when you want to add content
+relative to existing section content:
+
+```php
+<?php $this->prepend('scripts') ?>
+<script src="/first.js"></script>
+<?php $this->end() ?>
+
+<?php $this->append('scripts') ?>
+<script src="/last.js"></script>
+<?php $this->end() ?>
+```
+
+When a layout renders a section with a default value, Boiler combines the parts
+in this order:
+
+1. prepended content
+2. default value
+3. appended content
+
+Regular `begin()` content becomes the main assigned section content.
+
+## Rules
+
+- Section names are strings such as `scripts` or `sidebar`.
+- Section capture blocks must be closed with `$this->end()`.
+- Nested capture blocks are not allowed.
+- Calling `$this->end()` without an open section raises an error during render.

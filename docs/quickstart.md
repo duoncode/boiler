@@ -1,24 +1,39 @@
-# Quick Start
+# Quick start
 
 Install Boiler via Composer:
 
-```shell
+```bash
 composer require duon/boiler
 ```
 
-Then create a directory where your PHP templates reside.  
-Assuming the following directory structure ...
+Then create a directory where your PHP templates live.
+Assume the following directory structure:
 
 ```text
 path
 `-- to
-	`-- templates
+    `-- templates
+        |-- layout.php
+        `-- page.php
 ```
 
-... create the file `/path/to/templates/page.php` with the content:
+Create `/path/to/templates/page.php`:
 
 ```php
+<?php $this->layout('layout') ?>
+
 <p>ID <?= $id ?></p>
+```
+
+Create `/path/to/templates/layout.php`:
+
+```php
+<!doctype html>
+<html lang="en">
+    <body>
+        <?= $content ?>
+    </body>
+</html>
 ```
 
 Now create an `Engine` instance and render the template:
@@ -29,5 +44,17 @@ use Duon\Boiler\Engine;
 $engine = Engine::create('/path/to/templates');
 $html = $engine->render('page', ['id' => 13]);
 
-assert($html == '<p>ID 13</p>');
+assert($html === '<!doctype html><html lang="en"><body><p>ID 13</p></body></html>');
 ```
+
+Boiler escapes strings automatically. If `id` were `'<b>13</b>'`, the output
+would contain `&lt;b&gt;13&lt;/b&gt;`.
+
+## Next steps
+
+- Read [the engine](engine.md) to learn about multiple template directories,
+  namespaces, default values, and escape modes.
+- Read [displaying values](values.md) to learn when to use `$this->raw()`,
+  `$this->esc()`, and `$this->clean()`.
+- Read [layouts](layouts.md), [inserts](inserts.md), and [sections](sections.md)
+  for the main composition features.

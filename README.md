@@ -13,10 +13,10 @@ introducing a custom syntax.
 Key differences from Plates:
 
 - Automatic escaping of strings and
-	[Stringable](https://www.php.net/manual/en/class.stringable.php) values for
-	enhanced security
+  [Stringable](https://www.php.net/manual/en/class.stringable.php) values for
+  enhanced security
 - Global template context, making all variables accessible throughout the
-	template
+  template
 
 Other highlights:
 
@@ -32,7 +32,7 @@ composer require duon/boiler
 
 ## Documentation
 
-Start here: `docs/index.md`.
+Start here: [docs/index.md](docs/index.md).
 
 ## Quick start
 
@@ -41,8 +41,8 @@ Consider this example directory structure:
 ```text
 path
 `-- to
-	`-- templates
-		`-- page.php
+    `-- templates
+        `-- page.php
 ```
 
 Create a template file at `/path/to/templates/page.php` with this content:
@@ -59,17 +59,17 @@ use Duon\Boiler\Engine;
 $engine = Engine::create('/path/to/templates');
 $html = $engine->render('page', ['id' => 13]);
 
-assert($html == '<p>ID 13</p>');
+assert($html === '<p>ID 13</p>');
 ```
 
 ## Common patterns
 
-Render from multiple directories (optionally with namespaces):
+Render from multiple directories, optionally with namespaces:
 
 ```php
 $engine = Engine::create([
-	'theme' => '/path/to/theme',
-	'app' => '/path/to/templates',
+    'theme' => '/path/to/theme',
+    'app' => '/path/to/templates',
 ]);
 
 // Renders the first match (theme overrides app)
@@ -119,8 +119,15 @@ benchmark locally and compare it with your own templates.
 
 ```console
 composer test
-composer check
+composer lint
+composer types
 composer mdlint
+```
+
+For the full verification pipeline, run:
+
+```console
+composer ci
 ```
 
 ## License
