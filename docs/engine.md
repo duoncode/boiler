@@ -1,145 +1,171 @@
-# The Engine
+# The engine
 
-The `Engine` is the Boiler's central object and usually the only one you have
-to manually instantiate. It is used to locate and load templates from the file
-system.
+The `Engine` is Boiler's central object and usually the only object you need to
+instantiate manually. It locates templates on disk and renders them with a
+shared set of defaults, custom methods, and escape rules.
 
-Throughout this page we assume the following directory structure:
+Assume the following directory structure:
 
 ```text
 path
 `-- to
-	|-- templates
-	`-- additional
+    |-- templates
+    `-- additional
 ```
 
-## Creating the `Engine` instance
+## Create an engine
 
-To create an Engine instance, you simply pass one or more paths to directories
-where your templates are located. Additionally, you can optionally set default
-values that are available for all your templates, or you can globally disable
-the autoescaping feature.
-
-### Using a single template directory
-
-The only required parameter is the path to a directory where your templates
-reside:
+Create an engine with one or more template directories:
 
 ```php
 $engine = \Duon\Boiler\Engine::create('/path/to/templates');
 ```
 
-If the directory does not exist, Boiler throws a
+If the directory does not exist, Boiler throws
 `\Duon\Boiler\Exception\LookupException`.
 
-### Using multiple directories
+## Use multiple directories
 
-If you have multiple directories, pass them in an array:
-
-```php
-$engine = \Duon\Boiler\Engine::create(['/path/to/templates', '/path/to/additional']);
-```
-
-**Note**: The directories are searched in order.
-
-Using the example above: If a template cannot be located in
-`/path/to/templates`, Boiler tries to find it in `/path/to/additional` and so on.
-
-### Using namespaces
-
-You can use namespaces to later be able to address a specific directory. Pass
-the list of directories as associative array where the keys serve as
-namespaces:
+Pass multiple directories when you want fallback lookup or override behavior:
 
 ```php
 $engine = \Duon\Boiler\Engine::create([
-	'first' => '/path/to/templates', 
-	'second' => '/path/to/additional'
+    '/path/to/templates',
+    '/path/to/additional',
 ]);
 ```
 
-Check [_Rendering Templates_](rendering.md) to see it in action.
+Boiler searches directories in order. If a template is not found in the first
+one, it keeps searching the next one.
 
-### Adding default values
+## Use namespaces
 
-You can assign default values which are available in all templates:
+Pass an associative array when you want stable names for specific directories:
 
 ```php
-$engine = \Duon\Boiler\Engine::create('/path/to/dir', ['value' => 'default value']);
+$engine = \Duon\Boiler\Engine::create([
+    'first' => '/path/to/templates',
+    'second' => '/path/to/additional',
+]);
 ```
 
-### Turning off autoescaping
-
-If you don't want to use the autoescaping feature (for example, to improve the
-performance of your application), you can turn it off globally:
+You can later target a specific directory with `namespace:template`:
 
 ```php
-$engine = \Duon\Boiler\Engine::unescaped('/path/to/dir');
+$engine->render('second:page');
+```
 
-// or override per render call:
-$engine = \Duon\Boiler\Engine::create('/path/to/dir');
+Read [rendering templates](rendering.md) for the lookup rules.
+
+## Add default values
+
+Pass defaults as the second argument when values should be available in every
+render:
+
+```php
+$engine = \Duon\Boiler\Engine::create(
+    '/path/to/templates',
+    ['siteName' => 'Duon'],
+);
+```
+
+Per-render context overrides defaults with the same key.
+
+## Whitelist trusted classes
+
+Pass a list of class names as the third argument when specific objects should be
+left unwrapped in escaped renders:
+
+```php
+$engine = \Duon\Boiler\Engine::create(
+    '/path/to/templates',
+    defaults: [],
+    whitelist: [TrustedHtml::class],
+);
+```
+
+Use this only for values you fully trust. Whitelisted objects bypass Boiler's
+normal object wrapping and can output raw string content from methods such as
+`__toString()`.
+
+Read [displaying values](values.md) for the escaping model.
+
+## Control escaping
+
+Boiler escapes strings and `Stringable` values by default:
+
+```php
+$engine = \Duon\Boiler\Engine::create('/path/to/templates');
+$html = $engine->render('page');
+```
+
+Create an unescaped engine when automatic escaping should be off by default:
+
+```php
+$engine = \Duon\Boiler\Engine::unescaped('/path/to/templates');
+$html = $engine->render('page');
+```
+
+Override the engine default per render:
+
+```php
+$engine = \Duon\Boiler\Engine::create('/path/to/templates');
 $engine->renderUnescaped('page');
 
-// force escaping even if the engine is unescaped:
+$engine = \Duon\Boiler\Engine::unescaped('/path/to/templates');
 $engine->renderEscaped('page');
 ```
 
-## Rendering Templates
+## Render templates
 
-You simply call the `render` method and pass the name/path of the template and
-optionally an array of values (the context) which will be available as
-variables in the template.
+Render a template by name and optionally pass a context array:
 
 ```php
 $engine->render('template');
-
-// with context
 $engine->render('template', ['value1' => 1, 'value2' => 2]);
 ```
 
-See [_Rendering Templates_](rendering.md) for more information.
+Read [rendering templates](rendering.md) for path syntax, subdirectories,
+overrides, and namespaces.
 
-## Adding custom template methods
+## Register custom template methods
 
-Custom methods can be accessed in templates using `$this` (see [_Rendering
-Templates_](rendering.md)). To add a method you pass a [`Closure` or anonymous
-function](https://www.php.net/manual/en/functions.anonymous.php) to
-`registerMethod`:
+Custom methods are available as `$this->methodName()` inside templates:
 
 ```php
 $engine->registerMethod('upper', function (string $value): string {
-	return strtoupper($value);
+    return strtoupper($value);
 });
 ```
 
-Boiler unwraps proxy arguments before it calls your method, so you work with raw
-PHP values instead of proxy objects.
+Boiler unwraps proxy arguments before it calls your method, so the callable
+receives normal PHP values instead of proxy objects.
 
-In escaped renders, Boiler wraps the return value again before it is used in the
-template. In unescaped renders, Boiler returns the raw value.
+In escaped renders, Boiler wraps the return value again before exposing it to
+the template. In unescaped renders, it returns the raw value.
 
-## Other useful Engine methods
+## Useful methods
 
-### Check if a template exists
-
-To check if a template exists before rendering it, use the method `exists`:
+### Check whether a template exists
 
 ```php
 if ($engine->exists('template')) {
-	$engine->render('template');
+    $engine->render('template');
 }
 ```
 
-### Get the file system path of a template
+### Get the resolved file path for a template
 
 ```php
 $filePath = $engine->getFile('template');
 ```
 
-### Get a template instance without rendering it
+### Get a reusable `Template` instance
 
 ```php
 $template = $engine->template('template');
 
 assert($template instanceof \Duon\Boiler\Template);
 ```
+
+A `Template` instance can be rendered multiple times safely.
