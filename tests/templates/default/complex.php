@@ -1,4 +1,4 @@
-<?php require 'header.php'; ?>
+<?php $this->insert('header'); ?>
 
 <body>
     <h1><?= $headline; ?></h1>
