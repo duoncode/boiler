@@ -215,6 +215,14 @@ final class ArrayProxyTest extends TestCase
 		$this->assertSame([1, 2, 3, 44, 55], $arrval->unwrap());
 	}
 
+	public function testSetValueWithStringKey(): void
+	{
+		$arrval = new ArrayProxy(['a' => 1, 'b' => 2]);
+		$arrval['c'] = 3;
+
+		$this->assertSame(['a' => 1, 'b' => 2, 'c' => 3], $arrval->unwrap());
+	}
+
 	public function testSetValueUpdatesPreviouslyAccessedOffset(): void
 	{
 		$arrval = new ArrayProxy(['before']);
