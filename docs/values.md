@@ -5,7 +5,7 @@ to templates. This gives you automatic escaping while still allowing objects,
 arrays, and iterators to be used naturally in template code.
 
 Read this page if you want to understand when Boiler escapes values and when you
-need `$this->raw()`, `$this->esc()`, or `$this->clean()`.
+need `$this->unwrap()`, `$this->esc()`, or `$this->clean()`.
 
 ## What Boiler escapes automatically
 
@@ -24,16 +24,16 @@ Boiler uses PHP's `htmlspecialchars()` with these defaults:
 Integers, floats, booleans, `null`, resources, and similar raw scalar values are
 not converted into escaped string wrappers ahead of time.
 
-## Raw values
+## Unwrap values
 
-Use `$this->raw($value)` when you need the original value instead of the wrapped
-proxy object.
+Use `$this->unwrap($value)` when you need the original value instead of the
+wrapped proxy object.
 
 This is mainly useful for explicit checks or when you need the original array of
 arguments inside your own helper logic.
 
 ```php
-<?php if ($this->raw($title) !== '') { ?>
+<?php if ($this->unwrap($title) !== '') { ?>
     <h1><?= $title ?></h1>
 <?php } ?>
 ```
@@ -119,5 +119,5 @@ values for automatic escaping.
 In that mode:
 
 - `<?= $value ?>` outputs raw string content
-- `$this->raw()` usually returns the same value you already have
+- `$this->unwrap()` usually returns the same value you already have
 - `$this->clean()` is still available when you want sanitization

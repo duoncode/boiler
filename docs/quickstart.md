@@ -54,7 +54,7 @@ would contain `&lt;b&gt;13&lt;/b&gt;`.
 
 - Read [the engine](engine.md) to learn about multiple template directories,
   namespaces, default values, and escape modes.
-- Read [displaying values](values.md) to learn when to use `$this->raw()`,
+- Read [displaying values](values.md) to learn when to use `$this->unwrap()`,
   `$this->esc()`, and `$this->clean()`.
 - Read [layouts](layouts.md), [inserts](inserts.md), and [sections](sections.md)
   for the main composition features.
