@@ -50,26 +50,42 @@ Keep these limits in mind:
 
 ## Run the benchmark
 
-1. Install benchmark dependencies:
+You can run the benchmark from the repository root or from inside `bench/`.
+
+### From the repository root
+
+```bash
+composer benchmark
+```
+
+### From inside `bench/`
+
+1. Change into the benchmark directory:
+
+   ```bash
+   cd bench
+   ```
+
+2. Install benchmark dependencies:
 
    ```bash
    composer install
    ```
 
-2. Run the benchmark with the default settings:
+3. Run the benchmark with the default settings:
 
    ```bash
    php run.php
    ```
 
-3. Override the default run count and iteration count when you want a slower or
+4. Override the default run count and iteration count when you want a slower or
    deeper run:
 
    ```bash
    php run.php --runs=10000 --iterations=5
    ```
 
-4. Choose a lifecycle mode when you want to compare a reused engine with a
+5. Choose a lifecycle mode when you want to compare a reused engine with a
    freshly created engine per render:
 
    ```bash
