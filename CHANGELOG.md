@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [0.2.0](https://github.com/duonrun/boiler/releases/tag/0.2.0) (2026-03-25)
 
 ### Breaking
 
