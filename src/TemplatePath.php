@@ -66,21 +66,17 @@ final class TemplatePath
 
 		if (str_ends_with($fullPath, '.php')) {
 			$this->validatePath($fullPath);
+		} else {
+			$this->validatePath("{$fullPath}.php");
 
-			return;
-		}
-
-		$this->validatePath("{$fullPath}.php");
-
-		if (!$this->isValid) {
-			$this->validatePath($fullPath);
-		}
-
-		if ($this->isValid) {
-			if (!str_starts_with($this->path, $this->dir)) {
-				$this->error = "Template resides outside of root directory ({$this->dir}): {$this->path}";
-				$this->isValid = false;
+			if (!$this->isValid) {
+				$this->validatePath($fullPath);
 			}
+		}
+
+		if ($this->isValid && !str_starts_with($this->path, $this->dir)) {
+			$this->error = "Template resides outside of root directory ({$this->dir}): {$this->path}";
+			$this->isValid = false;
 		}
 	}
 

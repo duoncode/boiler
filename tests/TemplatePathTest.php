@@ -62,6 +62,15 @@ final class TemplatePathTest extends TestCase
 		$this->assertStringStartsWith('Template resides outside of root directory', $tplp->error());
 	}
 
+	#[TestDox('Failing outside of template directory with PHP extension')]
+	public function testFailingOutsideOfTemplateDirectoryWithPhpExtension(): void
+	{
+		$tplp = new TemplatePath($this::DEFAULT_DIR, '../unreachable.php');
+
+		$this->assertSame(false, $tplp->isValid());
+		$this->assertStringStartsWith('Template resides outside of root directory', $tplp->error());
+	}
+
 	public function testErrorWhenAccessingInvalidPath(): void
 	{
 		$this->throws(LookupException::class, 'Error while accessing path');

@@ -19,6 +19,7 @@
 
 ### Fixed
 
+- Fixed path traversal bypass for template names ending in `.php`.
 - Allowed resources in template context values without triggering unsupported type errors.
 - Reset per-render template state so a `Template` instance can be reused safely across multiple renders.
 
