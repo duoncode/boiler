@@ -362,7 +362,7 @@ function benchEngine(
 	return $result;
 }
 
-function benchTwig(string $lifecycle): BenchResult
+function benchTwigAutoEscaping(string $lifecycle): BenchResult
 {
 	return benchEngine(
 		'Twig',
@@ -378,7 +378,7 @@ function benchTwig(string $lifecycle): BenchResult
 	);
 }
 
-function benchBladeOne(string $lifecycle): BenchResult
+function benchBladeOneAutoEscaping(string $lifecycle): BenchResult
 {
 	return benchEngine(
 		'BladeOne',
@@ -391,7 +391,7 @@ function benchBladeOne(string $lifecycle): BenchResult
 	);
 }
 
-function benchBoiler(string $lifecycle): BenchResult
+function benchBoilerAutoEscaping(string $lifecycle): BenchResult
 {
 	return benchEngine(
 		'Boiler',
@@ -404,7 +404,7 @@ function benchBoiler(string $lifecycle): BenchResult
 	);
 }
 
-function benchPlates(string $lifecycle): BenchResult
+function benchPlatesManualEscaping(string $lifecycle): BenchResult
 {
 	return benchEngine(
 		'Plates',
@@ -417,13 +417,13 @@ function benchPlates(string $lifecycle): BenchResult
 	);
 }
 
-function benchBoilerUnescaped(string $lifecycle): BenchResult
+function benchBoilerManualEscaping(string $lifecycle): BenchResult
 {
 	return benchEngine(
 		'Boiler',
 		static fn() => Duon\Boiler\Engine::unescaped(__DIR__ . '/boiler'),
 		static fn(Duon\Boiler\Engine $engine, array $context): string => $engine->render(
-			'pagenoescape',
+			'pagemanualescaping',
 			$context,
 		),
 		$lifecycle,
@@ -466,27 +466,33 @@ function runScenario(string $lifecycle): void
 	echo 'Lifecycle: ' . lifecycleLabel($lifecycle) . "\n";
 	echo str_repeat('-', 70) . "\n\n";
 
-	echo "ESCAPED\n";
+	echo "AUTOMATIC ESCAPING\n";
 	echo str_repeat('-', 70) . "\n";
 
-	$twig = benchTwig($lifecycle);
-	$blade = benchBladeOne($lifecycle);
-	$boiler = benchBoiler($lifecycle);
+	$twigAutoEscaping = benchTwigAutoEscaping($lifecycle);
+	$bladeOneAutoEscaping = benchBladeOneAutoEscaping($lifecycle);
+	$boilerAutoEscaping = benchBoilerAutoEscaping($lifecycle);
 
-	$twig->print();
-	$blade->print();
-	$boiler->print();
+	$twigAutoEscaping->print();
+	$bladeOneAutoEscaping->print();
+	$boilerAutoEscaping->print();
 
-	echo "\nUNESCAPED\n";
+	echo "\nMANUAL ESCAPING\n";
 	echo str_repeat('-', 70) . "\n";
 
-	$plates = benchPlates($lifecycle);
-	$boilerUn = benchBoilerUnescaped($lifecycle);
+	$platesManualEscaping = benchPlatesManualEscaping($lifecycle);
+	$boilerManualEscaping = benchBoilerManualEscaping($lifecycle);
 
-	$plates->print();
-	$boilerUn->print();
+	$platesManualEscaping->print();
+	$boilerManualEscaping->print();
 
-	verifyOutputs([$plates, $twig, $blade, $boiler, $boilerUn]);
+	verifyOutputs([
+		$platesManualEscaping,
+		$twigAutoEscaping,
+		$bladeOneAutoEscaping,
+		$boilerAutoEscaping,
+		$boilerManualEscaping,
+	]);
 }
 
 function main(): int

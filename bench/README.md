@@ -15,7 +15,7 @@ The benchmark renders one canonical catalog page with:
 - nested arrays, nested loops, and conditionals
 - object-backed view data
 - one iterator-backed collection
-- escaped and unescaped Boiler renders
+- Boiler renders with auto escaping and manual escaping
 
 The script resets compiled template caches, warms them up, and verifies that all
 engines produce equivalent output.
