@@ -23,10 +23,13 @@ engines produce equivalent output.
 It can run in two lifecycle modes:
 
 - `worker` reuses the same engine instance across measured renders
-- `classic` creates a fresh engine instance for every measured render
+- `request` creates a fresh engine instance for every measured render
 
-Use `classic` when you want to reduce the impact of persistent userland engine
+Use `request` when you want to reduce the impact of persistent userland engine
 caches. Use `worker` when you want to approximate a long-running worker process.
+Neither mode is a full deployment simulation. `worker` is closer to a
+steady-state long-running process, while `request` mainly isolates the cost of
+fresh engine construction inside one benchmark process.
 
 ## How to read the results
 
@@ -40,6 +43,10 @@ Keep these limits in mind:
   architecture
 - the numbers are useful for internal regression checks and local comparisons,
   not as universal rankings or proofs that one engine always wins
+- `worker` results are usually the more representative steady-state numbers
+- `request` time results are useful, but `request` memory results should be
+  read only as a comparative stress signal for repeated fresh engine
+  construction in one process, not as per-request php-fpm memory usage
 
 ## Run the benchmark
 
@@ -67,7 +74,7 @@ Keep these limits in mind:
 
    ```bash
    php run.php --lifecycle=worker
-   php run.php --lifecycle=classic
+   php run.php --lifecycle=request
    php run.php --lifecycle=both
    ```
 
@@ -77,7 +84,11 @@ By default, the script runs:
 
 - `1000` renders per engine
 - `3` measured iterations
-- `worker` lifecycle mode
+- `request` lifecycle mode
 
 The memory column reports `peak+`, which is the additional peak memory used
 within a measured iteration after warmup.
+
+In `worker` mode, this is a reasonable steady-state memory indicator. In
+`request` mode, it also includes the allocator pressure of repeatedly creating
+fresh engine instances inside one benchmark process.

@@ -6,9 +6,9 @@ require __DIR__ . '/vendor/autoload.php';
 
 const DEFAULT_RUNS = 1000;
 const DEFAULT_ITERATIONS = 3;
-const DEFAULT_LIFECYCLE = 'classic';
+const DEFAULT_LIFECYCLE = 'request';
 const LIFECYCLE_WORKER = 'worker';
-const LIFECYCLE_CLASSIC = 'classic';
+const LIFECYCLE_REQUEST = 'request';
 const LIFECYCLE_BOTH = 'both';
 
 function resetCacheDir(string $path): void
@@ -212,7 +212,7 @@ function benchmarkConfig(): array
 			$options,
 			'lifecycle',
 			DEFAULT_LIFECYCLE,
-			[LIFECYCLE_WORKER, LIFECYCLE_CLASSIC, LIFECYCLE_BOTH],
+			[LIFECYCLE_WORKER, LIFECYCLE_REQUEST, LIFECYCLE_BOTH],
 		),
 	];
 }
@@ -284,7 +284,7 @@ function lifecycles(): array
 {
 	return (
 		lifecycle() === LIFECYCLE_BOTH
-			? [LIFECYCLE_WORKER, LIFECYCLE_CLASSIC]
+			? [LIFECYCLE_WORKER, LIFECYCLE_REQUEST]
 			: [lifecycle()]
 	);
 }
@@ -306,7 +306,7 @@ function lifecycleLabel(string $lifecycle): string
 {
 	return match ($lifecycle) {
 		LIFECYCLE_WORKER => 'worker (engine reused)',
-		LIFECYCLE_CLASSIC => 'classic (engine recreated per render)',
+		LIFECYCLE_REQUEST => 'request (engine recreated per render)',
 		default => $lifecycle,
 	};
 }
@@ -338,6 +338,7 @@ function benchEngine(
 		$memBefore = memory_get_usage();
 		$start = hrtime(true);
 
+		// @mago-expect lint:no-else-clause
 		if ($lifecycle === LIFECYCLE_WORKER) {
 			for ($i = 0; $i < $runs; $i++) {
 				$t = $render($engine, $context);
@@ -459,6 +460,15 @@ function verifyOutputs(array $results): void
 	}
 }
 
+function autoEscapingMemoryNote(string $lifecycle): string
+{
+	return $lifecycle === LIFECYCLE_WORKER
+		? "Note: peak+ is the additional peak memory after warmup for a reused\nengine. "
+		. 'Typical for worker mode (FrankenPHP, Roadrunner, etc.).'
+		: "Note: peak+ includes allocator overhead from recreating engines\nwithin one process. "
+		. 'Not typical for PHP-FPM.';
+}
+
 function runScenario(string $lifecycle): void
 {
 	resetBenchmarkCaches();
@@ -476,8 +486,10 @@ function runScenario(string $lifecycle): void
 	$twigAutoEscaping->print();
 	$bladeOneAutoEscaping->print();
 	$boilerAutoEscaping->print();
+	echo str_repeat('-', 70) . "\n";
+	printf("%s\n", autoEscapingMemoryNote($lifecycle));
 
-	echo "\nMANUAL ESCAPING\n";
+	echo "\n\nMANUAL ESCAPING\n";
 	echo str_repeat('-', 70) . "\n";
 
 	$platesManualEscaping = benchPlatesManualEscaping($lifecycle);
