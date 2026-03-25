@@ -20,6 +20,14 @@ The benchmark renders one canonical catalog page with:
 The script resets compiled template caches, warms them up, and verifies that all
 engines produce equivalent output.
 
+It can run in two lifecycle modes:
+
+- `worker` reuses the same engine instance across measured renders
+- `classic` creates a fresh engine instance for every measured render
+
+Use `classic` when you want to reduce the impact of persistent userland engine
+caches. Use `worker` when you want to approximate a long-running worker process.
+
 ## How to read the results
 
 Use the benchmark to answer a narrow question: did Boiler get slower on this
@@ -54,12 +62,22 @@ Keep these limits in mind:
    php run.php --runs=10000 --iterations=5
    ```
 
+4. Choose a lifecycle mode when you want to compare a reused engine with a
+   freshly created engine per render:
+
+   ```bash
+   php run.php --lifecycle=worker
+   php run.php --lifecycle=classic
+   php run.php --lifecycle=both
+   ```
+
 ## Defaults
 
 By default, the script runs:
 
 - `1000` renders per engine
 - `3` measured iterations
+- `worker` lifecycle mode
 
 The memory column reports `peak+`, which is the additional peak memory used
 within a measured iteration after warmup.
