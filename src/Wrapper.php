@@ -7,6 +7,7 @@ namespace Duon\Boiler;
 use Duon\Boiler\Contract\Escaper;
 use Duon\Boiler\Contract\Sanitizer as SanitizerContract;
 use Duon\Boiler\Contract\Wrapper as WrapperContract;
+use Duon\Boiler\Exception\MissingSanitizerException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ArrayProxy;
@@ -122,13 +123,18 @@ final class Wrapper implements WrapperContract
 		}
 
 		if (is_string($value)) {
-			return ($this->sanitizer ?? new Sanitizer())->clean($value);
+			return $this->sanitizer()->clean($value);
 		}
 
 		if ($value instanceof Stringable) {
-			return ($this->sanitizer ?? new Sanitizer())->clean((string) $value);
+			return $this->sanitizer()->clean((string) $value);
 		}
 
 		throw new RuntimeException('Value cannot be sanitized as string');
+	}
+
+	private function sanitizer(): SanitizerContract
+	{
+		return $this->sanitizer ?? throw new MissingSanitizerException('No sanitizer configured');
 	}
 }

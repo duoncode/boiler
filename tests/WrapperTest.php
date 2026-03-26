@@ -6,11 +6,13 @@ namespace Duon\Boiler\Tests;
 
 use Duon\Boiler\Contract\Escaper;
 use Duon\Boiler\Contract\Wrapper as WrapperContract;
+use Duon\Boiler\Exception\MissingSanitizerException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
 use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\StringProxy;
+use Duon\Boiler\Sanitizer;
 use Duon\Boiler\Wrapper;
 use Traversable;
 
@@ -125,5 +127,19 @@ final class WrapperTest extends TestCase
 		});
 
 		$this->assertSame('&LT;B&GT;BOILER&LT;/B&GT;', (string) $wrapper->wrap('<b>boiler</b>'));
+	}
+
+	public function testCleanUsesConfiguredSanitizer(): void
+	{
+		$wrapper = new Wrapper(sanitizer: new Sanitizer());
+
+		$this->assertSame('<b>boiler</b>', $wrapper->clean('<b>boiler</b><script></script>'));
+	}
+
+	public function testCleanThrowsWithoutSanitizer(): void
+	{
+		$this->throws(MissingSanitizerException::class, 'No sanitizer configured');
+
+		new Wrapper()->clean('<b>boiler</b>');
 	}
 }

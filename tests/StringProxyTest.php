@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
+use Duon\Boiler\Exception\MissingSanitizerException;
 use Duon\Boiler\Proxy\StringProxy;
+use Duon\Boiler\Sanitizer;
+use Duon\Boiler\Wrapper;
 
 final class StringProxyTest extends TestCase
 {
@@ -26,8 +29,18 @@ final class StringProxyTest extends TestCase
 	{
 		$this->assertSame(
 			'<b>boiler</b>',
-			new StringProxy('<b onclick="function()">boiler</b>')->clean(),
+			new StringProxy(
+				'<b onclick="function()">boiler</b>',
+				new Wrapper(sanitizer: new Sanitizer()),
+			)->clean(),
 		);
+	}
+
+	public function testProxyCleanThrowsWithoutSanitizer(): void
+	{
+		$this->throws(MissingSanitizerException::class, 'No sanitizer configured');
+
+		new StringProxy('<b>boiler</b>')->clean();
 	}
 
 	public function testStringValue(): void

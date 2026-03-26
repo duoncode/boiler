@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
+use Duon\Boiler\Exception\MissingSanitizerException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\StringProxy;
+use Duon\Boiler\Sanitizer;
+use Duon\Boiler\Wrapper;
 use PHPUnit\Framework\Attributes\TestDox;
 use ValueError;
 
@@ -57,6 +60,7 @@ final class ObjectProxyTest extends TestCase
 
 	public function testObjectValid(): void
 	{
+		$wrapper = new Wrapper(sanitizer: new Sanitizer());
 		$object = new class {
 			public function __invoke(string $str): string
 			{
@@ -68,7 +72,7 @@ final class ObjectProxyTest extends TestCase
 				return '<b>boiler</b><script></script>';
 			}
 		};
-		$value = new ObjectProxy($object);
+		$value = new ObjectProxy($object, $wrapper);
 
 		$this->assertSame(
 			'&lt;b&gt;boiler&lt;/b&gt;&lt;script&gt;&lt;/script&gt;',
@@ -98,11 +102,27 @@ final class ObjectProxyTest extends TestCase
 
 	public function testClosureValue(): void
 	{
+		$wrapper = new Wrapper(sanitizer: new Sanitizer());
 		$closure = static fn(): string => '<b>boiler</b><script></script>';
-		$value = new ObjectProxy($closure);
+		$value = new ObjectProxy($closure, $wrapper);
 
 		$this->assertSame('&lt;b&gt;boiler&lt;/b&gt;&lt;script&gt;&lt;/script&gt;', (string) $value());
 		$this->assertSame('<b>boiler</b>', $value()->clean());
+	}
+
+	public function testCleanThrowsWithoutSanitizer(): void
+	{
+		$this->throws(MissingSanitizerException::class, 'No sanitizer configured');
+
+		$object = new class {
+			public function html(): string
+			{
+				return '<b>boiler</b>';
+			}
+		};
+		$value = new ObjectProxy($object);
+
+		$value->html()->clean();
 	}
 
 	#[TestDox('Getter throws I')]

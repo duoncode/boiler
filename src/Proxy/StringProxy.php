@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Duon\Boiler\Proxy;
 
 use Duon\Boiler\Contract\Wrapper as WrapperContract;
-use Duon\Boiler\Sanitizer;
 use Duon\Boiler\Wrapper;
 use Override;
-use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 /**
  * @api
@@ -53,11 +51,8 @@ final class StringProxy implements Proxy
 		return strip_tags($this->value, $allowed);
 	}
 
-	public function clean(
-		?HtmlSanitizerConfig $config = null,
-	): string {
-		return $config === null
-			? $this->wrapper->clean($this->value)
-			: new Sanitizer($config)->clean($this->value);
+	public function clean(): string
+	{
+		return $this->wrapper->clean($this->value);
 	}
 }

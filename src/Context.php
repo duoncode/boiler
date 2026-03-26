@@ -9,7 +9,6 @@ use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\Proxy;
 use Duon\Boiler\Proxy\StringProxy;
 use Stringable;
-use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 /** @api */
 abstract class Context
@@ -129,12 +128,9 @@ abstract class Context
 	}
 
 	public function clean(
-		string $value,
-		?HtmlSanitizerConfig $config = null,
+		StringProxy|ObjectProxy|string|Stringable $value,
 	): string {
-		return $config === null
-			? $this->wrapper->clean($value)
-			: new Sanitizer($config)->clean($value);
+		return $this->wrapper->clean($value);
 	}
 
 	/**

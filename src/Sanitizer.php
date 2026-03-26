@@ -9,6 +9,7 @@ use Override;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
+/** @api */
 final class Sanitizer implements SanitizerContract
 {
 	private HtmlSanitizer $sanitizer;
