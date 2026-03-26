@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Proxy;
 
+use Duon\Boiler\Contract\Wrapper as WrapperContract;
 use Duon\Boiler\Sanitizer;
+use Duon\Boiler\Wrapper;
 use Override;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
@@ -19,14 +21,18 @@ final class StringProxy implements Proxy
 	private const string ESCAPE_ENCODING = 'UTF-8';
 
 	private ?string $escaped = null;
+	private readonly WrapperContract $wrapper;
 
 	public function __construct(
 		private readonly string $value,
-	) {}
+		?WrapperContract $wrapper = null,
+	) {
+		$this->wrapper = $wrapper ?? new Wrapper();
+	}
 
 	public function __toString(): string
 	{
-		return $this->escaped ??= htmlspecialchars(
+		return $this->escaped ??= $this->wrapper->escape(
 			$this->value,
 			self::ESCAPE_FLAGS,
 			self::ESCAPE_ENCODING,
@@ -50,6 +56,8 @@ final class StringProxy implements Proxy
 	public function clean(
 		?HtmlSanitizerConfig $config = null,
 	): string {
-		return new Sanitizer($config)->clean($this->value);
+		return $config === null
+			? $this->wrapper->clean($this->value)
+			: new Sanitizer($config)->clean($this->value);
 	}
 }

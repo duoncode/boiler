@@ -6,6 +6,7 @@ namespace Duon\Boiler\Proxy;
 
 use ArrayAccess;
 use Countable;
+use Duon\Boiler\Contract\Wrapper as WrapperContract;
 use Duon\Boiler\Exception\OutOfBoundsException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
@@ -23,18 +24,21 @@ use Override;
  * @template-implements Iterator<mixed>
  * @implements Proxy<array<array-key, mixed>>
  */
-class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
+final class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
 {
 	/** @psalm-var list<array-key> */
 	private array $keys;
 	private int $position;
+	private readonly WrapperContract $wrapper;
 
 	/**
 	 * @psalm-param array<array-key, mixed> $array
 	 */
 	public function __construct(
 		private array $array,
+		?WrapperContract $wrapper = null,
 	) {
+		$this->wrapper = $wrapper ?? new Wrapper();
 		$this->array = $array;
 		$this->keys = array_keys($array);
 		$this->position = 0;
@@ -57,7 +61,7 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
 	{
 		$key = $this->keys[$this->position];
 
-		return Wrapper::wrap($this->array[$key]);
+		return $this->wrapper->wrap($this->array[$key]);
 	}
 
 	/**
@@ -93,7 +97,7 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
 	public function offsetGet(mixed $offset): mixed
 	{
 		if (array_key_exists($offset, $this->array)) {
-			return Wrapper::wrap($this->array[$offset]);
+			return $this->wrapper->wrap($this->array[$offset]);
 		}
 
 		$key = is_numeric($offset) ? (string) $offset : "'{$offset}'";
@@ -137,25 +141,25 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
 		return new self(array_merge(
 			$this->array,
 			$array instanceof self ? $array->unwrap() : $array,
-		));
+		), $this->wrapper);
 	}
 
 	/** @psalm-param ArrayCallable $callable */
 	public function map(callable $callable): self
 	{
-		return new self(array_map($callable, $this->array));
+		return new self(array_map($callable, $this->array), $this->wrapper);
 	}
 
 	/** @psalm-param FilterCallable $callable */
 	public function filter(callable $callable): self
 	{
-		return new self(array_filter($this->array, $callable));
+		return new self(array_filter($this->array, $callable), $this->wrapper);
 	}
 
 	/** @psalm-param ArrayCallable $callable */
 	public function reduce(callable $callable, mixed $initial = null): mixed
 	{
-		return Wrapper::wrap(array_reduce($this->array, $callable, $initial));
+		return $this->wrapper->wrap(array_reduce($this->array, $callable, $initial));
 	}
 
 	/** @psalm-param ArrayCallable $callable */
@@ -186,7 +190,7 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
 			default => throw new UnexpectedValueException("Sort mode '{$mode}' not supported"),
 		};
 
-		return new self($array);
+		return new self($array, $this->wrapper);
 	}
 
 	/** @psalm-param ArrayCallable $callable */
@@ -198,6 +202,6 @@ class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
 			default => throw new UnexpectedValueException("Sort mode '{$mode}' not supported"),
 		};
 
-		return new self($array);
+		return new self($array, $this->wrapper);
 	}
 }

@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
+use Duon\Boiler\Contract\Escaper;
 use Duon\Boiler\Engine;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
+use Duon\Boiler\Wrapper;
 use PHPUnit\Framework\Attributes\TestDox;
 
 final class EngineTest extends TestCase
@@ -36,6 +38,28 @@ final class EngineTest extends TestCase
 		$this->assertSame(
 			'<h1>boiler</h1><p>rocks</p>',
 			$this->fullTrim($engine->render('simple', ['text' => 'rocks'])),
+		);
+	}
+
+	public function testCustomWrapperEscaperIsUsedDuringRendering(): void
+	{
+		$engine = Engine::create(
+			TestCase::DEFAULT_DIR,
+			['obj' => $this->obj()],
+			wrapper: new Wrapper(new class implements Escaper {
+				public function escape(
+					string $value,
+					int $flags = ENT_QUOTES | ENT_SUBSTITUTE,
+					string $encoding = 'UTF-8',
+				): string {
+					return strtoupper(htmlspecialchars($value, $flags, $encoding));
+				}
+			}),
+		);
+
+		$this->assertSame(
+			'<h1>BOILER</h1><p>&LT;B&GT;ROCKS&LT;/B&GT;</p>',
+			$this->fullTrim($engine->render('simple', ['text' => '<b>rocks</b>'])),
 		);
 	}
 

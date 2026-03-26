@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-use Duon\Boiler\Exception\RuntimeException;
+use Duon\Boiler\Contract\Wrapper as WrapperContract;
 use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\Proxy;
 use Duon\Boiler\Proxy\StringProxy;
@@ -19,6 +19,7 @@ abstract class Context
 
 	/** @var array<array-key, mixed>|null */
 	private ?array $wrappedContext = null;
+	protected readonly WrapperContract $wrapper;
 
 	/**
 	 * @psalm-param list<class-string> $whitelist
@@ -28,7 +29,9 @@ abstract class Context
 		protected array $context,
 		public readonly array $whitelist,
 		public readonly bool $autoescape,
-	) {}
+	) {
+		$this->wrapper = $template->engine->wrapper();
+	}
 
 	public function __call(string $name, array $args): mixed
 	{
@@ -85,7 +88,7 @@ abstract class Context
 			}
 
 			/** @psalm-suppress MixedAssignment wrapper returns mixed by design */
-			$wrapped[$key] = Wrapper::wrap($value);
+			$wrapped[$key] = $this->wrapper->wrap($value);
 		}
 
 		return $wrapped;
@@ -93,15 +96,7 @@ abstract class Context
 
 	public function unwrap(mixed $value): mixed
 	{
-		if ($value instanceof Proxy) {
-			return $value->unwrap();
-		}
-
-		if (!is_array($value)) {
-			return $value;
-		}
-
-		return array_map($this->unwrap(...), $value);
+		return $this->wrapper->unwrap($value);
 	}
 
 	public function add(string $key, mixed $value): mixed
@@ -117,27 +112,7 @@ abstract class Context
 		int $flags = self::ESCAPE_FLAGS,
 		string $encoding = self::ESCAPE_ENCODING,
 	): string {
-		if ($value instanceof StringProxy) {
-			if ($flags === self::ESCAPE_FLAGS && $encoding === self::ESCAPE_ENCODING) {
-				return (string) $value;
-			}
-
-			return htmlspecialchars($value->unwrap(), $flags, $encoding);
-		}
-
-		if ($value instanceof ObjectProxy) {
-			$value = $value->unwrap();
-		}
-
-		if (is_string($value)) {
-			return htmlspecialchars($value, $flags, $encoding);
-		}
-
-		if ($value instanceof Stringable) {
-			return htmlspecialchars((string) $value, $flags, $encoding);
-		}
-
-		throw new RuntimeException('Value cannot be escaped as string');
+		return $this->wrapper->escape($value, $flags, $encoding);
 	}
 
 	/** @return array<array-key, mixed> */
@@ -149,15 +124,17 @@ abstract class Context
 	private function templateValue(mixed $value): mixed
 	{
 		return $this->autoescape
-			? Wrapper::wrap($value)
-			: $this->unwrap($value);
+			? $this->wrapper->wrap($value)
+			: $this->wrapper->unwrap($value);
 	}
 
 	public function clean(
 		string $value,
 		?HtmlSanitizerConfig $config = null,
 	): string {
-		return new Sanitizer($config)->clean($value);
+		return $config === null
+			? $this->wrapper->clean($value)
+			: new Sanitizer($config)->clean($value);
 	}
 
 	/**

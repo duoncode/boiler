@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Duon\Boiler;
 
 use Duon\Boiler\Contract\Engine as EngineContract;
+use Duon\Boiler\Contract\Wrapper as WrapperContract;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Override;
@@ -22,6 +23,7 @@ class Engine implements EngineContract
 	protected readonly array $dirs;
 	/** @psalm-var array<string, non-empty-string> */
 	protected array $pathCache = [];
+	protected readonly WrapperContract $wrapper;
 
 	public private(set) bool $autoescape {
 		get => $this->autoescape;
@@ -37,9 +39,11 @@ class Engine implements EngineContract
 		bool $autoescape,
 		protected readonly array $defaults,
 		protected readonly array $whitelist,
+		?WrapperContract $wrapper = null,
 	) {
 		$this->autoescape = $autoescape;
 		$this->dirs = $this->prepareDirs($dirs);
+		$this->wrapper = $wrapper ?? new Wrapper();
 		$this->customMethods = new CustomMethods();
 	}
 
@@ -51,8 +55,9 @@ class Engine implements EngineContract
 		array|string $dirs,
 		array $defaults = [],
 		array $whitelist = [],
+		?WrapperContract $wrapper = null,
 	): self {
-		return new self($dirs, true, $defaults, $whitelist);
+		return new self($dirs, true, $defaults, $whitelist, $wrapper);
 	}
 
 	/**
@@ -63,8 +68,15 @@ class Engine implements EngineContract
 		array|string $dirs,
 		array $defaults = [],
 		array $whitelist = [],
+		?WrapperContract $wrapper = null,
 	): self {
-		return new self($dirs, false, $defaults, $whitelist);
+		return new self($dirs, false, $defaults, $whitelist, $wrapper);
+	}
+
+	#[Override]
+	public function wrapper(): WrapperContract
+	{
+		return $this->wrapper;
 	}
 
 	/** @psalm-param non-empty-string $path */

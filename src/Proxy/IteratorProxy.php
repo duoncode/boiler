@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Proxy;
 
+use Duon\Boiler\Contract\Wrapper as WrapperContract;
 use Duon\Boiler\Wrapper;
 use Iterator;
 use IteratorIterator;
 use Override;
+use Traversable;
 
 /**
- * @psalm-api
+ * @api
  *
  * @template-covariant TKey
  * @template-covariant TValue
@@ -20,15 +22,24 @@ use Override;
  * @template-extends IteratorIterator<TKey, TValue, TIterator>
  * @implements Proxy<Iterator<TKey, TValue>|null>
  */
-class IteratorProxy extends IteratorIterator implements Proxy
+final class IteratorProxy extends IteratorIterator implements Proxy
 {
+	private readonly WrapperContract $wrapper;
+
+	/** @param TIterator $iterator */
+	public function __construct(Traversable $iterator, ?WrapperContract $wrapper = null)
+	{
+		parent::__construct($iterator);
+		$this->wrapper = $wrapper ?? new Wrapper();
+	}
+
 	#[Override]
 	public function current(): mixed
 	{
 		$value = parent::current();
 
 		/** @psalm-suppress MixedReturnStatement see above */
-		return Wrapper::wrap($value);
+		return $this->wrapper->wrap($value);
 	}
 
 	#[Override]
@@ -41,6 +52,6 @@ class IteratorProxy extends IteratorIterator implements Proxy
 	{
 		$inner = $this->getInnerIterator();
 
-		return new ArrayProxy($inner ? iterator_to_array($inner) : []);
+		return new ArrayProxy($inner ? iterator_to_array($inner) : [], $this->wrapper);
 	}
 }

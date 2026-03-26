@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
+use Duon\Boiler\Contract\Escaper;
+use Duon\Boiler\Contract\Wrapper as WrapperContract;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
@@ -14,20 +16,27 @@ use Traversable;
 
 final class WrapperTest extends TestCase
 {
+	public function testWrapperImplementsContract(): void
+	{
+		$this->assertInstanceOf(WrapperContract::class, new Wrapper());
+	}
+
 	public function testWrapNumber(): void
 	{
-		$this->assertSame(13, Wrapper::wrap(13));
-		$this->assertSame(1.13, Wrapper::wrap(1.13));
+		$wrapper = new Wrapper();
+
+		$this->assertSame(13, $wrapper->wrap(13));
+		$this->assertSame(1.13, $wrapper->wrap(1.13));
 	}
 
 	public function testWrapString(): void
 	{
-		$this->assertInstanceOf(StringProxy::class, Wrapper::wrap('string'));
+		$this->assertInstanceOf(StringProxy::class, new Wrapper()->wrap('string'));
 	}
 
 	public function testWrapArray(): void
 	{
-		$warray = Wrapper::wrap([1, 2, 3]);
+		$warray = new Wrapper()->wrap([1, 2, 3]);
 
 		$this->assertInstanceOf(ArrayProxy::class, $warray);
 		$this->assertSame(false, is_array($warray));
@@ -37,10 +46,11 @@ final class WrapperTest extends TestCase
 
 	public function testWrapIterator(): void
 	{
+		$wrapper = new Wrapper();
 		$iterator = (static function () {
 			yield 1;
 		})();
-		$witerator = Wrapper::wrap($iterator);
+		$witerator = $wrapper->wrap($iterator);
 
 		$this->assertInstanceOf(IteratorProxy::class, $witerator);
 		$this->assertInstanceOf(Traversable::class, $witerator->unwrap());
@@ -51,7 +61,7 @@ final class WrapperTest extends TestCase
 	{
 		$obj = new class {};
 
-		$this->assertInstanceOf(ObjectProxy::class, Wrapper::wrap($obj));
+		$this->assertInstanceOf(ObjectProxy::class, new Wrapper()->wrap($obj));
 	}
 
 	public function testWrapStringable(): void
@@ -63,16 +73,17 @@ final class WrapperTest extends TestCase
 			}
 		};
 
-		$this->assertInstanceOf(ObjectProxy::class, Wrapper::wrap($obj));
+		$this->assertInstanceOf(ObjectProxy::class, new Wrapper()->wrap($obj));
 	}
 
 	public function testWrapResourcePassthrough(): void
 	{
+		$wrapper = new Wrapper();
 		$resource = tmpfile();
 		assert(is_resource($resource), 'tmpfile() must return a valid resource for this test');
 
 		try {
-			$this->assertSame($resource, Wrapper::wrap($resource));
+			$this->assertSame($resource, $wrapper->wrap($resource));
 		} finally {
 			fclose($resource);
 		}
@@ -82,20 +93,37 @@ final class WrapperTest extends TestCase
 	{
 		$this->throws(UnexpectedValueException::class, 'Unsupported template value type');
 
+		$wrapper = new Wrapper();
 		$resource = tmpfile();
 		assert(is_resource($resource), 'tmpfile() must return a valid resource for this test');
 		fclose($resource);
 
-		Wrapper::wrap($resource);
+		$wrapper->wrap($resource);
 	}
 
 	public function testNestingWrapping(): void
 	{
+		$wrapper = new Wrapper();
 		$value = new StringProxy('string');
 
-		$this->assertInstanceOf(StringProxy::class, Wrapper::wrap($value));
-		$this->assertSame('string', Wrapper::wrap($value)->unwrap());
-		$this->assertSame(true, is_string(Wrapper::wrap($value)->unwrap()));
-		$this->assertInstanceOf(StringProxy::class, Wrapper::wrap($value));
+		$this->assertInstanceOf(StringProxy::class, $wrapper->wrap($value));
+		$this->assertSame('string', $wrapper->wrap($value)->unwrap());
+		$this->assertSame(true, is_string($wrapper->wrap($value)->unwrap()));
+		$this->assertInstanceOf(StringProxy::class, $wrapper->wrap($value));
+	}
+
+	public function testWrapUsesCustomEscaper(): void
+	{
+		$wrapper = new Wrapper(new class implements Escaper {
+			public function escape(
+				string $value,
+				int $flags = ENT_QUOTES | ENT_SUBSTITUTE,
+				string $encoding = 'UTF-8',
+			): string {
+				return strtoupper(htmlspecialchars($value, $flags, $encoding));
+			}
+		});
+
+		$this->assertSame('&LT;B&GT;BOILER&LT;/B&GT;', (string) $wrapper->wrap('<b>boiler</b>'));
 	}
 }
