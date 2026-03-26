@@ -7,6 +7,7 @@ namespace Duon\Boiler\Tests;
 use Duon\Boiler\Contract\Escaper;
 use Duon\Boiler\Contract\Wrapper as WrapperContract;
 use Duon\Boiler\Exception\MissingSanitizerException;
+use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
@@ -135,10 +136,40 @@ final class WrapperTest extends TestCase
 		$this->assertSame('<b>boiler</b>', $wrapper->clean('<b>boiler</b><script></script>'));
 	}
 
+	public function testCleanUnwrapsProxyValues(): void
+	{
+		$wrapper = new Wrapper(sanitizer: new FakeSanitizer());
+
+		$this->assertSame(
+			'<b>boiler</b>',
+			$wrapper->clean(new StringProxy('<b>boiler</b><script></script>')),
+		);
+	}
+
+	public function testCleanSupportsStringableValues(): void
+	{
+		$wrapper = new Wrapper(sanitizer: new FakeSanitizer());
+		$value = new class {
+			public function __toString(): string
+			{
+				return '<b>boiler</b><script></script>';
+			}
+		};
+
+		$this->assertSame('<b>boiler</b>', $wrapper->clean($value));
+	}
+
 	public function testCleanThrowsWithoutSanitizer(): void
 	{
 		$this->throws(MissingSanitizerException::class, 'No sanitizer configured');
 
 		new Wrapper()->clean('<b>boiler</b>');
+	}
+
+	public function testCleanRejectsNonStringableValues(): void
+	{
+		$this->throws(RuntimeException::class, 'Value cannot be sanitized as string');
+
+		new Wrapper(sanitizer: new FakeSanitizer())->clean(13);
 	}
 }
