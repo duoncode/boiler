@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Duon\Boiler\Tests;
 
 use Duon\Boiler\Exception\RuntimeException;
-use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\StringProxy;
 use Duon\Boiler\Template;
 use Duon\Boiler\TemplateContext;
@@ -123,7 +122,7 @@ final class TemplateContextTest extends TestCase
 	public function testEscCanOverrideFlagsForStringProxy(): void
 	{
 		$tmplContext = new TemplateContext($this->template, [], [], true);
-		$value = new StringProxy('"quoted" & <tag>');
+		$value = $this->stringProxy('"quoted" & <tag>');
 
 		$this->assertSame('"quoted" &amp; &lt;tag&gt;', $tmplContext->esc($value, ENT_NOQUOTES));
 	}
@@ -133,6 +132,6 @@ final class TemplateContextTest extends TestCase
 		$this->throws(RuntimeException::class, 'cannot be escaped as string');
 
 		$tmplContext = new TemplateContext($this->template, [], [], true);
-		$tmplContext->esc(new ObjectProxy(new class {}));
+		$tmplContext->esc($this->objectProxy(new class {}));
 	}
 }

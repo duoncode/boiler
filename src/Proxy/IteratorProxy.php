@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Duon\Boiler\Proxy;
 
 use Duon\Boiler\Contract\Wrapper as WrapperContract;
-use Duon\Boiler\Wrapper;
 use Iterator;
 use IteratorIterator;
 use Override;
@@ -27,10 +26,10 @@ final class IteratorProxy extends IteratorIterator implements Proxy
 	private readonly WrapperContract $wrapper;
 
 	/** @param TIterator $iterator */
-	public function __construct(Traversable $iterator, ?WrapperContract $wrapper = null)
+	public function __construct(Traversable $iterator, WrapperContract $wrapper)
 	{
 		parent::__construct($iterator);
-		$this->wrapper = $wrapper ?? new Wrapper();
+		$this->wrapper = $wrapper;
 	}
 
 	#[Override]

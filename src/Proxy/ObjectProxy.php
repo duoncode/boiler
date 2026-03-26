@@ -7,7 +7,6 @@ namespace Duon\Boiler\Proxy;
 use Duon\Boiler\Contract\Wrapper as WrapperContract;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Wrapper;
 use Override;
 use Stringable;
 use Traversable;
@@ -23,9 +22,9 @@ final class ObjectProxy implements Proxy
 
 	public function __construct(
 		private readonly object $value,
-		?WrapperContract $wrapper = null,
+		WrapperContract $wrapper,
 	) {
-		$this->wrapper = $wrapper ?? new Wrapper();
+		$this->wrapper = $wrapper;
 
 		if ($this->value instanceof Traversable) {
 			throw new UnexpectedValueException('Traversable objects must be wrapped as iterator proxies');

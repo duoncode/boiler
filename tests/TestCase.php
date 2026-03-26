@@ -4,7 +4,14 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
+use Duon\Boiler\Contract\Sanitizer as SanitizerContract;
+use Duon\Boiler\Proxy\ArrayProxy;
+use Duon\Boiler\Proxy\IteratorProxy;
+use Duon\Boiler\Proxy\ObjectProxy;
+use Duon\Boiler\Proxy\StringProxy;
+use Duon\Boiler\Wrapper;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use Traversable;
 
 /**
  * @internal
@@ -68,5 +75,35 @@ class TestCase extends BaseTestCase
 		if ($message) {
 			$this->expectExceptionMessageMatches("/{$message}/");
 		}
+	}
+
+	protected function wrapper(?SanitizerContract $sanitizer = null): Wrapper
+	{
+		return new Wrapper(sanitizer: $sanitizer);
+	}
+
+	/** @param array<array-key, mixed> $value */
+	protected function arrayProxy(array $value): ArrayProxy
+	{
+		return new ArrayProxy($value, $this->wrapper());
+	}
+
+	protected function iteratorProxy(Traversable $value): IteratorProxy
+	{
+		return new IteratorProxy($value, $this->wrapper());
+	}
+
+	protected function objectProxy(
+		object $value,
+		?SanitizerContract $sanitizer = null,
+	): ObjectProxy {
+		return new ObjectProxy($value, $this->wrapper($sanitizer));
+	}
+
+	protected function stringProxy(
+		string $value,
+		?SanitizerContract $sanitizer = null,
+	): StringProxy {
+		return new StringProxy($value, $this->wrapper($sanitizer));
 	}
 }

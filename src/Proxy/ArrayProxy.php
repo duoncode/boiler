@@ -10,7 +10,6 @@ use Duon\Boiler\Contract\Wrapper as WrapperContract;
 use Duon\Boiler\Exception\OutOfBoundsException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Wrapper;
 use Iterator;
 use Override;
 
@@ -36,9 +35,9 @@ final class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
 	 */
 	public function __construct(
 		private array $array,
-		?WrapperContract $wrapper = null,
+		WrapperContract $wrapper,
 	) {
-		$this->wrapper = $wrapper ?? new Wrapper();
+		$this->wrapper = $wrapper;
 		$this->array = $array;
 		$this->keys = array_keys($array);
 		$this->position = 0;

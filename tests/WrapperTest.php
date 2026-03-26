@@ -106,7 +106,7 @@ final class WrapperTest extends TestCase
 	public function testNestingWrapping(): void
 	{
 		$wrapper = new Wrapper();
-		$value = new StringProxy('string');
+		$value = $this->stringProxy('string');
 
 		$this->assertInstanceOf(StringProxy::class, $wrapper->wrap($value));
 		$this->assertSame('string', $wrapper->wrap($value)->unwrap());
@@ -142,7 +142,7 @@ final class WrapperTest extends TestCase
 
 		$this->assertSame(
 			'<b>boiler</b>',
-			$wrapper->clean(new StringProxy('<b>boiler</b><script></script>')),
+			$wrapper->clean($this->stringProxy('<b>boiler</b><script></script>')),
 		);
 	}
 

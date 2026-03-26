@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Duon\Boiler\Proxy;
 
 use Duon\Boiler\Contract\Wrapper as WrapperContract;
-use Duon\Boiler\Wrapper;
 use Override;
 
 /**
@@ -23,9 +22,9 @@ final class StringProxy implements Proxy
 
 	public function __construct(
 		private readonly string $value,
-		?WrapperContract $wrapper = null,
+		WrapperContract $wrapper,
 	) {
-		$this->wrapper = $wrapper ?? new Wrapper();
+		$this->wrapper = $wrapper;
 	}
 
 	public function __toString(): string

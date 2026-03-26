@@ -24,7 +24,7 @@ final class IteratorProxyTest extends TestCase
 			})();
 		})();
 
-		$iterval = new IteratorProxy($iterator);
+		$iterval = $this->iteratorProxy($iterator);
 		$new = [];
 
 		foreach ($iterval as $val) {
@@ -43,7 +43,7 @@ final class IteratorProxyTest extends TestCase
 			yield 1;
 		})();
 
-		$iterval = new IteratorProxy($iterator);
+		$iterval = $this->iteratorProxy($iterator);
 
 		$this->assertSame($iterator, $iterval->unwrap());
 	}
@@ -56,7 +56,7 @@ final class IteratorProxyTest extends TestCase
 			yield 2;
 		})();
 
-		$iterval = new IteratorProxy($iterator);
+		$iterval = $this->iteratorProxy($iterator);
 
 		$this->assertSame([1, 2], $iterval->toArray()->unwrap());
 	}
