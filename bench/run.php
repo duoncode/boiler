@@ -150,6 +150,7 @@ function benchmarkContext(): array
 	];
 }
 
+// @mago-expect lint:file-name
 class BenchResult
 {
 	public string $name;
@@ -337,7 +338,6 @@ function benchEngine(
 		$memBefore = memory_get_usage();
 		$start = hrtime(true);
 
-		// @mago-expect lint:no-else-clause
 		if ($lifecycle === LIFECYCLE_WORKER) {
 			for ($i = 0; $i < $runs; $i++) {
 				$t = $render($engine, $context);
