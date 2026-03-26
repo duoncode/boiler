@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
+use Duon\Boiler\Contract\Sanitizer as SanitizerContract;
+use Override;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
-final class Sanitizer
+final class Sanitizer implements SanitizerContract
 {
 	private HtmlSanitizer $sanitizer;
 
@@ -21,6 +23,7 @@ final class Sanitizer
 		$this->sanitizer = new HtmlSanitizer($config);
 	}
 
+	#[Override]
 	public function clean(string $html): string
 	{
 		return $this->sanitizer->sanitize($html);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
+use Duon\Boiler\Contract\Sanitizer as SanitizerContract;
 use Duon\Boiler\Sanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
@@ -38,6 +39,11 @@ final class SanitizerTest extends TestCase
 <footer>Test</footer>";
 
 		$this->assertSame($clean, new Sanitizer()->clean(self::MALFORMED));
+	}
+
+	public function testSanitizerImplementsContract(): void
+	{
+		$this->assertInstanceOf(SanitizerContract::class, new Sanitizer());
 	}
 
 	public function testCleanWithBlockExtension(): void
