@@ -57,7 +57,7 @@ in mixed PHP and HTML files, and the docs use that style in template examples.
 ## Next steps
 
 - Read [the engine](engine.md) to learn about multiple template directories,
-  namespaces, default values, and escape modes.
+  namespaces, default values, wrappers, and escape modes.
 - Read [displaying values](values.md) to learn when to use `$this->unwrap()`,
   `$this->esc()`, and `$this->clean()`.
 - Read [layouts](layouts.md), [inserts](inserts.md), and [sections](sections.md)

@@ -19,7 +19,7 @@ The main differences from Plates are:
 - Code reuse with [layouts](layouts.md), [inserts](inserts.md), and
   [sections](sections.md)
 - Plain PHP templates with no custom syntax
-- Optional HTML sanitization via `$this->clean()`
+- Wrapper-driven escaping and optional HTML sanitization via `$this->clean()`
 - Custom template methods and optional whitelisting of trusted value classes
 - Fully tested and statically analyzed with Psalm level 1
 
