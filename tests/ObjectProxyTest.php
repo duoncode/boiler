@@ -9,7 +9,6 @@ use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\StringProxy;
-use Duon\Boiler\Sanitizer;
 use Duon\Boiler\Wrapper;
 use PHPUnit\Framework\Attributes\TestDox;
 use ValueError;
@@ -60,7 +59,7 @@ final class ObjectProxyTest extends TestCase
 
 	public function testObjectValid(): void
 	{
-		$wrapper = new Wrapper(sanitizer: new Sanitizer());
+		$wrapper = new Wrapper(sanitizer: new FakeSanitizer());
 		$object = new class {
 			public function __invoke(string $str): string
 			{
@@ -102,7 +101,7 @@ final class ObjectProxyTest extends TestCase
 
 	public function testClosureValue(): void
 	{
-		$wrapper = new Wrapper(sanitizer: new Sanitizer());
+		$wrapper = new Wrapper(sanitizer: new FakeSanitizer());
 		$closure = static fn(): string => '<b>boiler</b><script></script>';
 		$value = new ObjectProxy($closure, $wrapper);
 

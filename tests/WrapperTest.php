@@ -12,7 +12,6 @@ use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
 use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\StringProxy;
-use Duon\Boiler\Sanitizer;
 use Duon\Boiler\Wrapper;
 use Traversable;
 
@@ -131,7 +130,7 @@ final class WrapperTest extends TestCase
 
 	public function testCleanUsesConfiguredSanitizer(): void
 	{
-		$wrapper = new Wrapper(sanitizer: new Sanitizer());
+		$wrapper = new Wrapper(sanitizer: new FakeSanitizer());
 
 		$this->assertSame('<b>boiler</b>', $wrapper->clean('<b>boiler</b><script></script>'));
 	}

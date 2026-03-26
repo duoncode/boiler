@@ -10,7 +10,6 @@ use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Sanitizer;
 use Duon\Boiler\Wrapper;
 use PHPUnit\Framework\Attributes\TestDox;
 
@@ -187,7 +186,7 @@ final class EngineTest extends TestCase
 	{
 		$engine = Engine::create(
 			$this->templates(),
-			wrapper: new Wrapper(sanitizer: new Sanitizer()),
+			wrapper: new Wrapper(sanitizer: new FakeSanitizer()),
 		);
 
 		$this->assertSame(
@@ -217,7 +216,7 @@ final class EngineTest extends TestCase
 		$engine = Engine::create(
 			$this->templates(),
 			['obj' => $this->obj()],
-			wrapper: new Wrapper(sanitizer: new Sanitizer()),
+			wrapper: new Wrapper(sanitizer: new FakeSanitizer()),
 		);
 
 		$this->assertSame(
