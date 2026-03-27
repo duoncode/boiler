@@ -14,9 +14,6 @@ use Override;
  */
 final class StringProxy implements Proxy
 {
-	private const int ESCAPE_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE;
-	private const string ESCAPE_ENCODING = 'UTF-8';
-
 	private ?string $escaped = null;
 
 	public function __construct(
@@ -26,11 +23,7 @@ final class StringProxy implements Proxy
 
 	public function __toString(): string
 	{
-		return $this->escaped ??= $this->wrapper->escape(
-			$this->value,
-			self::ESCAPE_FLAGS,
-			self::ESCAPE_ENCODING,
-		);
+		return $this->escaped ??= $this->wrapper->escape($this->value);
 	}
 
 	#[Override]
