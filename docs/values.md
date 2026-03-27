@@ -41,19 +41,24 @@ arguments inside your own helper logic.
 ## Escape a value explicitly
 
 Use `$this->esc()` when you need to escape a value manually, or when you want to
-override the default flags or encoding:
+select a named escape strategy:
 
 ```php
-$this->esc($value, ENT_NOQUOTES | ENT_HTML401, 'EUC-JP');
+$this->esc($value);
+$this->esc($value, 'html');
 $this->esc(
     value: $value,
-    flags: ENT_NOQUOTES | ENT_HTML401,
-    encoding: 'EUC-JP',
+    strategy: 'html',
 );
 ```
 
+Boiler ships with the `html` strategy. It uses PHP's `htmlspecialchars()` with
+`ENT_QUOTES | ENT_SUBSTITUTE` and `UTF-8`.
+
 `$this->esc()` accepts strings, `Stringable` values, and Boiler's wrapped string
-or object proxies.
+or object proxies. The `strategy` argument is forwarded to the wrapper's
+configured escaper, so custom escaper implementations can expose additional
+strategy names.
 
 ## Sanitize HTML
 

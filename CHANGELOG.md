@@ -7,16 +7,19 @@
 - Removed the built-in `Duon\Boiler\Sanitizer` implementation and the hard dependency on `symfony/html-sanitizer`.
 - Changed `Context::clean()` and `StringProxy::clean()` to use the configured wrapper sanitizer and removed per-call Symfony config support.
 - Changed `clean()` to throw `MissingSanitizerException` when no sanitizer is configured.
+- Replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escape strategies on `Contract\Escaper`, `Contract\Wrapper`, `Context::esc()`, and `Wrapper::escape()`.
 
 ### Added
 
 - Added `Contract\Escaper`, `Contract\Sanitizer`, and `Contract\Wrapper`.
 - Added `Escaper` as the default escaper implementation.
 - Added wrapper injection to `Engine::__construct()`, `Engine::create()`, and `Engine::unescaped()`.
+- Added `Escaper::HTML` as the built-in strategy constant for Boiler's default HTML escaping mode.
 
 ### Changed
 
 - Changed `Wrapper` from a static helper into an instance-based API that drives wrapping, unwrapping, escaping, and sanitizing.
+- Changed `Escaper` to validate configured and requested strategy names and throw `UnexpectedValueException` for unknown strategies.
 
 ## [0.2.0](https://github.com/duonrun/boiler/releases/tag/0.2.0) (2026-03-25)
 
