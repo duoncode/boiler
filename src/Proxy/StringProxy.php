@@ -18,14 +18,11 @@ final class StringProxy implements Proxy
 	private const string ESCAPE_ENCODING = 'UTF-8';
 
 	private ?string $escaped = null;
-	private readonly WrapperContract $wrapper;
 
 	public function __construct(
 		private readonly string $value,
-		WrapperContract $wrapper,
-	) {
-		$this->wrapper = $wrapper;
-	}
+		private readonly WrapperContract $wrapper,
+	) {}
 
 	public function __toString(): string
 	{

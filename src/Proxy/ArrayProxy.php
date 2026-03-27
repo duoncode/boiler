@@ -28,16 +28,14 @@ final class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
 	/** @psalm-var list<array-key> */
 	private array $keys;
 	private int $position;
-	private readonly WrapperContract $wrapper;
 
 	/**
 	 * @psalm-param array<array-key, mixed> $array
 	 */
 	public function __construct(
 		private array $array,
-		WrapperContract $wrapper,
+		private readonly WrapperContract $wrapper,
 	) {
-		$this->wrapper = $wrapper;
 		$this->array = $array;
 		$this->keys = array_keys($array);
 		$this->position = 0;

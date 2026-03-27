@@ -18,14 +18,10 @@ use Traversable;
  */
 final class ObjectProxy implements Proxy
 {
-	private readonly WrapperContract $wrapper;
-
 	public function __construct(
 		private readonly object $value,
-		WrapperContract $wrapper,
+		private readonly WrapperContract $wrapper,
 	) {
-		$this->wrapper = $wrapper;
-
 		if ($this->value instanceof Traversable) {
 			throw new UnexpectedValueException('Traversable objects must be wrapped as iterator proxies');
 		}

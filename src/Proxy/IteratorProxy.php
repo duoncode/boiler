@@ -23,13 +23,12 @@ use Traversable;
  */
 final class IteratorProxy extends IteratorIterator implements Proxy
 {
-	private readonly WrapperContract $wrapper;
-
 	/** @param TIterator $iterator */
-	public function __construct(Traversable $iterator, WrapperContract $wrapper)
-	{
+	public function __construct(
+		Traversable $iterator,
+		private readonly WrapperContract $wrapper,
+	) {
 		parent::__construct($iterator);
-		$this->wrapper = $wrapper;
 	}
 
 	#[Override]
