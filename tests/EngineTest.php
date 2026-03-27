@@ -49,10 +49,9 @@ final class EngineTest extends TestCase
 			wrapper: new Wrapper(new class implements Escaper {
 				public function escape(
 					string $value,
-					int $flags = ENT_QUOTES | ENT_SUBSTITUTE,
-					string $encoding = 'UTF-8',
+					string $strategy = null,
 				): string {
-					return strtoupper(htmlspecialchars($value, $flags, $encoding));
+					return strtoupper(htmlspecialchars($value));
 				}
 			}),
 		);

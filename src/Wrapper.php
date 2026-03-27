@@ -22,9 +22,6 @@ use Traversable;
 /** @api */
 final class Wrapper implements WrapperContract
 {
-	private const int ESCAPE_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE;
-	private const string ESCAPE_ENCODING = 'UTF-8';
-
 	private readonly EscaperContract $escaper;
 
 	public function __construct(
@@ -87,15 +84,14 @@ final class Wrapper implements WrapperContract
 	#[Override]
 	public function escape(
 		mixed $value,
-		int $flags = self::ESCAPE_FLAGS,
-		string $encoding = self::ESCAPE_ENCODING,
+		?string $strategy = null,
 	): string {
 		if ($value instanceof StringProxy) {
-			if ($flags === self::ESCAPE_FLAGS && $encoding === self::ESCAPE_ENCODING) {
+			if ($strategy === null) {
 				return (string) $value;
 			}
 
-			return $this->escaper->escape($value->unwrap(), $flags, $encoding);
+			return $this->escaper->escape($value->unwrap(), $strategy);
 		}
 
 		if ($value instanceof Proxy) {
@@ -104,11 +100,11 @@ final class Wrapper implements WrapperContract
 		}
 
 		if (is_string($value)) {
-			return $this->escaper->escape($value, $flags, $encoding);
+			return $this->escaper->escape($value, $strategy);
 		}
 
 		if ($value instanceof Stringable) {
-			return $this->escaper->escape((string) $value, $flags, $encoding);
+			return $this->escaper->escape((string) $value, $strategy);
 		}
 
 		throw new RuntimeException('Value cannot be escaped as string');

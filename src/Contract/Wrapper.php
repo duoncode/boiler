@@ -13,8 +13,7 @@ interface Wrapper
 
 	public function escape(
 		mixed $value,
-		int $flags = ENT_QUOTES | ENT_SUBSTITUTE,
-		string $encoding = 'UTF-8',
+		?string $strategy = null,
 	): string;
 
 	public function clean(mixed $value): string;

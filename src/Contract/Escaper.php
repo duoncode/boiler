@@ -9,7 +9,6 @@ interface Escaper
 {
 	public function escape(
 		string $value,
-		int $flags,
-		string $encoding,
+		?string $strategy = null,
 	): string;
 }

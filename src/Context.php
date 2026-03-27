@@ -13,9 +13,6 @@ use Stringable;
 /** @api */
 abstract class Context
 {
-	private const int ESCAPE_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE;
-	private const string ESCAPE_ENCODING = 'UTF-8';
-
 	/** @var array<array-key, mixed>|null */
 	private ?array $wrappedContext = null;
 	protected readonly WrapperContract $wrapper;
@@ -108,10 +105,9 @@ abstract class Context
 
 	public function esc(
 		StringProxy|ObjectProxy|string|Stringable $value,
-		int $flags = self::ESCAPE_FLAGS,
-		string $encoding = self::ESCAPE_ENCODING,
+		?string $strategy = null,
 	): string {
-		return $this->wrapper->escape($value, $flags, $encoding);
+		return $this->wrapper->escape($value, $strategy);
 	}
 
 	/** @return array<array-key, mixed> */
