@@ -11,7 +11,7 @@
 ### Added
 
 - Added `Contract\Escaper`, `Contract\Sanitizer`, and `Contract\Wrapper`.
-- Added `HtmlEscaper` as the default escaper implementation.
+- Added `Escaper` as the default escaper implementation.
 - Added wrapper injection to `Engine::__construct()`, `Engine::create()`, and `Engine::unescaped()`.
 
 ### Changed

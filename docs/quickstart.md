@@ -44,7 +44,7 @@ use Duon\Boiler\Engine;
 $engine = Engine::create('/path/to/templates');
 $html = $engine->render('page', ['id' => 13]);
 
-assert($html === '<!doctype html><html lang="en"><body><p>ID 13</p></body></html>');
+assert($html === '<!doctype html><html lang="en"><body><p>ID 13</p></body></html>');               =
 ```
 
 Boiler escapes strings automatically. If `id` were `'<b>13</b>'`, the output
@@ -57,7 +57,7 @@ in mixed PHP and HTML files, and the docs use that style in template examples.
 ## Next steps
 
 - Read [the engine](engine.md) to learn about multiple template directories,
-  namespaces, default values, wrappers, and escape modes.
+  namespaces, default values, and escape modes.
 - Read [displaying values](values.md) to learn when to use `$this->unwrap()`,
   `$this->esc()`, and `$this->clean()`.
 - Read [layouts](layouts.md), [inserts](inserts.md), and [sections](sections.md)

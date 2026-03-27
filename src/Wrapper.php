@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-use Duon\Boiler\Contract\Escaper;
+use Duon\Boiler\Contract\Escaper as EscaperContract;
 use Duon\Boiler\Contract\Sanitizer as SanitizerContract;
 use Duon\Boiler\Contract\Wrapper as WrapperContract;
 use Duon\Boiler\Exception\MissingSanitizerException;
@@ -25,13 +25,13 @@ final class Wrapper implements WrapperContract
 	private const int ESCAPE_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE;
 	private const string ESCAPE_ENCODING = 'UTF-8';
 
-	private readonly Escaper $escaper;
+	private readonly EscaperContract $escaper;
 
 	public function __construct(
-		?Escaper $escaper = null,
+		?EscaperContract $escaper = null,
 		private readonly ?SanitizerContract $sanitizer = null,
 	) {
-		$this->escaper = $escaper ?? new HtmlEscaper();
+		$this->escaper = $escaper ?? new Escaper();
 	}
 
 	#[Override]

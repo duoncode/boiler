@@ -9,7 +9,7 @@ interface Escaper
 {
 	public function escape(
 		string $value,
-		int $flags = ENT_QUOTES | ENT_SUBSTITUTE,
-		string $encoding = 'UTF-8',
+		int $flags,
+		string $encoding,
 	): string;
 }
