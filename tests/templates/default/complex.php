@@ -5,7 +5,7 @@
     <table>
         <?php foreach ($array as $key => $value): ?>
             <tr>
-                <td><?= $this->esc($key); ?></td>
+                <td><?= $this->escape($key); ?></td>
                 <?php foreach ($value as $item): ?>
                     <td><?= $item; ?></td>
                 <?php endforeach ?>

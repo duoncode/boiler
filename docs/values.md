@@ -5,7 +5,7 @@ to templates. This gives you automatic escaping while still allowing objects,
 arrays, and iterators to be used naturally in template code.
 
 Read this page if you want to understand when Boiler escapes values and when you
-need `$this->unwrap()`, `$this->esc()`, or `$this->clean()`.
+need `$this->unwrap()`, `$this->escape()`, or `$this->clean()`.
 
 ## What Boiler escapes automatically
 
@@ -40,13 +40,13 @@ arguments inside your own helper logic.
 
 ## Escape a value explicitly
 
-Use `$this->esc()` when you need to escape a value manually, or when you want to
-select a named escape strategy:
+Use `$this->escape()` when you need to escape a value manually, or when you want
+to select a named escape strategy:
 
 ```php
-$this->esc($value);
-$this->esc($value, 'html');
-$this->esc(
+$this->escape($value);
+$this->escape($value, 'html');
+$this->escape(
     value: $value,
     strategy: 'html',
 );
@@ -55,8 +55,8 @@ $this->esc(
 Boiler ships with the `html` strategy. It uses PHP's `htmlspecialchars()` with
 `ENT_QUOTES | ENT_SUBSTITUTE` and `UTF-8`.
 
-`$this->esc()` accepts strings, `Stringable` values, and Boiler's wrapped string
-or object proxies. The `strategy` argument is forwarded to the wrapper's
+`$this->escape()` accepts strings, `Stringable` values, and Boiler's wrapped
+string or object proxies. The `strategy` argument is forwarded to the wrapper's
 configured escaper, so custom escaper implementations can expose additional
 strategy names.
 
@@ -97,7 +97,7 @@ If you need backend-specific configuration, keep that inside your sanitizer
 implementation.
 
 Use `clean()` for trusted formatting scenarios where you want to keep some HTML.
-Use normal escaped output or `$this->esc()` when plain text output is enough.
+Use normal escaped output or `$this->escape()` when plain text output is enough.
 
 ## Trusted class whitelist
 

@@ -103,7 +103,7 @@ abstract class Context
 		return $this->templateValue($value);
 	}
 
-	public function esc(
+	public function escape(
 		StringProxy|ObjectProxy|string|Stringable $value,
 		?string $strategy = null,
 	): string {

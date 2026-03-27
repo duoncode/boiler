@@ -119,10 +119,10 @@ final class TemplateContextTest extends TestCase
 			}
 		};
 
-		$this->assertSame('&lt;b&gt;Value&lt;/b&gt;', $tmplContext->esc($value));
+		$this->assertSame('&lt;b&gt;Value&lt;/b&gt;', $tmplContext->escape($value));
 	}
 
-	public function testEscCanUseExplicitStrategyForStringProxy(): void
+	public function testEscapeCanUseExplicitStrategyForStringProxy(): void
 	{
 		$template = new Template(
 			$this->templates . 'simple.php',
@@ -144,14 +144,14 @@ final class TemplateContextTest extends TestCase
 		$tmplContext = new TemplateContext($template, [], [], true);
 		$value = $this->stringProxy('<tag>');
 
-		$this->assertSame('&LT;TAG&GT;', $tmplContext->esc($value, 'caps'));
+		$this->assertSame('&LT;TAG&GT;', $tmplContext->escape($value, 'caps'));
 	}
 
-	public function testEscRejectsNonStringableWrappedObjects(): void
+	public function testEscapeRejectsNonStringableWrappedObjects(): void
 	{
 		$this->throws(RuntimeException::class, 'cannot be escaped as string');
 
 		$tmplContext = new TemplateContext($this->template, [], [], true);
-		$tmplContext->esc($this->objectProxy(new class {}));
+		$tmplContext->escape($this->objectProxy(new class {}));
 	}
 }

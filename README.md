@@ -130,7 +130,7 @@ Template helpers available via `$this` inside templates:
   `$this->end()`
 - `$this->section('name', 'default')` / `$this->has('name')`
 - `$this->unwrap($value)` when you need the original value instead of the escaped wrapper
-- `$this->esc($value)` and `$this->clean($value)`
+- `$this->escape($value)` and `$this->clean($value)`
 
 ## Error handling
 
