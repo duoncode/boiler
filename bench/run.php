@@ -473,6 +473,7 @@ function runScenario(string $lifecycle): void
 	resetBenchmarkCaches();
 
 	echo 'Lifecycle: ' . lifecycleLabel($lifecycle) . "\n";
+	echo "           use --lifecycle=(request|worker) to change mode\n";
 	echo str_repeat('-', 70) . "\n\n";
 
 	echo "AUTOMATIC ESCAPING\n";
@@ -517,7 +518,7 @@ function main(): int
 		return 1;
 	}
 
-	echo 'Benchmark: ' . number_format($runs) . ' renders × ' . $iterations . " iterations\n";
+	echo "\nBenchmark: " . number_format($runs) . ' renders × ' . $iterations . " iterations\n";
 	echo str_repeat('=', 70) . "\n\n";
 
 	foreach (lifecycles() as $index => $lifecycle) {
