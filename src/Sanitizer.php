@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Override;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 /** @api */
 final class Sanitizer implements Contract\Sanitizer
 {
 	public const string HTML = 'html';
-	private const string HTML_SANITIZER_CLASS = 'Symfony\\Component\\HtmlSanitizer\\HtmlSanitizer';
-	private const string HTML_SANITIZER_CONFIG_CLASS = 'Symfony\\Component\\HtmlSanitizer\\HtmlSanitizerConfig';
 
 	public function __construct(
 		private readonly string $defaultStrategy = self::HTML,
@@ -32,32 +31,11 @@ final class Sanitizer implements Contract\Sanitizer
 		};
 	}
 
-	/**
-	 * @psalm-suppress UndefinedClass optional dependency
-	 * @psalm-suppress MixedAssignment optional dependency
-	 */
 	private function sanitizeHtml(string $value): string
 	{
-		if (!self::isAvailable()) {
-			throw new RuntimeException('Built-in sanitizer requires symfony/html-sanitizer');
-		}
+		$config = new HtmlSanitizerConfig()->allowSafeElements();
 
-		$configClass = self::HTML_SANITIZER_CONFIG_CLASS;
-		$sanitizerClass = self::HTML_SANITIZER_CLASS;
-		$config = new $configClass();
-		$config = $config->allowSafeElements();
-		$sanitizer = new $sanitizerClass($config);
-		$result = $sanitizer->sanitize($value);
-		assert(is_string($result), 'Built-in sanitizer must return a string');
-
-		return $result;
-	}
-
-	private static function isAvailable(): bool
-	{
-		return (
-			class_exists(self::HTML_SANITIZER_CLASS) && class_exists(self::HTML_SANITIZER_CONFIG_CLASS)
-		);
+		return new HtmlSanitizer($config)->sanitize($value);
 	}
 
 	private static function assertStrategy(string $strategy): void

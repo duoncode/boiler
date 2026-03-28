@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
-use Duon\Boiler\Exception\MissingSanitizerException;
-
 final class StringProxyTest extends TestCase
 {
 	public function testProxyUnwrap(): void
@@ -33,17 +31,9 @@ final class StringProxyTest extends TestCase
 		);
 	}
 
-	public function testProxyCleanUsesAvailableSanitizerOrThrows(): void
+	public function testProxyCleanUsesBuiltinSanitizer(): void
 	{
 		$proxy = $this->stringProxy('<script></script><b>boiler</b>');
-
-		if (!$this->builtinSanitizerAvailable()) {
-			$this->throws(MissingSanitizerException::class, 'No sanitizer configured');
-
-			$proxy->clean();
-
-			return;
-		}
 
 		$this->assertSame('<b>boiler</b>', $proxy->clean());
 	}

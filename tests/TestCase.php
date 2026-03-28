@@ -82,11 +82,6 @@ class TestCase extends BaseTestCase
 		return new Wrapper(sanitizer: $sanitizer);
 	}
 
-	protected function builtinSanitizerAvailable(): bool
-	{
-		return class_exists('Symfony\\Component\\HtmlSanitizer\\HtmlSanitizer');
-	}
-
 	/** @param array<array-key, mixed> $value */
 	protected function arrayProxy(array $value): ArrayProxy
 	{

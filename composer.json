@@ -25,7 +25,8 @@
 		"php": "^8.5"
 	},
 	"require-dev": {
-		"duon/dev": "^3.0"
+		"duon/dev": "^3.0",
+		"symfony/html-sanitizer": "^8.0"
 	},
 	"suggest": {
 		"symfony/html-sanitizer": "Provides Boiler's built-in HTML sanitizer"

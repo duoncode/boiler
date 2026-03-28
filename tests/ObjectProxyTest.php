@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
-use Duon\Boiler\Exception\MissingSanitizerException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\StringProxy;
@@ -105,7 +104,7 @@ final class ObjectProxyTest extends TestCase
 		$this->assertSame('<b>boiler</b>', $value()->clean());
 	}
 
-	public function testCleanUsesAvailableSanitizerOrThrows(): void
+	public function testCleanUsesBuiltinSanitizer(): void
 	{
 		$object = new class {
 			public function html(): string
@@ -114,14 +113,6 @@ final class ObjectProxyTest extends TestCase
 			}
 		};
 		$value = $this->objectProxy($object);
-
-		if (!$this->builtinSanitizerAvailable()) {
-			$this->throws(MissingSanitizerException::class, 'No sanitizer configured');
-
-			$value->html()->clean();
-
-			return;
-		}
 
 		$this->assertSame('<b>boiler</b>', $value->html()->clean());
 	}
