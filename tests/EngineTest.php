@@ -224,15 +224,27 @@ final class EngineTest extends TestCase
 		);
 	}
 
-	public function testCleanRenderingWithoutSanitizerThrows(): void
+	public function testCleanRenderingUsesAvailableSanitizerOrThrows(): void
 	{
-		$this->throws(RenderException::class, 'No sanitizer configured');
-
 		$engine = Engine::create($this->templates());
 
-		$engine->render(
-			'clean',
-			['html' => '<script src="/evil.js"></script><b>boiler</b>'],
+		if (!$this->builtinSanitizerAvailable()) {
+			$this->throws(RenderException::class, 'No sanitizer configured');
+
+			$engine->render(
+				'clean',
+				['html' => '<script src="/evil.js"></script><b>boiler</b>'],
+			);
+
+			return;
+		}
+
+		$this->assertSame(
+			'<b>boiler</b>',
+			$engine->render(
+				'clean',
+				['html' => '<script src="/evil.js"></script><b>boiler</b>'],
+			),
 		);
 	}
 

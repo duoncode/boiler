@@ -93,7 +93,7 @@ Read [displaying values](values.md) for the escaping model.
 ## Customize the wrapper
 
 Pass a custom `Wrapper` when you want to replace Boiler's default escaping or
-provide HTML sanitization for `$this->clean()`:
+provide custom HTML sanitization for `$this->clean()`:
 
 ```php
 use Duon\Boiler\Contract\Sanitizer;
@@ -101,9 +101,11 @@ use Duon\Boiler\Wrapper;
 
 final class AppSanitizer implements Sanitizer
 {
-    public function clean(string $html): string
-    {
-        return strip_tags($html, '<b><i><a>');
+    public function sanitize(
+        string $value,
+        ?string $strategy = null,
+    ): string {
+        return strip_tags($value, '<b><i><a>');
     }
 }
 
@@ -113,8 +115,10 @@ $engine = \Duon\Boiler\Engine::create(
 );
 ```
 
-`Wrapper` accepts an optional escaper and an optional sanitizer. If you call
-`$this->clean()` without configuring a sanitizer, Boiler throws
+`Wrapper` accepts an optional escaper and an optional sanitizer. If
+`symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in
+`Sanitizer` automatically. If you call `$this->clean()` when no custom or
+built-in sanitizer is available, Boiler throws
 `\Duon\Boiler\Exception\MissingSanitizerException`.
 
 ## Control escaping

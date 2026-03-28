@@ -22,13 +22,23 @@ use Traversable;
 /** @api */
 final class Wrapper implements WrapperContract
 {
+	private const string HTML_SANITIZER_CLASS = 'Symfony\\Component\\HtmlSanitizer\\HtmlSanitizer';
+
 	private readonly EscaperContract $escaper;
+	private readonly ?SanitizerContract $sanitizer;
 
 	public function __construct(
 		?EscaperContract $escaper = null,
-		private readonly ?SanitizerContract $sanitizer = null,
+		?SanitizerContract $sanitizer = null,
 	) {
 		$this->escaper = $escaper ?? new Escaper();
+		$this->sanitizer =
+			$sanitizer
+			?? (
+				class_exists(self::HTML_SANITIZER_CLASS)
+					? new Sanitizer()
+					: null
+			);
 	}
 
 	#[Override]
@@ -111,19 +121,21 @@ final class Wrapper implements WrapperContract
 	}
 
 	#[Override]
-	public function clean(mixed $value): string
-	{
+	public function sanitize(
+		mixed $value,
+		?string $strategy = null,
+	): string {
 		if ($value instanceof Proxy) {
 			/** @psalm-suppress MixedAssignment unwrap returns mixed by design */
 			$value = $value->unwrap();
 		}
 
 		if (is_string($value)) {
-			return $this->sanitizer()->clean($value);
+			return $this->sanitizer()->sanitize($value, $strategy);
 		}
 
 		if ($value instanceof Stringable) {
-			return $this->sanitizer()->clean((string) $value);
+			return $this->sanitizer()->sanitize((string) $value, $strategy);
 		}
 
 		throw new RuntimeException('Value cannot be sanitized as string');

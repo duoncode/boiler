@@ -33,11 +33,19 @@ final class StringProxyTest extends TestCase
 		);
 	}
 
-	public function testProxyCleanThrowsWithoutSanitizer(): void
+	public function testProxyCleanUsesAvailableSanitizerOrThrows(): void
 	{
-		$this->throws(MissingSanitizerException::class, 'No sanitizer configured');
+		$proxy = $this->stringProxy('<script></script><b>boiler</b>');
 
-		$this->stringProxy('<b>boiler</b>')->clean();
+		if (!$this->builtinSanitizerAvailable()) {
+			$this->throws(MissingSanitizerException::class, 'No sanitizer configured');
+
+			$proxy->clean();
+
+			return;
+		}
+
+		$this->assertSame('<b>boiler</b>', $proxy->clean());
 	}
 
 	public function testStringValue(): void

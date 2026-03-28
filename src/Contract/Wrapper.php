@@ -16,5 +16,8 @@ interface Wrapper
 		?string $strategy = null,
 	): string;
 
-	public function clean(mixed $value): string;
+	public function sanitize(
+		mixed $value,
+		?string $strategy = null,
+	): string;
 }

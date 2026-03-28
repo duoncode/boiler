@@ -20,6 +20,7 @@ The main differences from Plates are:
   [sections](sections.md)
 - Plain PHP templates with no custom syntax
 - Wrapper-driven escaping and optional HTML sanitization via `$this->clean()`
+  with a custom sanitizer or Symfony-backed built-in support
 - Custom template methods and optional whitelisting of trusted value classes
 - Fully tested and statically analyzed with Psalm level 1
 

@@ -40,8 +40,8 @@ final class StringProxy implements Proxy
 		return strip_tags($this->value, $allowed);
 	}
 
-	public function clean(): string
+	public function clean(?string $strategy = null): string
 	{
-		return $this->wrapper->clean($this->value);
+		return $this->wrapper->sanitize($this->value, $strategy);
 	}
 }

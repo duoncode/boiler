@@ -128,24 +128,24 @@ final class WrapperTest extends TestCase
 		$this->assertSame('&LT;B&GT;BOILER&LT;/B&GT;', (string) $wrapper->wrap('<b>boiler</b>'));
 	}
 
-	public function testCleanUsesConfiguredSanitizer(): void
+	public function testSanitizeUsesConfiguredSanitizer(): void
 	{
 		$wrapper = new Wrapper(sanitizer: new FakeSanitizer());
 
-		$this->assertSame('<b>boiler</b>', $wrapper->clean('<b>boiler</b><script></script>'));
+		$this->assertSame('<b>boiler</b>', $wrapper->sanitize('<b>boiler</b><script></script>'));
 	}
 
-	public function testCleanUnwrapsProxyValues(): void
+	public function testSanitizeUnwrapsProxyValues(): void
 	{
 		$wrapper = new Wrapper(sanitizer: new FakeSanitizer());
 
 		$this->assertSame(
 			'<b>boiler</b>',
-			$wrapper->clean($this->stringProxy('<b>boiler</b><script></script>')),
+			$wrapper->sanitize($this->stringProxy('<b>boiler</b><script></script>')),
 		);
 	}
 
-	public function testCleanSupportsStringableValues(): void
+	public function testSanitizeSupportsStringableValues(): void
 	{
 		$wrapper = new Wrapper(sanitizer: new FakeSanitizer());
 		$value = new class {
@@ -155,20 +155,44 @@ final class WrapperTest extends TestCase
 			}
 		};
 
-		$this->assertSame('<b>boiler</b>', $wrapper->clean($value));
+		$this->assertSame('<b>boiler</b>', $wrapper->sanitize($value));
 	}
 
-	public function testCleanThrowsWithoutSanitizer(): void
+	public function testSanitizePassesStrategyToSanitizer(): void
 	{
-		$this->throws(MissingSanitizerException::class, 'No sanitizer configured');
+		$wrapper = new Wrapper(sanitizer: new class implements \Duon\Boiler\Contract\Sanitizer {
+			public function sanitize(
+				string $value,
+				?string $strategy = null,
+			): string {
+				return $strategy === 'text'
+					? strip_tags($value)
+					: $value;
+			}
+		});
 
-		new Wrapper()->clean('<b>boiler</b>');
+		$this->assertSame('boiler', $wrapper->sanitize('<b>boiler</b>', 'text'));
 	}
 
-	public function testCleanRejectsNonStringableValues(): void
+	public function testSanitizeUsesBuiltinSanitizerWhenAvailable(): void
+	{
+		$wrapper = new Wrapper();
+
+		if (!$this->builtinSanitizerAvailable()) {
+			$this->throws(MissingSanitizerException::class, 'No sanitizer configured');
+
+			$wrapper->sanitize('<b>boiler</b>');
+
+			return;
+		}
+
+		$this->assertSame('<b>boiler</b>', $wrapper->sanitize('<script></script><b>boiler</b>'));
+	}
+
+	public function testSanitizeRejectsNonStringableValues(): void
 	{
 		$this->throws(RuntimeException::class, 'Value cannot be sanitized as string');
 
-		new Wrapper(sanitizer: new FakeSanitizer())->clean(13);
+		new Wrapper(sanitizer: new FakeSanitizer())->sanitize(13);
 	}
 }

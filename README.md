@@ -30,6 +30,13 @@ Other highlights:
 composer require duon/boiler
 ```
 
+Install Symfony's HTML sanitizer when you want Boiler's built-in `$this->clean()`
+support without providing your own sanitizer:
+
+```console
+composer require symfony/html-sanitizer
+```
+
 ## Documentation
 
 Start here: [docs/index.md](docs/index.md).
@@ -110,9 +117,11 @@ use Duon\Boiler\Wrapper;
 
 final class AppSanitizer implements Sanitizer
 {
-    public function clean(string $html): string
-    {
-        return strip_tags($html, '<b><i><a>');
+    public function sanitize(
+        string $value,
+        ?string $strategy = null,
+    ): string {
+        return strip_tags($value, '<b><i><a>');
     }
 }
 
@@ -121,6 +130,9 @@ $engine = Engine::create(
     wrapper: new Wrapper(sanitizer: new AppSanitizer()),
 );
 ```
+
+If `symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in
+`Sanitizer` automatically.
 
 Template helpers available via `$this` inside templates:
 
@@ -143,7 +155,7 @@ Common cases include:
 - path traversal outside configured template roots
 - assigning more than one layout in the same template
 - nested or unclosed section capture blocks
-- calling `$this->clean()` without a configured sanitizer
+- calling `$this->clean()` when no custom or built-in sanitizer is available
 - calling an unknown custom template method
 
 See [rendering templates](docs/rendering.md), [layouts](docs/layouts.md),

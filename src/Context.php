@@ -125,8 +125,9 @@ abstract class Context
 
 	public function clean(
 		StringProxy|ObjectProxy|string|Stringable $value,
+		?string $strategy = null,
 	): string {
-		return $this->wrapper->clean($value);
+		return $this->wrapper->sanitize($value, $strategy);
 	}
 
 	/**

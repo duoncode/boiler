@@ -105,19 +105,25 @@ final class ObjectProxyTest extends TestCase
 		$this->assertSame('<b>boiler</b>', $value()->clean());
 	}
 
-	public function testCleanThrowsWithoutSanitizer(): void
+	public function testCleanUsesAvailableSanitizerOrThrows(): void
 	{
-		$this->throws(MissingSanitizerException::class, 'No sanitizer configured');
-
 		$object = new class {
 			public function html(): string
 			{
-				return '<b>boiler</b>';
+				return '<script></script><b>boiler</b>';
 			}
 		};
 		$value = $this->objectProxy($object);
 
-		$value->html()->clean();
+		if (!$this->builtinSanitizerAvailable()) {
+			$this->throws(MissingSanitizerException::class, 'No sanitizer configured');
+
+			$value->html()->clean();
+
+			return;
+		}
+
+		$this->assertSame('<b>boiler</b>', $value->html()->clean());
 	}
 
 	#[TestDox('Getter throws I')]

@@ -69,8 +69,10 @@ escaping everything:
 <?= $this->clean($html) ?>
 ```
 
-`$this->clean()` uses the sanitizer configured on the engine wrapper. Configure
-that when you create the engine:
+`$this->clean()` uses the sanitizer configured on the engine wrapper. If
+`symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in
+`Sanitizer` automatically. Configure your own sanitizer when you need custom
+rules:
 
 ```php
 use Duon\Boiler\Contract\Sanitizer;
@@ -79,9 +81,11 @@ use Duon\Boiler\Wrapper;
 
 final class CommentSanitizer implements Sanitizer
 {
-    public function clean(string $html): string
-    {
-        return strip_tags($html, '<b><i><a>');
+    public function sanitize(
+        string $value,
+        ?string $strategy = null,
+    ): string {
+        return strip_tags($value, '<b><i><a>');
     }
 }
 
@@ -91,10 +95,10 @@ $engine = Engine::create(
 );
 ```
 
-If no sanitizer is configured, `$this->clean()` and wrapped string
-`->clean()` calls throw `\Duon\Boiler\Exception\MissingSanitizerException`.
-If you need backend-specific configuration, keep that inside your sanitizer
-implementation.
+If no custom or built-in sanitizer is available, `$this->clean()` and wrapped
+string `->clean()` calls throw
+`\Duon\Boiler\Exception\MissingSanitizerException`. If you need
+backend-specific configuration, keep that inside your sanitizer implementation.
 
 Use `clean()` for trusted formatting scenarios where you want to keep some HTML.
 Use normal escaped output or `$this->escape()` when plain text output is enough.

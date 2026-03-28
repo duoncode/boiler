@@ -11,11 +11,13 @@ use Override;
 final class FakeSanitizer implements Sanitizer
 {
 	#[Override]
-	public function clean(string $html): string
-	{
-		$clean = preg_replace('/<script\b[^>]*>.*?<\/script>/is', '', $html);
-		$clean = preg_replace('/\s+on\w+="[^"]*"/i', '', $clean ?? $html);
+	public function sanitize(
+		string $value,
+		?string $strategy = null,
+	): string {
+		$clean = preg_replace('/<script\b[^>]*>.*?<\/script>/is', '', $value);
+		$clean = preg_replace('/\s+on\w+="[^"]*"/i', '', $clean ?? $value);
 
-		return $clean ?? $html;
+		return $clean ?? $value;
 	}
 }

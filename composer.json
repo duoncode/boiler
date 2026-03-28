@@ -27,6 +27,9 @@
 	"require-dev": {
 		"duon/dev": "^3.0"
 	},
+	"suggest": {
+		"symfony/html-sanitizer": "Provides Boiler's built-in HTML sanitizer"
+	},
 	"scripts": {
 		"test": [
 			"./vendor/bin/phpunit --testdox --no-coverage --colors=always"
