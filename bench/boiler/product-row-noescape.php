@@ -1,6 +1,6 @@
 <tr>
     <td><?= $product['id'] ?></td>
-    <td><?= $this->esc($product['name']) ?></td>
+    <td><?= $this->escape($product['name']) ?></td>
     <td>$<?= number_format($product['price'], 2) ?></td>
     <td>
         <?php if ($product['inStock']): ?>
@@ -11,7 +11,7 @@
     </td>
     <td>
         <?php foreach ($product['tags'] as $tag): ?>
-            <span class="tag"><?= $this->esc($tag) ?></span>
+            <span class="tag"><?= $this->escape($tag) ?></span>
         <?php endforeach ?>
     </td>
 </tr>

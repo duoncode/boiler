@@ -90,6 +90,37 @@ as `__toString()`.
 
 Read [displaying values](values.md) for the escaping model.
 
+## Customize the wrapper
+
+Pass a custom `Wrapper` when you want to replace Boiler's default escaping or
+provide custom HTML sanitization for `$this->sanitize()`:
+
+```php
+use Duon\Boiler\Contract\Sanitizer;
+use Duon\Boiler\Wrapper;
+
+final class AppSanitizer implements Sanitizer
+{
+    public function sanitize(
+        string $value,
+        ?string $strategy = null,
+    ): string {
+        return strip_tags($value, '<b><i><a>');
+    }
+}
+
+$engine = \Duon\Boiler\Engine::create(
+    '/path/to/templates',
+    wrapper: new Wrapper(sanitizer: new AppSanitizer()),
+);
+```
+
+`Wrapper` accepts an optional escaper and an optional sanitizer. If
+`symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in
+`Sanitizer` automatically. If you call `$this->sanitize()` when no custom or
+built-in sanitizer is available, Boiler throws
+`\Duon\Boiler\Exception\MissingSanitizerException`.
+
 ## Control escaping
 
 Boiler escapes strings and `Stringable` values by default:

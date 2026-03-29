@@ -21,13 +21,20 @@ Key differences from Plates:
 Other highlights:
 
 - Layouts, inserts/partials, and sections, including append and prepend support
-- Optional HTML sanitization via `symfony/html-sanitizer`
+- Wrapper-driven escaping and optional HTML sanitization helpers
 - Custom template methods and optional whitelisting of trusted value classes
 
 ## Installation
 
 ```console
 composer require duon/boiler
+```
+
+Install Symfony's HTML sanitizer when you want Boiler's built-in `$this->sanitize()`
+support without providing your own sanitizer:
+
+```console
+composer require symfony/html-sanitizer
 ```
 
 ## Documentation
@@ -102,6 +109,31 @@ $engine->render('page');
 $engine->renderEscaped('page');
 ```
 
+Configure output helpers with a custom wrapper:
+
+```php
+use Duon\Boiler\Contract\Sanitizer;
+use Duon\Boiler\Wrapper;
+
+final class AppSanitizer implements Sanitizer
+{
+    public function sanitize(
+        string $value,
+        ?string $strategy = null,
+    ): string {
+        return strip_tags($value, '<b><i><a>');
+    }
+}
+
+$engine = Engine::create(
+    '/path/to/templates',
+    wrapper: new Wrapper(sanitizer: new AppSanitizer()),
+);
+```
+
+If `symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in
+`Sanitizer` automatically.
+
 Template helpers available via `$this` inside templates:
 
 - `$this->layout('layout')`
@@ -110,7 +142,7 @@ Template helpers available via `$this` inside templates:
   `$this->end()`
 - `$this->section('name', 'default')` / `$this->has('name')`
 - `$this->unwrap($value)` when you need the original value instead of the escaped wrapper
-- `$this->esc($value)` and `$this->clean($html)`
+- `$this->escape($value)` and `$this->sanitize($value)`
 
 ## Error handling
 
@@ -123,6 +155,7 @@ Common cases include:
 - path traversal outside configured template roots
 - assigning more than one layout in the same template
 - nested or unclosed section capture blocks
+- calling `$this->sanitize()` when no custom or built-in sanitizer is available
 - calling an unknown custom template method
 
 See [rendering templates](docs/rendering.md), [layouts](docs/layouts.md),

@@ -1,1 +1,1 @@
-<p><?= $this->esc($wrapped); ?></p>
+<p><?= $this->escape($wrapped); ?></p>

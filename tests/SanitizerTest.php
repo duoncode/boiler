@@ -4,62 +4,44 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
+use Duon\Boiler\Contract;
+use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Sanitizer;
-use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 final class SanitizerTest extends TestCase
 {
-	public const MALFORMED = '
-<header>Test</header>
-<aside><div>Test</div></aside>
-<iframe src="example.com"></iframe>
-<nav><ul><li>Test</li></ul></nav>
-<article>
-	<script>console.log("hans");</script>
-	<section>
-		<h1 onclick="console.log("hans");">Test</h1>
-	</section>
-</article>
-<footer>Test</footer>';
-
-	public function testCleanWithConfig(): void
+	public function testSanitizerImplementsContract(): void
 	{
-		$clean = "
-<header>Test</header>
-<aside><div>Test</div></aside>
-
-<nav><ul><li>Test</li></ul></nav>
-<article>
-\t
-	<section>
-		<h1>Test</h1>
-	</section>
-</article>
-<footer>Test</footer>";
-
-		$this->assertSame($clean, new Sanitizer()->clean(self::MALFORMED));
+		$this->assertInstanceOf(Contract\Sanitizer::class, new Sanitizer());
 	}
 
-	public function testCleanWithBlockExtension(): void
+	public function testSanitizesHtmlWithDefaults(): void
 	{
-		$config = new HtmlSanitizerConfig()
-			->allowSafeElements()
-			->blockElement('header')
-			->blockElement('footer')
-			->blockElement('section');
-		$clean = "
-Test
-<aside><div>Test</div></aside>
+		$this->assertSame(
+			'<b>Boiler</b>',
+			new Sanitizer()->sanitize('<script></script><b>Boiler</b>'),
+		);
+	}
 
-<nav><ul><li>Test</li></ul></nav>
-<article>
-\t
-\t
-		<h1>Test</h1>
-\t
-</article>
-Test";
+	public function testCanUseHtmlStrategyExplicitly(): void
+	{
+		$this->assertSame(
+			'<b>Boiler</b>',
+			new Sanitizer()->sanitize('<script></script><b>Boiler</b>', Sanitizer::HTML),
+		);
+	}
 
-		$this->assertSame($clean, new Sanitizer($config)->clean(self::MALFORMED));
+	public function testRejectsUnknownStrategy(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'Unknown sanitizer strategy `xml`');
+
+		new Sanitizer()->sanitize('<b>Boiler</b>', 'xml');
+	}
+
+	public function testRejectsUnknownDefaultStrategy(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'Unknown sanitizer strategy `xml`');
+
+		new Sanitizer('xml');
 	}
 }

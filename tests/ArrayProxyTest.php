@@ -16,28 +16,28 @@ final class ArrayProxyTest extends TestCase
 {
 	public function testCount(): void
 	{
-		$arrval = new ArrayProxy([1, 2, 3]);
+		$arrval = $this->arrayProxy([1, 2, 3]);
 
 		$this->assertSame(3, count($arrval));
 	}
 
 	public function testUnwrap(): void
 	{
-		$arrval = new ArrayProxy(['string', 2]);
+		$arrval = $this->arrayProxy(['string', 2]);
 
 		$this->assertSame(['string', 2], $arrval->unwrap());
 	}
 
 	public function testHelperExists(): void
 	{
-		$arrval = new ArrayProxy([1, 2]);
+		$arrval = $this->arrayProxy([1, 2]);
 
 		$this->assertSame(true, $arrval->exists(0));
 		$this->assertSame(true, $arrval->exists(1));
 		$this->assertSame(false, $arrval->exists(2));
 		$this->assertSame(false, $arrval->exists('test'));
 
-		$arrval = new ArrayProxy([1, 'test' => 2]);
+		$arrval = $this->arrayProxy([1, 'test' => 2]);
 
 		$this->assertSame(true, $arrval->exists(0));
 		$this->assertSame(false, $arrval->exists(1));
@@ -47,8 +47,8 @@ final class ArrayProxyTest extends TestCase
 
 	public function testHelperMerge(): void
 	{
-		$arrval1 = new ArrayProxy([1, 2]);
-		$arrval2 = new ArrayProxy([3, 4]);
+		$arrval1 = $this->arrayProxy([1, 2]);
+		$arrval2 = $this->arrayProxy([3, 4]);
 
 		$this->assertSame([1, 2, 3, 4], $arrval1->merge($arrval2)->unwrap());
 		$this->assertSame([1, 2, 5, 6], $arrval1->merge([5, 6])->unwrap());
@@ -58,35 +58,35 @@ final class ArrayProxyTest extends TestCase
 
 	public function testHelperMap(): void
 	{
-		$arrval = new ArrayProxy(['str1', 'str2']);
+		$arrval = $this->arrayProxy(['str1', 'str2']);
 
 		$this->assertSame(['str1plus', 'str2plus'], $arrval->map(static fn($v) => $v . 'plus')->unwrap());
 	}
 
 	public function testHelperFilter(): void
 	{
-		$arrval = new ArrayProxy([1, 3, 4, 2]);
+		$arrval = $this->arrayProxy([1, 3, 4, 2]);
 
 		$this->assertSame([1, 2], array_values($arrval->filter(static fn($v) => $v < 3)->unwrap()));
 	}
 
 	public function testHelperReduce(): void
 	{
-		$arrval = new ArrayProxy([1, 3, 4, 2]);
+		$arrval = $this->arrayProxy([1, 3, 4, 2]);
 
 		$this->assertSame(10, $arrval->reduce(static fn($c, $v) => $c + $v, 0));
 
-		$arrval = new ArrayProxy(['a', 'b', 'c']);
+		$arrval = $this->arrayProxy(['a', 'b', 'c']);
 
 		$this->assertSame('abc', $arrval->reduce(static fn($c, $v) => $c . $v, '')->unwrap());
 	}
 
 	public function testHelperSorted(): void
 	{
-		$arrval = new ArrayProxy([1, 3, 4, 2]);
+		$arrval = $this->arrayProxy([1, 3, 4, 2]);
 		$this->assertSame([1, 2, 3, 4], $arrval->sorted()->unwrap());
 
-		$arrval = new ArrayProxy(['a' => 3, 'b' => 1, 'c' => 2]);
+		$arrval = $this->arrayProxy(['a' => 3, 'b' => 1, 'c' => 2]);
 		$this->assertSame([1, 2, 3], $arrval->sorted()->unwrap());
 		$this->assertSame([1, 2, 3], $arrval->sorted('  ')->unwrap());
 		$this->assertSame([3, 2, 1], $arrval->sorted('r')->unwrap());
@@ -95,7 +95,7 @@ final class ArrayProxyTest extends TestCase
 		// Check if original value is preserved
 		$this->assertSame(['a' => 3, 'b' => 1, 'c' => 2], $arrval->unwrap());
 
-		$arrval = new ArrayProxy(['b' => 3, 'c' => 1, 'a' => 2]);
+		$arrval = $this->arrayProxy(['b' => 3, 'c' => 1, 'a' => 2]);
 		$this->assertSame(['a' => 2, 'b' => 3, 'c' => 1], $arrval->sorted('k')->unwrap());
 		$this->assertSame(['c' => 1, 'b' => 3, 'a' => 2], $arrval->sorted('kr')->unwrap());
 	}
@@ -104,13 +104,13 @@ final class ArrayProxyTest extends TestCase
 	{
 		$this->throws(UnexpectedValueException::class);
 
-		$arrval = new ArrayProxy(['B', 'a']);
+		$arrval = $this->arrayProxy(['B', 'a']);
 		$arrval->sorted('t');
 	}
 
 	public function testHelperSortedUserdefined(): void
 	{
-		$arrval = new ArrayProxy(['B', 'a', 'C', 'c', 'A', 'b']);
+		$arrval = $this->arrayProxy(['B', 'a', 'C', 'c', 'A', 'b']);
 		$this->assertSame(
 			['a', 'A', 'B', 'b', 'C', 'c'],
 			$arrval
@@ -156,7 +156,7 @@ final class ArrayProxyTest extends TestCase
 	{
 		$this->throws(UnexpectedValueException::class);
 
-		$arrval = new ArrayProxy(['B', 'a']);
+		$arrval = $this->arrayProxy(['B', 'a']);
 		$arrval->sorted('ut', static fn($a, $b) => strtolower($a) > strtolower($b));
 	}
 
@@ -164,13 +164,13 @@ final class ArrayProxyTest extends TestCase
 	{
 		$this->throws(RuntimeException::class);
 
-		$arrval = new ArrayProxy(['B', 'a']);
+		$arrval = $this->arrayProxy(['B', 'a']);
 		$arrval->sorted('u');
 	}
 
 	public function testArrayAccess(): void
 	{
-		$arrval = new ArrayProxy([1, 2, 'key' => 3]);
+		$arrval = $this->arrayProxy([1, 2, 'key' => 3]);
 
 		$this->assertSame(1, $arrval[0]);
 		$this->assertSame(2, $arrval[1]);
@@ -179,7 +179,7 @@ final class ArrayProxyTest extends TestCase
 
 	public function testOffsetExistsUsesArrayKeyExistsSemantics(): void
 	{
-		$arrval = new ArrayProxy([1, null]);
+		$arrval = $this->arrayProxy([1, null]);
 
 		$this->assertTrue($arrval->offsetExists(0));
 		$this->assertTrue($arrval->offsetExists(1));
@@ -188,7 +188,7 @@ final class ArrayProxyTest extends TestCase
 
 	public function testIteration(): void
 	{
-		$arrval = new ArrayProxy([1, 2, 3]);
+		$arrval = $this->arrayProxy([1, 2, 3]);
 		$new = [];
 
 		foreach ($arrval as $val) {
@@ -200,7 +200,7 @@ final class ArrayProxyTest extends TestCase
 
 	public function testNullValue(): void
 	{
-		$arrval = new ArrayProxy([1, null]);
+		$arrval = $this->arrayProxy([1, null]);
 
 		$this->assertSame(1, $arrval[0]);
 		$this->assertSame(null, $arrval[1]);
@@ -208,7 +208,7 @@ final class ArrayProxyTest extends TestCase
 
 	public function testSetValue(): void
 	{
-		$arrval = new ArrayProxy([1, 2, 3]);
+		$arrval = $this->arrayProxy([1, 2, 3]);
 		$arrval[3] = 44;
 		$arrval[] = 55;
 
@@ -217,7 +217,7 @@ final class ArrayProxyTest extends TestCase
 
 	public function testSetValueWithStringKey(): void
 	{
-		$arrval = new ArrayProxy(['a' => 1, 'b' => 2]);
+		$arrval = $this->arrayProxy(['a' => 1, 'b' => 2]);
 		$arrval['c'] = 3;
 
 		$this->assertSame(['a' => 1, 'b' => 2, 'c' => 3], $arrval->unwrap());
@@ -225,7 +225,7 @@ final class ArrayProxyTest extends TestCase
 
 	public function testSetValueUpdatesPreviouslyAccessedOffset(): void
 	{
-		$arrval = new ArrayProxy(['before']);
+		$arrval = $this->arrayProxy(['before']);
 		$this->assertSame('before', $arrval[0]->unwrap());
 
 		$arrval[0] = 'after';
@@ -235,7 +235,7 @@ final class ArrayProxyTest extends TestCase
 
 	public function testUnsetValue(): void
 	{
-		$arrval = new ArrayProxy([1, 2, 3]);
+		$arrval = $this->arrayProxy([1, 2, 3]);
 		unset($arrval[1]);
 
 		$this->assertSame([0 => 1, 2 => 3], $arrval->unwrap());
@@ -253,7 +253,7 @@ final class ArrayProxyTest extends TestCase
 		$iterator = (static function () {
 			yield 1;
 		})();
-		$arrval = new ArrayProxy(['string', $obj, $stringable, [1, 2], $iterator]);
+		$arrval = $this->arrayProxy(['string', $obj, $stringable, [1, 2], $iterator]);
 
 		$this->assertInstanceOf(StringProxy::class, $arrval[0]);
 		$this->assertInstanceOf(ObjectProxy::class, $arrval[1]);
@@ -274,7 +274,7 @@ final class ArrayProxyTest extends TestCase
 		$iterator = (static function () {
 			yield 1;
 		})();
-		$arrval = new ArrayProxy(['string', $obj, $stringable, [1, 2], $iterator]);
+		$arrval = $this->arrayProxy(['string', $obj, $stringable, [1, 2], $iterator]);
 
 		$new = [];
 
@@ -296,7 +296,7 @@ final class ArrayProxyTest extends TestCase
 
 	public function testNestedHahns(): void
 	{
-		$arrval = new ArrayProxy([['first'], ['second', 'third']]);
+		$arrval = $this->arrayProxy([['first'], ['second', 'third']]);
 
 		$this->assertInstanceOf(ArrayProxy::class, $arrval[0]);
 		$this->assertInstanceOf(StringProxy::class, $arrval[0][0]);
@@ -309,7 +309,7 @@ final class ArrayProxyTest extends TestCase
 	{
 		$this->throws(OutOfBoundsException::class, 'Undefined array key 4');
 
-		$arrval = new ArrayProxy([1, 2, 3]);
+		$arrval = $this->arrayProxy([1, 2, 3]);
 		$arrval[4];
 	}
 
@@ -317,7 +317,7 @@ final class ArrayProxyTest extends TestCase
 	{
 		$this->throws(OutOfBoundsException::class, "Undefined array key 'key'");
 
-		$arrval = new ArrayProxy([1, 2, 3]);
+		$arrval = $this->arrayProxy([1, 2, 3]);
 		$arrval['key'];
 	}
 }

@@ -6,7 +6,6 @@ namespace Duon\Boiler\Tests;
 
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\StringProxy;
 use PHPUnit\Framework\Attributes\TestDox;
 use ValueError;
@@ -16,7 +15,7 @@ final class ObjectProxyTest extends TestCase
 	public function testProxyUnwrap(): void
 	{
 		$object = new class {};
-		$value = new ObjectProxy($object);
+		$value = $this->objectProxy($object);
 
 		$this->assertSame($object, $value->unwrap());
 	}
@@ -25,7 +24,7 @@ final class ObjectProxyTest extends TestCase
 	{
 		$this->throws(UnexpectedValueException::class, 'iterator proxies');
 
-		new ObjectProxy(new \ArrayIterator([]));
+		$this->objectProxy(new \ArrayIterator([]));
 	}
 
 	public function testStringableValue(): void
@@ -43,7 +42,7 @@ final class ObjectProxyTest extends TestCase
 				return $this->value . $this->value;
 			}
 		};
-		$value = new ObjectProxy($stringable);
+		$value = $this->objectProxy($stringable);
 
 		$this->assertSame('&lt;b&gt;boiler&lt;/b&gt;', (string) $value);
 		$this->assertSame($stringable, $value->unwrap());
@@ -68,13 +67,13 @@ final class ObjectProxyTest extends TestCase
 				return '<b>boiler</b><script></script>';
 			}
 		};
-		$value = new ObjectProxy($object);
+		$value = $this->objectProxy($object, new FakeSanitizer());
 
 		$this->assertSame(
 			'&lt;b&gt;boiler&lt;/b&gt;&lt;script&gt;&lt;/script&gt;',
 			(string) $value->html(),
 		);
-		$this->assertSame('<b>boiler</b>', $value->html()->clean());
+		$this->assertSame('<b>boiler</b>', $value->html()->sanitize());
 		$this->assertSame('&lt;i&gt;test&lt;/i&gt;', (string) $value('test'));
 	}
 
@@ -82,7 +81,7 @@ final class ObjectProxyTest extends TestCase
 	{
 		$this->throws(RuntimeException::class, 'not stringable');
 
-		$value = new ObjectProxy(new class {});
+		$value = $this->objectProxy(new class {});
 		(string) $value;
 	}
 
@@ -91,7 +90,7 @@ final class ObjectProxyTest extends TestCase
 		$this->throws(RuntimeException::class, 'No such method');
 
 		$object = new class {};
-		$value = new ObjectProxy($object);
+		$value = $this->objectProxy($object);
 
 		$value();
 	}
@@ -99,10 +98,23 @@ final class ObjectProxyTest extends TestCase
 	public function testClosureValue(): void
 	{
 		$closure = static fn(): string => '<b>boiler</b><script></script>';
-		$value = new ObjectProxy($closure);
+		$value = $this->objectProxy($closure, new FakeSanitizer());
 
 		$this->assertSame('&lt;b&gt;boiler&lt;/b&gt;&lt;script&gt;&lt;/script&gt;', (string) $value());
-		$this->assertSame('<b>boiler</b>', $value()->clean());
+		$this->assertSame('<b>boiler</b>', $value()->sanitize());
+	}
+
+	public function testSanitizeUsesBuiltinSanitizer(): void
+	{
+		$object = new class {
+			public function html(): string
+			{
+				return '<script></script><b>boiler</b>';
+			}
+		};
+		$value = $this->objectProxy($object);
+
+		$this->assertSame('<b>boiler</b>', $value->html()->sanitize());
 	}
 
 	#[TestDox('Getter throws I')]
@@ -110,7 +122,7 @@ final class ObjectProxyTest extends TestCase
 	{
 		$this->throws(RuntimeException::class, 'No such property');
 
-		$value = new ObjectProxy(new class {
+		$value = $this->objectProxy(new class {
 			public function __toString(): string
 			{
 				return 'test';
@@ -125,7 +137,7 @@ final class ObjectProxyTest extends TestCase
 		$this->throws(RuntimeException::class, 'No such property');
 
 		$obj = new class {};
-		$value = new ObjectProxy($obj);
+		$value = $this->objectProxy($obj);
 		$value->test;
 	}
 
@@ -134,7 +146,7 @@ final class ObjectProxyTest extends TestCase
 	{
 		$this->throws(RuntimeException::class, 'No such property');
 
-		$value = new ObjectProxy(new class {
+		$value = $this->objectProxy(new class {
 			public function __toString(): string
 			{
 				return 'test';
@@ -156,7 +168,7 @@ final class ObjectProxyTest extends TestCase
 				}
 			}
 		};
-		$value = new ObjectProxy($obj);
+		$value = $this->objectProxy($obj);
 		$value->test = null;
 	}
 
@@ -164,7 +176,7 @@ final class ObjectProxyTest extends TestCase
 	{
 		$this->throws(RuntimeException::class, 'No such method');
 
-		$value = new ObjectProxy(new class {
+		$value = $this->objectProxy(new class {
 			public function __toString(): string
 			{
 				return 'test';

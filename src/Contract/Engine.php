@@ -9,6 +9,8 @@ interface Engine extends MethodRegister
 {
 	public bool $autoescape { get; }
 
+	public function wrapper(): Wrapper;
+
 	/** @psalm-param non-empty-string $path */
 	public function template(string $path): Template;
 

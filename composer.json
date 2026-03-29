@@ -22,11 +22,14 @@
 		}
 	},
 	"require": {
-		"php": "^8.5",
-		"symfony/html-sanitizer": "^8.0"
+		"php": "^8.5"
 	},
 	"require-dev": {
-		"duon/dev": "^3.0"
+		"duon/dev": "^3.0",
+		"symfony/html-sanitizer": "^8.0"
+	},
+	"suggest": {
+		"symfony/html-sanitizer": "Provides Boiler's built-in HTML sanitizer"
 	},
 	"scripts": {
 		"test": [
@@ -39,8 +42,8 @@
 			"./vendor/bin/mago lint"
 		],
 		"coverage": [
-			"php -d xdebug.mode=coverage ./vendor/bin/phpunit --testdox --path-coverage --coverage-text --coverage-php=coverage/cover.php --colors=always",
-			"./vendor/bin/coverlyzer coverage/cover.php"
+			"php -d xdebug.mode=coverage ./vendor/bin/phpunit --testdox --path-coverage --coverage-text --coverage-php=.coverage/cover.php --colors=always",
+			"./vendor/bin/coverlyzer .coverage/cover.php"
 		],
 		"ci": [
 			"composer lint",

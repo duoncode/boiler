@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Proxy;
 
-use Duon\Boiler\Sanitizer;
+use Duon\Boiler\Contract\Wrapper;
 use Override;
-use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 /**
  * @api
@@ -15,22 +14,16 @@ use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
  */
 final class StringProxy implements Proxy
 {
-	private const int ESCAPE_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE;
-	private const string ESCAPE_ENCODING = 'UTF-8';
-
 	private ?string $escaped = null;
 
 	public function __construct(
 		private readonly string $value,
+		private readonly Wrapper $wrapper,
 	) {}
 
 	public function __toString(): string
 	{
-		return $this->escaped ??= htmlspecialchars(
-			$this->value,
-			self::ESCAPE_FLAGS,
-			self::ESCAPE_ENCODING,
-		);
+		return $this->escaped ??= $this->wrapper->escape($this->value);
 	}
 
 	#[Override]
@@ -47,9 +40,8 @@ final class StringProxy implements Proxy
 		return strip_tags($this->value, $allowed);
 	}
 
-	public function clean(
-		?HtmlSanitizerConfig $config = null,
-	): string {
-		return new Sanitizer($config)->clean($this->value);
+	public function sanitize(?string $strategy = null): string
+	{
+		return $this->wrapper->sanitize($this->value, $strategy);
 	}
 }

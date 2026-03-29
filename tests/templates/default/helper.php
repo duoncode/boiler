@@ -1,3 +1,3 @@
-<?= $this->esc('<script>') ?>
-<?= $this->clean('<script>console.log("evil");</script><b>clean</b>'); ?>
+<?= $this->escape('<script>') ?>
+<?= $this->sanitize('<script>console.log("evil");</script><b>clean</b>'); ?>
 

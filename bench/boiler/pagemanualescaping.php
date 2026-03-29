@@ -1,16 +1,16 @@
 <?php $this->layout('layout') ?>
 
-<h1><?= $this->esc($title) ?></h1>
+<h1><?= $this->escape($title) ?></h1>
 
 <?= $announcement ?>
 
 <section class="user-profile">
-    <img src="<?= $this->esc($user['profile']['avatar']) ?>" alt="<?= $this->esc($user['name']) ?>">
+    <img src="<?= $this->escape($user['profile']['avatar']) ?>" alt="<?= $this->escape($user['name']) ?>">
     <div>
-        <h3><?= $this->esc($user['name']) ?></h3>
-        <p><?= $this->esc($user['profile']['bio']) ?></p>
-        <p><?= $this->esc($user['profile']['location']) ?></p>
-        <p>Email: <?= $this->esc($user['email']) ?></p>
+        <h3><?= $this->escape($user['name']) ?></h3>
+        <p><?= $this->escape($user['profile']['bio']) ?></p>
+        <p><?= $this->escape($user['profile']['location']) ?></p>
+        <p>Email: <?= $this->escape($user['email']) ?></p>
     </div>
 </section>
 

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Proxy;
 
+use Duon\Boiler\Contract\Wrapper;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Wrapper;
 use Override;
 use Stringable;
 use Traversable;
@@ -18,11 +18,9 @@ use Traversable;
  */
 final class ObjectProxy implements Proxy
 {
-	private const int ESCAPE_FLAGS = ENT_QUOTES | ENT_SUBSTITUTE;
-	private const string ESCAPE_ENCODING = 'UTF-8';
-
 	public function __construct(
 		private readonly object $value,
+		private readonly Wrapper $wrapper,
 	) {
 		if ($this->value instanceof Traversable) {
 			throw new UnexpectedValueException('Traversable objects must be wrapped as iterator proxies');
@@ -35,17 +33,13 @@ final class ObjectProxy implements Proxy
 			throw new RuntimeException('Wrapped object is not stringable');
 		}
 
-		return htmlspecialchars(
-			(string) $this->value,
-			self::ESCAPE_FLAGS,
-			self::ESCAPE_ENCODING,
-		);
+		return $this->wrapper->escape($this->value);
 	}
 
 	public function __get(string $name): mixed
 	{
 		if ($this->hasPublicProperty($name)) {
-			return Wrapper::wrap($this->value->{$name});
+			return $this->wrapper->wrap($this->value->{$name});
 		}
 
 		throw new RuntimeException('No such property');
@@ -65,7 +59,7 @@ final class ObjectProxy implements Proxy
 	public function __call(string $name, array $args): mixed
 	{
 		if (is_callable([$this->value, $name])) {
-			return Wrapper::wrap($this->value->{$name}(...$args));
+			return $this->wrapper->wrap($this->value->{$name}(...$args));
 		}
 
 		throw new RuntimeException('No such method');
@@ -74,7 +68,7 @@ final class ObjectProxy implements Proxy
 	public function __invoke(mixed ...$args): mixed
 	{
 		if (is_callable($this->value)) {
-			return Wrapper::wrap(($this->value)(...$args));
+			return $this->wrapper->wrap(($this->value)(...$args));
 		}
 
 		throw new RuntimeException('No such method');

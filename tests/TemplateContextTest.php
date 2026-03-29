@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
+use Duon\Boiler\Contract\Escaper;
+use Duon\Boiler\Engine;
 use Duon\Boiler\Exception\RuntimeException;
-use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\StringProxy;
 use Duon\Boiler\Template;
 use Duon\Boiler\TemplateContext;
+use Duon\Boiler\Wrapper;
 
 final class TemplateContextTest extends TestCase
 {
@@ -117,22 +119,39 @@ final class TemplateContextTest extends TestCase
 			}
 		};
 
-		$this->assertSame('&lt;b&gt;Value&lt;/b&gt;', $tmplContext->esc($value));
+		$this->assertSame('&lt;b&gt;Value&lt;/b&gt;', $tmplContext->escape($value));
 	}
 
-	public function testEscCanOverrideFlagsForStringProxy(): void
+	public function testEscapeCanUseExplicitStrategyForStringProxy(): void
 	{
-		$tmplContext = new TemplateContext($this->template, [], [], true);
-		$value = new StringProxy('"quoted" & <tag>');
+		$template = new Template(
+			$this->templates . 'simple.php',
+			engine: Engine::create(
+				$this->templates,
+				wrapper: new Wrapper(new class implements Escaper {
+					public function escape(
+						string $value,
+						?string $strategy = null,
+					): string {
+						return match ($strategy) {
+							'caps' => strtoupper(htmlspecialchars($value)),
+							default => htmlspecialchars($value),
+						};
+					}
+				}),
+			),
+		);
+		$tmplContext = new TemplateContext($template, [], [], true);
+		$value = $this->stringProxy('<tag>');
 
-		$this->assertSame('"quoted" &amp; &lt;tag&gt;', $tmplContext->esc($value, ENT_NOQUOTES));
+		$this->assertSame('&LT;TAG&GT;', $tmplContext->escape($value, 'caps'));
 	}
 
-	public function testEscRejectsNonStringableWrappedObjects(): void
+	public function testEscapeRejectsNonStringableWrappedObjects(): void
 	{
 		$this->throws(RuntimeException::class, 'cannot be escaped as string');
 
 		$tmplContext = new TemplateContext($this->template, [], [], true);
-		$tmplContext->esc(new ObjectProxy(new class {}));
+		$tmplContext->escape($this->objectProxy(new class {}));
 	}
 }

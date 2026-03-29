@@ -5,7 +5,7 @@ to templates. This gives you automatic escaping while still allowing objects,
 arrays, and iterators to be used naturally in template code.
 
 Read this page if you want to understand when Boiler escapes values and when you
-need `$this->unwrap()`, `$this->esc()`, or `$this->clean()`.
+need `$this->unwrap()`, `$this->escape()`, or `$this->sanitize()`.
 
 ## What Boiler escapes automatically
 
@@ -40,43 +40,68 @@ arguments inside your own helper logic.
 
 ## Escape a value explicitly
 
-Use `$this->esc()` when you need to escape a value manually, or when you want to
-override the default flags or encoding:
+Use `$this->escape()` when you need to escape a value manually, or when you want
+to select a named escape strategy:
 
 ```php
-$this->esc($value, ENT_NOQUOTES | ENT_HTML401, 'EUC-JP');
-$this->esc(
+$this->escape($value);
+$this->escape($value, 'html');
+$this->escape(
     value: $value,
-    flags: ENT_NOQUOTES | ENT_HTML401,
-    encoding: 'EUC-JP',
+    strategy: 'html',
 );
 ```
 
-`$this->esc()` accepts strings, `Stringable` values, and Boiler's wrapped string
-or object proxies.
+Boiler ships with the `html` strategy. It uses PHP's `htmlspecialchars()` with
+`ENT_QUOTES | ENT_SUBSTITUTE` and `UTF-8`.
+
+`$this->escape()` accepts strings, `Stringable` values, and Boiler's wrapped
+string or object proxies. The `strategy` argument is forwarded to the wrapper's
+configured escaper, so custom escaper implementations can expose additional
+strategy names.
 
 ## Sanitize HTML
 
-Use `$this->clean()` when you want to allow a safe subset of HTML instead of
+Use `$this->sanitize()` when you want to allow a safe subset of HTML instead of
 escaping everything:
 
 ```php
-<?= $this->clean($html) ?>
+<?= $this->sanitize($html) ?>
 ```
 
-Boiler uses `symfony/html-sanitizer` under the hood. You can also pass a custom
-`HtmlSanitizerConfig`:
+`$this->sanitize()` uses the sanitizer configured on the engine wrapper. If
+`symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in
+`Sanitizer` automatically. Configure your own sanitizer when you need custom
+rules:
 
 ```php
-use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
+use Duon\Boiler\Contract\Sanitizer;
+use Duon\Boiler\Engine;
+use Duon\Boiler\Wrapper;
 
-$config = (new HtmlSanitizerConfig())->allowElement('b');
+final class CommentSanitizer implements Sanitizer
+{
+    public function sanitize(
+        string $value,
+        ?string $strategy = null,
+    ): string {
+        return strip_tags($value, '<b><i><a>');
+    }
+}
 
-echo $this->clean($html, $config);
+$engine = Engine::create(
+    '/path/to/templates',
+    wrapper: new Wrapper(sanitizer: new CommentSanitizer()),
+);
 ```
 
-Use `clean()` for trusted formatting scenarios where you want to keep some HTML.
-Use normal escaped output or `$this->esc()` when plain text output is enough.
+If no custom or built-in sanitizer is available, `$this->sanitize()` and wrapped
+string `->sanitize()` calls throw
+`\Duon\Boiler\Exception\MissingSanitizerException`. If you need
+backend-specific configuration, keep that inside your sanitizer implementation.
+
+Use `sanitize()` for trusted formatting scenarios where you want to keep some HTML.
+Use normal escaped output or `$this->escape()` when plain text output is enough.
 
 ## Trusted class whitelist
 
@@ -120,4 +145,4 @@ In that mode:
 
 - `<?= $value ?>` outputs unescaped string content
 - `$this->unwrap()` usually returns the same value you already have
-- `$this->clean()` is still available when you want sanitization
+- `$this->sanitize()` is still available when you want sanitization
