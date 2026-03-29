@@ -6,7 +6,7 @@ namespace Duon\Boiler\Proxy;
 
 use ArrayAccess;
 use Countable;
-use Duon\Boiler\Contract\Wrapper as WrapperContract;
+use Duon\Boiler\Contract\Wrapper;
 use Duon\Boiler\Exception\OutOfBoundsException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
@@ -34,7 +34,7 @@ final class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
 	 */
 	public function __construct(
 		private array $array,
-		private readonly WrapperContract $wrapper,
+		private readonly Wrapper $wrapper,
 	) {
 		$this->array = $array;
 		$this->keys = array_keys($array);

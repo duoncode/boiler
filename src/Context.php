@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-use Duon\Boiler\Contract\Wrapper as WrapperContract;
+use Duon\Boiler\Contract\Wrapper;
 use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\Proxy;
 use Duon\Boiler\Proxy\StringProxy;
@@ -15,7 +15,7 @@ abstract class Context
 {
 	/** @var array<array-key, mixed>|null */
 	private ?array $wrappedContext = null;
-	protected readonly WrapperContract $wrapper;
+	protected readonly Wrapper $wrapper;
 
 	/**
 	 * @psalm-param list<class-string> $whitelist

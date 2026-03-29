@@ -7,5 +7,8 @@ namespace Duon\Boiler\Contract;
 /** @api */
 interface Sanitizer
 {
-	public function sanitize(string $value, ?string $strategy = null): string;
+	public function sanitize(
+		string $value,
+		?string $strategy = null,
+	): string;
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
-use Duon\Boiler\Contract\Escaper as EscaperContract;
+use Duon\Boiler\Contract\Escaper;
 use Duon\Boiler\Engine;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Proxy\StringProxy;
@@ -128,7 +128,7 @@ final class TemplateContextTest extends TestCase
 			$this->templates . 'simple.php',
 			engine: Engine::create(
 				$this->templates,
-				wrapper: new Wrapper(new class implements EscaperContract {
+				wrapper: new Wrapper(new class implements Escaper {
 					public function escape(
 						string $value,
 						?string $strategy = null,

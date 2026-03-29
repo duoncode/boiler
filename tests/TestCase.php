@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
-use Duon\Boiler\Contract\Sanitizer as SanitizerContract;
+use Duon\Boiler\Contract\Sanitizer;
 use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
 use Duon\Boiler\Proxy\ObjectProxy;
@@ -77,7 +77,7 @@ class TestCase extends BaseTestCase
 		}
 	}
 
-	protected function wrapper(?SanitizerContract $sanitizer = null): Wrapper
+	protected function wrapper(?Sanitizer $sanitizer = null): Wrapper
 	{
 		return new Wrapper(sanitizer: $sanitizer);
 	}
@@ -95,14 +95,14 @@ class TestCase extends BaseTestCase
 
 	protected function objectProxy(
 		object $value,
-		?SanitizerContract $sanitizer = null,
+		?Sanitizer $sanitizer = null,
 	): ObjectProxy {
 		return new ObjectProxy($value, $this->wrapper($sanitizer));
 	}
 
 	protected function stringProxy(
 		string $value,
-		?SanitizerContract $sanitizer = null,
+		?Sanitizer $sanitizer = null,
 	): StringProxy {
 		return new StringProxy($value, $this->wrapper($sanitizer));
 	}

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-use Duon\Boiler\Contract\Escaper as EscaperContract;
-use Duon\Boiler\Contract\Sanitizer as SanitizerContract;
-use Duon\Boiler\Contract\Wrapper as WrapperContract;
 use Duon\Boiler\Exception\MissingSanitizerException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
@@ -20,16 +17,16 @@ use Stringable;
 use Traversable;
 
 /** @api */
-final class Wrapper implements WrapperContract
+final class Wrapper implements Contract\Wrapper
 {
 	private const string HTML_SANITIZER_CLASS = 'Symfony\\Component\\HtmlSanitizer\\HtmlSanitizer';
 
-	private readonly EscaperContract $escaper;
-	private readonly ?SanitizerContract $sanitizer;
+	private readonly Contract\Escaper $escaper;
+	private readonly ?Contract\Sanitizer $sanitizer;
 
 	public function __construct(
-		?EscaperContract $escaper = null,
-		?SanitizerContract $sanitizer = null,
+		?Contract\Escaper $escaper = null,
+		?Contract\Sanitizer $sanitizer = null,
 	) {
 		$this->escaper = $escaper ?? new Escaper();
 		$this->sanitizer =
@@ -141,7 +138,7 @@ final class Wrapper implements WrapperContract
 		throw new RuntimeException('Value cannot be sanitized as string');
 	}
 
-	private function sanitizer(): SanitizerContract
+	private function sanitizer(): Contract\Sanitizer
 	{
 		return $this->sanitizer ?? throw new MissingSanitizerException('No sanitizer configured');
 	}

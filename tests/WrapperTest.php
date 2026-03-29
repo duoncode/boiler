@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
+use Duon\Boiler\Contract;
 use Duon\Boiler\Contract\Escaper;
-use Duon\Boiler\Contract\Wrapper as WrapperContract;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ArrayProxy;
@@ -19,7 +19,7 @@ final class WrapperTest extends TestCase
 {
 	public function testWrapperImplementsContract(): void
 	{
-		$this->assertInstanceOf(WrapperContract::class, new Wrapper());
+		$this->assertInstanceOf(Contract\Wrapper::class, new Wrapper());
 	}
 
 	public function testWrapNumber(): void
