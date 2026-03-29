@@ -1,8 +1,6 @@
 # The engine
 
-The `Engine` is Boiler's central object and usually the only object you need to
-instantiate manually. It locates templates on disk and renders them with a
-shared set of defaults, custom methods, and escape rules.
+The `Engine` is Boiler's central object and usually the only object you need to instantiate manually. It locates templates on disk and renders them with a shared set of defaults, custom methods, and escape rules.
 
 Assume the following directory structure:
 
@@ -21,8 +19,7 @@ Create an engine with one or more template directories:
 $engine = \Duon\Boiler\Engine::create('/path/to/templates');
 ```
 
-If the directory does not exist, Boiler throws
-`\Duon\Boiler\Exception\LookupException`.
+If the directory does not exist, Boiler throws `\Duon\Boiler\Exception\LookupException`.
 
 ## Use multiple directories
 
@@ -35,8 +32,7 @@ $engine = \Duon\Boiler\Engine::create([
 ]);
 ```
 
-Boiler searches directories in order. If a template is not found in the first
-one, it keeps searching the next one.
+Boiler searches directories in order. If a template is not found in the first one, it keeps searching the next one.
 
 ## Use namespaces
 
@@ -59,8 +55,7 @@ Read [rendering templates](rendering.md) for the lookup rules.
 
 ## Add default values
 
-Pass defaults as the second argument when values should be available in every
-render:
+Pass defaults as the second argument when values should be available in every render:
 
 ```php
 $engine = \Duon\Boiler\Engine::create(
@@ -73,8 +68,7 @@ Per-render context overrides defaults with the same key.
 
 ## Whitelist trusted classes
 
-Pass a list of class names as the third argument when specific objects should be
-left unwrapped in escaped renders:
+Pass a list of class names as the third argument when specific objects should be left unwrapped in escaped renders:
 
 ```php
 $engine = \Duon\Boiler\Engine::create(
@@ -84,16 +78,13 @@ $engine = \Duon\Boiler\Engine::create(
 );
 ```
 
-Use this only for values you fully trust. Whitelisted objects bypass Boiler's
-normal object wrapping and can output unescaped string content from methods such
-as `__toString()`.
+Use this only for values you fully trust. Whitelisted objects bypass Boiler's normal object wrapping and can output unescaped string content from methods such as `__toString()`.
 
 Read [displaying values](values.md) for the escaping model.
 
 ## Customize the wrapper
 
-Pass a custom `Wrapper` when you want to replace Boiler's default escaping or
-provide custom HTML sanitization for `$this->sanitize()`:
+Pass a custom `Wrapper` when you want to replace Boiler's default escaping or provide custom HTML sanitization for `$this->sanitize()`:
 
 ```php
 use Duon\Boiler\Contract\Sanitizer;
@@ -115,11 +106,7 @@ $engine = \Duon\Boiler\Engine::create(
 );
 ```
 
-`Wrapper` accepts an optional escaper and an optional sanitizer. If
-`symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in
-`Sanitizer` automatically. If you call `$this->sanitize()` when no custom or
-built-in sanitizer is available, Boiler throws
-`\Duon\Boiler\Exception\MissingSanitizerException`.
+`Wrapper` accepts an optional escaper and an optional sanitizer. If `symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in `Sanitizer` automatically. If you call `$this->sanitize()` when no custom or built-in sanitizer is available, Boiler throws `\Duon\Boiler\Exception\MissingSanitizerException`.
 
 ## Control escaping
 
@@ -156,8 +143,7 @@ $engine->render('template');
 $engine->render('template', ['value1' => 1, 'value2' => 2]);
 ```
 
-Read [rendering templates](rendering.md) for path syntax, subdirectories,
-overrides, and namespaces.
+Read [rendering templates](rendering.md) for path syntax, subdirectories, overrides, and namespaces.
 
 ## Register custom template methods
 
@@ -169,11 +155,9 @@ $engine->registerMethod('upper', function (string $value): string {
 });
 ```
 
-Boiler unwraps proxy arguments before it calls your method, so the callable
-receives normal PHP values instead of proxy objects.
+Boiler unwraps proxy arguments before it calls your method, so the callable receives normal PHP values instead of proxy objects.
 
-In escaped renders, Boiler wraps the return value again before exposing it to
-the template. In unescaped renders, it returns the unwrapped value.
+In escaped renders, Boiler wraps the return value again before exposing it to the template. In unescaped renders, it returns the unwrapped value.
 
 ## Useful methods
 

@@ -1,8 +1,6 @@
 # Sections
 
-Sections let child templates push named content into layouts.
-They are useful for repeated slots such as scripts, styles, sidebars, or page
-headers.
+Sections let child templates push named content into layouts. They are useful for repeated slots such as scripts, styles, sidebars, or page headers.
 
 Assume the following directory structure:
 
@@ -57,8 +55,7 @@ Check for a section first when you need conditional markup:
 
 ## Append and prepend
 
-Use `append()` or `prepend()` instead of `begin()` when you want to add content
-relative to existing section content:
+Use `append()` or `prepend()` instead of `begin()` when you want to add content relative to existing section content:
 
 ```php
 <?php $this->prepend('scripts') ?>
@@ -70,8 +67,7 @@ relative to existing section content:
 <?php $this->end() ?>
 ```
 
-When a layout renders a section with a default value, Boiler combines the parts
-in this order:
+When a layout renders a section with a default value, Boiler combines the parts in this order:
 
 1. prepended content
 2. default value

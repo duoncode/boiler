@@ -1,7 +1,6 @@
 # Inserts
 
-Use inserts to include another template inside the current template.
-They work well for partials such as cards, navigation items, or repeated rows.
+Use inserts to include another template inside the current template. They work well for partials such as cards, navigation items, or repeated rows.
 
 Assume the following directory structure:
 
@@ -37,9 +36,7 @@ Rendering `page` produces:
 
 ## Context inheritance
 
-Inserted templates share the current template context by default.
-Any values you pass as the second argument are merged on top of that shared
-context.
+Inserted templates share the current template context by default. Any values you pass as the second argument are merged on top of that shared context.
 
 ```php
 <?php
@@ -47,8 +44,7 @@ context.
 $this->insert('item', ['title' => 'Override']);
 ```
 
-If the parent template already has `$user`, `$items`, or other values, the
-inserted template can still access them.
+If the parent template already has `$user`, `$items`, or other values, the inserted template can still access them.
 
 ## Namespaces and overrides
 

@@ -1,22 +1,19 @@
 # Boiler
 
+<!-- prettier-ignore-start -->
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a11454828b7e478b847d2910284b7cf9)](https://app.codacy.com/gh/duonrun/boiler/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/a11454828b7e478b847d2910284b7cf9)](https://app.codacy.com/gh/duonrun/boiler/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 [![Psalm level](https://shepherd.dev/github/duonrun/boiler/level.svg?)](https://shepherd.dev/github/duonrun/boiler)
 [![Psalm coverage](https://shepherd.dev/github/duonrun/boiler/coverage.svg?)](https://shepherd.dev/github/duonrun/boiler)
+<!-- prettier-ignore-end -->
 
-Boiler is a small template engine for PHP 8.5+, inspired by Plates.
-Like Plates, it uses native PHP as its templating language rather than
-introducing a custom syntax.
+Boiler is a small template engine for PHP 8.5+, inspired by Plates. Like Plates, it uses native PHP as its templating language rather than introducing a custom syntax.
 
 Key differences from Plates:
 
-- Automatic escaping of strings and
-  [Stringable](https://www.php.net/manual/en/class.stringable.php) values for
-  enhanced security
-- Global template context, making all variables accessible throughout the
-  template
+- Automatic escaping of strings and [Stringable](https://www.php.net/manual/en/class.stringable.php) values for enhanced security
+- Global template context, making all variables accessible throughout the template
 
 Other highlights:
 
@@ -30,8 +27,7 @@ Other highlights:
 composer require duon/boiler
 ```
 
-Install Symfony's HTML sanitizer when you want Boiler's built-in `$this->sanitize()`
-support without providing your own sanitizer:
+Install Symfony's HTML sanitizer when you want Boiler's built-in `$this->sanitize()` support without providing your own sanitizer:
 
 ```console
 composer require symfony/html-sanitizer
@@ -131,23 +127,20 @@ $engine = Engine::create(
 );
 ```
 
-If `symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in
-`Sanitizer` automatically.
+If `symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in `Sanitizer` automatically.
 
 Template helpers available via `$this` inside templates:
 
 - `$this->layout('layout')`
 - `$this->insert('partial', ['value' => '...'])`
-- `$this->begin('name')` / `$this->append('name')` / `$this->prepend('name')` /
-  `$this->end()`
+- `$this->begin('name')` / `$this->append('name')` / `$this->prepend('name')` / `$this->end()`
 - `$this->section('name', 'default')` / `$this->has('name')`
 - `$this->unwrap($value)` when you need the original value instead of the escaped wrapper
 - `$this->escape($value)` and `$this->sanitize($value)`
 
 ## Error handling
 
-Boiler fails fast when template lookup or render state is invalid.
-Common cases include:
+Boiler fails fast when template lookup or render state is invalid. Common cases include:
 
 - missing template directories
 - missing templates or unknown namespaces
@@ -158,23 +151,15 @@ Common cases include:
 - calling `$this->sanitize()` when no custom or built-in sanitizer is available
 - calling an unknown custom template method
 
-See [rendering templates](docs/rendering.md), [layouts](docs/layouts.md),
-[sections](docs/sections.md), and [template](docs/template.md) for the relevant
-rules.
+See [rendering templates](docs/rendering.md), [layouts](docs/layouts.md), [sections](docs/sections.md), and [template](docs/template.md) for the relevant rules.
 
 ## Benchmark
 
-Boiler includes a canonical benchmark in [`bench/`](bench/) that renders a
-feature-rich catalog page with layouts, repeated partials, sections or blocks,
-mixed array, object, and iterator view data, loops, and escaping.
+Boiler includes a canonical benchmark in [`bench/`](bench/) that renders a feature-rich catalog page with layouts, repeated partials, sections or blocks, mixed array, object, and iterator view data, loops, and escaping.
 
-The benchmark is meant to resemble a realistic steady-state page render and is
-used mainly to catch performance regressions during development.
+The benchmark is meant to resemble a realistic steady-state page render and is used mainly to catch performance regressions during development.
 
-Results depend on PHP version, OPcache settings, hardware, and workload shape.
-They do not represent every rendering scenario and should not be treated as
-universal rankings. If you want to evaluate Boiler for your environment, run the
-benchmark locally and compare it with your own templates.
+Results depend on PHP version, OPcache settings, hardware, and workload shape. They do not represent every rendering scenario and should not be treated as universal rankings. If you want to evaluate Boiler for your environment, run the benchmark locally and compare it with your own templates.
 
 ## Run the tests
 

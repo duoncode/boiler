@@ -4,7 +4,7 @@
 
 ### Breaking
 
-- Renamed the `Contract\Wrapper`, `Contract\Sanitizer`, `Context`, and  `StringProxy` method `::clean()` to `::sanitize()`.
+- Renamed the `Contract\Wrapper`, `Contract\Sanitizer`, `Context`, and `StringProxy` method `::clean()` to `::sanitize()`.
 - Changed `Context::sanitize()` and `StringProxy::sanitize()` to use the configured or auto-detected wrapper sanitizer and removed per-call Symfony config support.
 - Renamed `Context::esc()` to `Context::escape()`, so templates now call `$this->escape()` instead of `$this->esc()`.
 - Replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escape strategies on `Contract\Escaper`, `Contract\Wrapper`, `Context::escape()`, and `Wrapper::escape()`.
@@ -79,13 +79,10 @@ Initial version.
 ### Added
 
 - Native PHP 8.5+ template engine (no custom template syntax)
-- `Engine` API to render templates from one or more directories (including
-  namespaced paths and override resolution)
+- `Engine` API to render templates from one or more directories (including namespaced paths and override resolution)
 - Global template context with support for default values
-- Automatic escaping of strings and `Stringable` values, with per-engine and
-  per-render escape controls
+- Automatic escaping of strings and `Stringable` values, with per-engine and per-render escape controls
 - Layouts (including stacked layouts) and inserts/partials
 - Sections with default values and append/prepend capabilities
 - HTML sanitization helper powered by `symfony/html-sanitizer`
-- Support for custom template methods and optional whitelisting of trusted value
-  classes
+- Support for custom template methods and optional whitelisting of trusted value classes

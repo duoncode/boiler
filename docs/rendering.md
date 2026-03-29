@@ -1,7 +1,6 @@
 # Rendering templates
 
-After you create an [`Engine`](engine.md), you render templates with
-`render()`, `renderEscaped()`, or `renderUnescaped()`.
+After you create an [`Engine`](engine.md), you render templates with `render()`, `renderEscaped()`, or `renderUnescaped()`.
 
 Assume the following directory structure:
 
@@ -72,8 +71,8 @@ The rendered output is:
 
 ```html
 <body>
-    <h1>The title</h1>
-    <div>The content of the page.</div>
+	<h1>The title</h1>
+	<div>The content of the page.</div>
 </body>
 ```
 
@@ -87,17 +86,14 @@ $html = $engine->render('subdir/subtemplate', ['value' => 13]);
 
 ## Directory overrides
 
-If multiple template directories contain the same template, Boiler uses the
-first match. In the setup above, both `theme` and `templates` contain `blog.php`.
-Because `theme` comes first, it wins:
+If multiple template directories contain the same template, Boiler uses the first match. In the setup above, both `theme` and `templates` contain `blog.php`. Because `theme` comes first, it wins:
 
 ```php
 // renders /path/to/theme/blog.php
 $engine->render('blog', ['value' => 13]);
 ```
 
-This makes it easy to implement themes or application-level overrides for a
-shared template set.
+This makes it easy to implement themes or application-level overrides for a shared template set.
 
 ## Namespaced paths
 
@@ -118,8 +114,7 @@ Boiler validates template names before lookup:
 - invalid namespace formats such as `foo:bar:baz` are rejected
 - path traversal outside the configured template root is rejected
 
-This applies to normal renders and to helper methods such as `$this->layout()`
-and `$this->insert()`.
+This applies to normal renders and to helper methods such as `$this->layout()` and `$this->insert()`.
 
 ## Common lookup errors
 
@@ -131,8 +126,7 @@ You can expect `LookupException` for invalid lookup-related input, including:
 - invalid namespaced paths
 - templates resolved outside the configured root directory
 
-You can expect `UnexpectedValueException` when the template path itself is empty
-or contains invalid characters.
+You can expect `UnexpectedValueException` when the template path itself is empty or contains invalid characters.
 
 ## Escape mode per render
 
