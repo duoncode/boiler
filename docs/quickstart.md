@@ -44,7 +44,7 @@ use Duon\Boiler\Engine;
 $engine = Engine::create('/path/to/templates');
 $html = $engine->render('page', ['id' => 13]);
 
-assert($html === '<!doctype html><html lang="en"><body><p>ID 13</p></body></html>');               =
+assert($html === '<!doctype html><html lang="en"><body><p>ID 13</p></body></html>');
 ```
 
 Boiler escapes strings automatically. If `id` were `'<b>13</b>'`, the output
