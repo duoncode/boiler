@@ -123,7 +123,7 @@ abstract class Context
 			: $this->wrapper->unwrap($value);
 	}
 
-	public function clean(
+	public function sanitize(
 		StringProxy|ObjectProxy|string|Stringable $value,
 		?string $strategy = null,
 	): string {

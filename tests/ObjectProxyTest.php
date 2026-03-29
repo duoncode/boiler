@@ -73,7 +73,7 @@ final class ObjectProxyTest extends TestCase
 			'&lt;b&gt;boiler&lt;/b&gt;&lt;script&gt;&lt;/script&gt;',
 			(string) $value->html(),
 		);
-		$this->assertSame('<b>boiler</b>', $value->html()->clean());
+		$this->assertSame('<b>boiler</b>', $value->html()->sanitize());
 		$this->assertSame('&lt;i&gt;test&lt;/i&gt;', (string) $value('test'));
 	}
 
@@ -101,10 +101,10 @@ final class ObjectProxyTest extends TestCase
 		$value = $this->objectProxy($closure, new FakeSanitizer());
 
 		$this->assertSame('&lt;b&gt;boiler&lt;/b&gt;&lt;script&gt;&lt;/script&gt;', (string) $value());
-		$this->assertSame('<b>boiler</b>', $value()->clean());
+		$this->assertSame('<b>boiler</b>', $value()->sanitize());
 	}
 
-	public function testCleanUsesBuiltinSanitizer(): void
+	public function testSanitizeUsesBuiltinSanitizer(): void
 	{
 		$object = new class {
 			public function html(): string
@@ -114,7 +114,7 @@ final class ObjectProxyTest extends TestCase
 		};
 		$value = $this->objectProxy($object);
 
-		$this->assertSame('<b>boiler</b>', $value->html()->clean());
+		$this->assertSame('<b>boiler</b>', $value->html()->sanitize());
 	}
 
 	#[TestDox('Getter throws I')]

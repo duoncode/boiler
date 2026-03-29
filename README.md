@@ -30,7 +30,7 @@ Other highlights:
 composer require duon/boiler
 ```
 
-Install Symfony's HTML sanitizer when you want Boiler's built-in `$this->clean()`
+Install Symfony's HTML sanitizer when you want Boiler's built-in `$this->sanitize()`
 support without providing your own sanitizer:
 
 ```console
@@ -142,7 +142,7 @@ Template helpers available via `$this` inside templates:
   `$this->end()`
 - `$this->section('name', 'default')` / `$this->has('name')`
 - `$this->unwrap($value)` when you need the original value instead of the escaped wrapper
-- `$this->escape($value)` and `$this->clean($value)`
+- `$this->escape($value)` and `$this->sanitize($value)`
 
 ## Error handling
 
@@ -155,7 +155,7 @@ Common cases include:
 - path traversal outside configured template roots
 - assigning more than one layout in the same template
 - nested or unclosed section capture blocks
-- calling `$this->clean()` when no custom or built-in sanitizer is available
+- calling `$this->sanitize()` when no custom or built-in sanitizer is available
 - calling an unknown custom template method
 
 See [rendering templates](docs/rendering.md), [layouts](docs/layouts.md),

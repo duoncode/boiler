@@ -4,9 +4,8 @@
 
 ### Breaking
 
-- Renamed `Contract\Sanitizer::clean()` to `Contract\Sanitizer::sanitize()`.
-- Renamed `Contract\Wrapper::clean()` to `Contract\Wrapper::sanitize()`.
-- Changed `Context::clean()` and `StringProxy::clean()` to use the configured or auto-detected wrapper sanitizer and removed per-call Symfony config support.
+- Renamed the `Contract\Wrapper`, `Contract\Sanitizer`, `Context`, and  `StringProxy` method `::clean()` to `::sanitize()`.
+- Changed `Context::sanitize()` and `StringProxy::sanitize()` to use the configured or auto-detected wrapper sanitizer and removed per-call Symfony config support.
 - Renamed `Context::esc()` to `Context::escape()`, so templates now call `$this->escape()` instead of `$this->esc()`.
 - Replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escape strategies on `Contract\Escaper`, `Contract\Wrapper`, `Context::escape()`, and `Wrapper::escape()`.
 
@@ -23,7 +22,7 @@
 
 - Changed `Wrapper` from a static helper into an instance-based API that drives wrapping, unwrapping, escaping, and sanitizing.
 - Changed `Wrapper` to use Boiler's built-in `Sanitizer` automatically when `symfony/html-sanitizer` is installed.
-- Changed `clean()` to throw `MissingSanitizerException` only when no custom or built-in sanitizer is available.
+- Changed `sanitize()` to throw `MissingSanitizerException` only when no custom or built-in sanitizer is available.
 - Changed `Escaper` and `Sanitizer` to validate configured and requested strategy names and throw `UnexpectedValueException` for unknown strategies.
 
 ## [0.2.0](https://github.com/duonrun/boiler/releases/tag/0.2.0) (2026-03-25)

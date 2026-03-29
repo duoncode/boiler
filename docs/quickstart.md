@@ -59,6 +59,6 @@ in mixed PHP and HTML files, and the docs use that style in template examples.
 - Read [the engine](engine.md) to learn about multiple template directories,
   namespaces, default values, and escape modes.
 - Read [displaying values](values.md) to learn when to use `$this->unwrap()`,
-  `$this->escape()`, and `$this->clean()`.
+  `$this->escape()`, and `$this->sanitize()`.
 - Read [layouts](layouts.md), [inserts](inserts.md), and [sections](sections.md)
   for the main composition features.

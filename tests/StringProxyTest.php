@@ -23,19 +23,19 @@ final class StringProxyTest extends TestCase
 		$this->assertSame('boilerplate', $this->stringProxy('<b>boiler<br>plate</b>')->strip());
 	}
 
-	public function testProxyClean(): void
+	public function testProxySanitize(): void
 	{
 		$this->assertSame(
 			'<b>boiler</b>',
-			$this->stringProxy('<b onclick="function()">boiler</b>', new FakeSanitizer())->clean(),
+			$this->stringProxy('<b onclick="function()">boiler</b>', new FakeSanitizer())->sanitize(),
 		);
 	}
 
-	public function testProxyCleanUsesBuiltinSanitizer(): void
+	public function testProxySanitizeUsesBuiltinSanitizer(): void
 	{
 		$proxy = $this->stringProxy('<script></script><b>boiler</b>');
 
-		$this->assertSame('<b>boiler</b>', $proxy->clean());
+		$this->assertSame('<b>boiler</b>', $proxy->sanitize());
 	}
 
 	public function testStringValue(): void

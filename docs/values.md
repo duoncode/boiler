@@ -5,7 +5,7 @@ to templates. This gives you automatic escaping while still allowing objects,
 arrays, and iterators to be used naturally in template code.
 
 Read this page if you want to understand when Boiler escapes values and when you
-need `$this->unwrap()`, `$this->escape()`, or `$this->clean()`.
+need `$this->unwrap()`, `$this->escape()`, or `$this->sanitize()`.
 
 ## What Boiler escapes automatically
 
@@ -62,14 +62,14 @@ strategy names.
 
 ## Sanitize HTML
 
-Use `$this->clean()` when you want to allow a safe subset of HTML instead of
+Use `$this->sanitize()` when you want to allow a safe subset of HTML instead of
 escaping everything:
 
 ```php
-<?= $this->clean($html) ?>
+<?= $this->sanitize($html) ?>
 ```
 
-`$this->clean()` uses the sanitizer configured on the engine wrapper. If
+`$this->sanitize()` uses the sanitizer configured on the engine wrapper. If
 `symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in
 `Sanitizer` automatically. Configure your own sanitizer when you need custom
 rules:
@@ -95,12 +95,12 @@ $engine = Engine::create(
 );
 ```
 
-If no custom or built-in sanitizer is available, `$this->clean()` and wrapped
-string `->clean()` calls throw
+If no custom or built-in sanitizer is available, `$this->sanitize()` and wrapped
+string `->sanitize()` calls throw
 `\Duon\Boiler\Exception\MissingSanitizerException`. If you need
 backend-specific configuration, keep that inside your sanitizer implementation.
 
-Use `clean()` for trusted formatting scenarios where you want to keep some HTML.
+Use `sanitize()` for trusted formatting scenarios where you want to keep some HTML.
 Use normal escaped output or `$this->escape()` when plain text output is enough.
 
 ## Trusted class whitelist
@@ -145,4 +145,4 @@ In that mode:
 
 - `<?= $value ?>` outputs unescaped string content
 - `$this->unwrap()` usually returns the same value you already have
-- `$this->clean()` is still available when you want sanitization
+- `$this->sanitize()` is still available when you want sanitization

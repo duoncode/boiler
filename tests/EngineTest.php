@@ -181,7 +181,7 @@ final class EngineTest extends TestCase
 		);
 	}
 
-	public function testCleanRendering(): void
+	public function testSanitizeRendering(): void
 	{
 		$engine = Engine::create(
 			$this->templates(),
@@ -191,7 +191,7 @@ final class EngineTest extends TestCase
 		$this->assertSame(
 			'<b>boiler</b>',
 			$engine->render(
-				'clean',
+				'sanitize',
 				['html' => '<script src="/evil.js"></script><b>boiler</b>'],
 			),
 		);
@@ -224,14 +224,14 @@ final class EngineTest extends TestCase
 		);
 	}
 
-	public function testCleanRenderingUsesBuiltinSanitizer(): void
+	public function testSanitizeRenderingUsesBuiltinSanitizer(): void
 	{
 		$engine = Engine::create($this->templates());
 
 		$this->assertSame(
 			'<b>boiler</b>',
 			$engine->render(
-				'clean',
+				'sanitize',
 				['html' => '<script src="/evil.js"></script><b>boiler</b>'],
 			),
 		);
