@@ -42,8 +42,8 @@
 			"./vendor/bin/mago lint"
 		],
 		"coverage": [
-			"php -d xdebug.mode=coverage ./vendor/bin/phpunit --testdox --path-coverage --coverage-text --coverage-php=coverage/cover.php --colors=always",
-			"./vendor/bin/coverlyzer coverage/cover.php"
+			"php -d xdebug.mode=coverage ./vendor/bin/phpunit --testdox --path-coverage --coverage-text --coverage-php=.coverage/cover.php --colors=always",
+			"./vendor/bin/coverlyzer .coverage/cover.php"
 		],
 		"ci": [
 			"composer lint",
