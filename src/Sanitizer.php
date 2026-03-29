@@ -14,6 +14,9 @@ final class Sanitizer implements Contract\Sanitizer
 {
 	public const string HTML = 'html';
 
+	/** @var array<string, HtmlSanitizer> */
+	private array $cache = [];
+
 	public function __construct(
 		private readonly string $defaultStrategy = self::HTML,
 	) {
@@ -33,9 +36,11 @@ final class Sanitizer implements Contract\Sanitizer
 
 	private function sanitizeHtml(string $value): string
 	{
-		$config = new HtmlSanitizerConfig()->allowSafeElements();
+		$this->cache[self::HTML] ??= new HtmlSanitizer(
+			new HtmlSanitizerConfig()->allowSafeElements(),
+		);
 
-		return new HtmlSanitizer($config)->sanitize($value);
+		return $this->cache[self::HTML]->sanitize($value);
 	}
 
 	private static function assertStrategy(string $strategy): void
