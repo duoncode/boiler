@@ -35,6 +35,62 @@ final class EscaperTest extends TestCase
 		);
 	}
 
+	public function testCanRegisterAdditionalStrategy(): void
+	{
+		$escaper = new Escaper();
+		$escaper->register('caps', new class implements Contract\EscapeStrategy {
+			public function apply(string $value): string
+			{
+				return strtoupper(htmlspecialchars($value));
+			}
+		});
+
+		$this->assertSame('&LT;B&GT;BOILER&LT;/B&GT;', $escaper->escape('<b>boiler</b>', 'caps'));
+	}
+
+	public function testConstructorStrategiesCanSetCustomDefault(): void
+	{
+		$escaper = new Escaper(
+			defaultStrategy: 'caps',
+			strategies: [
+				'caps' => new class implements Contract\EscapeStrategy {
+					public function apply(string $value): string
+					{
+						return strtoupper(htmlspecialchars($value));
+					}
+				},
+			],
+		);
+
+		$this->assertSame('&LT;B&GT;BOILER&LT;/B&GT;', $escaper->escape('<b>boiler</b>'));
+	}
+
+	public function testConstructorStrategiesCanOverrideBuiltins(): void
+	{
+		$escaper = new Escaper(strategies: [
+			Escaper::HTML => new class implements Contract\EscapeStrategy {
+				public function apply(string $value): string
+				{
+					return strtoupper($value);
+				}
+			},
+		]);
+
+		$this->assertSame('<B>BOILER</B>', $escaper->escape('<b>boiler</b>'));
+	}
+
+	public function testRegisterRejectsDuplicateStrategy(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'Escape strategy `html` is already registered');
+
+		new Escaper()->register(Escaper::HTML, new class implements Contract\EscapeStrategy {
+			public function apply(string $value): string
+			{
+				return $value;
+			}
+		});
+	}
+
 	public function testRejectsUnknownStrategy(): void
 	{
 		$this->throws(UnexpectedValueException::class, 'Unknown escape strategy `xml`');
