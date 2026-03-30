@@ -108,6 +108,42 @@ $engine = \Duon\Boiler\Engine::create(
 
 `Wrapper` accepts an optional escaper and an optional sanitizer. If `symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in `Sanitizer` automatically. If you call `$this->sanitize()` when no custom or built-in sanitizer is available, Boiler throws `\Duon\Boiler\Exception\MissingSanitizerException`.
 
+When you only need extra named strategies, you can extend Boiler's built-in escaper or sanitizer instead of replacing the whole implementation:
+
+```php
+use Duon\Boiler\Contract\EscapeStrategy;
+use Duon\Boiler\Contract\SanitizeStrategy;
+use Duon\Boiler\Escaper;
+use Duon\Boiler\Sanitizer;
+use Duon\Boiler\Wrapper;
+
+$escaper = new Escaper(
+    strategies: [
+        'caps' => new class implements EscapeStrategy {
+            public function apply(string $value): string
+            {
+                return strtoupper(
+                    htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+                );
+            }
+        },
+    ],
+);
+
+$sanitizer = new Sanitizer();
+$sanitizer->register('text', new class implements SanitizeStrategy {
+    public function apply(string $value): string
+    {
+        return strip_tags($value);
+    }
+});
+
+$engine = \Duon\Boiler\Engine::create(
+    '/path/to/templates',
+    wrapper: new Wrapper(escaper: $escaper, sanitizer: $sanitizer),
+);
+```
+
 ## Control escaping
 
 Boiler escapes strings and `Stringable` values by default:

@@ -127,7 +127,7 @@ $engine = Engine::create(
 );
 ```
 
-If `symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in `Sanitizer` automatically.
+If `symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in `Sanitizer` automatically. Boiler's built-in `Escaper` and `Sanitizer` can also be extended per instance with constructor-seeded strategies or `->register()` when you only need extra named strategies instead of a full replacement.
 
 Template helpers available via `$this` inside templates:
 

@@ -46,7 +46,7 @@ $this->escape(
 
 Boiler ships with the `html` strategy. It uses PHP's `htmlspecialchars()` with `ENT_QUOTES | ENT_SUBSTITUTE` and `UTF-8`.
 
-`$this->escape()` accepts strings, `Stringable` values, and Boiler's wrapped string or object proxies. The `strategy` argument is forwarded to the wrapper's configured escaper, so custom escaper implementations can expose additional strategy names.
+`$this->escape()` accepts strings, `Stringable` values, and Boiler's wrapped string or object proxies. The `strategy` argument is forwarded to the wrapper's configured escaper. Boiler's built-in `Escaper` supports constructor-seeded strategies and incremental `->register()` calls, and custom escaper implementations can expose additional strategy names too.
 
 ## Sanitize HTML
 
@@ -56,7 +56,7 @@ Use `$this->sanitize()` when you want to allow a safe subset of HTML instead of 
 <?= $this->sanitize($html) ?>
 ```
 
-`$this->sanitize()` uses the sanitizer configured on the engine wrapper. If `symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in `Sanitizer` automatically. Configure your own sanitizer when you need custom rules:
+`$this->sanitize()` uses the sanitizer configured on the engine wrapper. If `symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in `Sanitizer` automatically. Boiler's built-in `Sanitizer` also supports constructor-seeded strategies and incremental `->register()` calls. Configure your own sanitizer when you need custom rules:
 
 ```php
 use Duon\Boiler\Contract\Sanitizer;
