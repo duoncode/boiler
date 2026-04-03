@@ -77,6 +77,13 @@ class Engine implements Contract\Engine
 		return $this->wrapper;
 	}
 
+	public function filter(string $name, Contract\Filter $with): static
+	{
+		$this->wrapper->registerFilter($name, $with);
+
+		return $this;
+	}
+
 	/** @psalm-param non-empty-string $path */
 	#[Override]
 	public function template(string $path): Template

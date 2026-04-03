@@ -67,13 +67,13 @@ final class ObjectProxyTest extends TestCase
 				return '<b>boiler</b><script></script>';
 			}
 		};
-		$value = $this->objectProxy($object, new FakeSanitizer());
+		$value = $this->objectProxy($object);
 
 		$this->assertSame(
 			'&lt;b&gt;boiler&lt;/b&gt;&lt;script&gt;&lt;/script&gt;',
 			(string) $value->html(),
 		);
-		$this->assertSame('<b>boiler</b>', $value->html()->sanitize());
+		$this->assertSame('<b>boiler</b>', (string) $value->html()->sanitize());
 		$this->assertSame('&lt;i&gt;test&lt;/i&gt;', (string) $value('test'));
 	}
 
@@ -98,10 +98,10 @@ final class ObjectProxyTest extends TestCase
 	public function testClosureValue(): void
 	{
 		$closure = static fn(): string => '<b>boiler</b><script></script>';
-		$value = $this->objectProxy($closure, new FakeSanitizer());
+		$value = $this->objectProxy($closure);
 
 		$this->assertSame('&lt;b&gt;boiler&lt;/b&gt;&lt;script&gt;&lt;/script&gt;', (string) $value());
-		$this->assertSame('<b>boiler</b>', $value()->sanitize());
+		$this->assertSame('<b>boiler</b>', (string) $value()->sanitize());
 	}
 
 	public function testSanitizeUsesBuiltinSanitizer(): void
@@ -114,7 +114,7 @@ final class ObjectProxyTest extends TestCase
 		};
 		$value = $this->objectProxy($object);
 
-		$this->assertSame('<b>boiler</b>', $value->html()->sanitize());
+		$this->assertSame('<b>boiler</b>', (string) $value->html()->sanitize());
 	}
 
 	#[TestDox('Getter throws I')]

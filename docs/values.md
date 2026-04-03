@@ -2,7 +2,7 @@
 
 In escaped renders, Boiler wraps strings and most objects before exposing them to templates. This gives you automatic escaping while still allowing objects, arrays, and iterators to be used naturally in template code.
 
-Read this page if you want to understand when Boiler escapes values and when you need `$this->unwrap()`, `$this->escape()`, or `$this->sanitize()`.
+Read this page if you want to understand when Boiler escapes values and when you need `$this->unwrap()`, `$this->escape()`, or `$this->filter()`.
 
 ## What Boiler escapes automatically
 
@@ -48,40 +48,38 @@ Boiler ships with the `html` strategy. It uses PHP's `htmlspecialchars()` with `
 
 `$this->escape()` accepts strings, `Stringable` values, and Boiler's wrapped string or object proxies. The `strategy` argument is forwarded to the wrapper's configured escaper. Boiler's built-in `Escaper` supports constructor-seeded strategies and incremental `->register()` calls, and custom escaper implementations can expose additional strategy names too.
 
-## Sanitize HTML
+## Filters
 
-Use `$this->sanitize()` when you want to allow a safe subset of HTML instead of escaping everything:
-
-```php
-<?= $this->sanitize($html) ?>
-```
-
-`$this->sanitize()` uses the sanitizer configured on the engine wrapper. If `symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in `Sanitizer` automatically. Boiler's built-in `Sanitizer` also supports constructor-seeded strategies and incremental `->register()` calls. Configure your own sanitizer when you need custom rules:
+Filters are value transformations applied as virtual methods on string values inside templates:
 
 ```php
-use Duon\Boiler\Contract\Sanitizer;
-use Duon\Boiler\Engine;
-use Duon\Boiler\Wrapper;
-
-final class CommentSanitizer implements Sanitizer
-{
-    public function sanitize(
-        string $value,
-        ?string $strategy = null,
-    ): string {
-        return strip_tags($value, '<b><i><a>');
-    }
-}
-
-$engine = Engine::create(
-    '/path/to/templates',
-    wrapper: new Wrapper(sanitizer: new CommentSanitizer()),
-);
+<?= $html->sanitize() ?>
+<?= $title->strip('<b>') ?>
 ```
 
-If no custom or built-in sanitizer is available, `$this->sanitize()` and wrapped string `->sanitize()` calls throw `\Duon\Boiler\Exception\MissingSanitizerException`. If you need backend-specific configuration, keep that inside your sanitizer implementation.
+Filters can be chained. Once a safe filter is applied in a chain, the result stays safe and skips auto-escaping:
 
-Use `sanitize()` for trusted formatting scenarios where you want to keep some HTML. Use normal escaped output or `$this->escape()` when plain text output is enough.
+```php
+<?= $html->sanitize()->strip('<b>') ?>
+```
+
+You can also apply filters from the template context with `$this->filter()`:
+
+```php
+<?= $this->filter('sanitize', $html) ?>
+<?= $this->filter('strip', $body, '<b><i>') ?>
+```
+
+`$this->filter()` accepts strings, `Stringable` values, and Boiler's wrapped string or object proxies.
+
+Boiler ships with two built-in filters:
+
+- `sanitize` removes unsafe HTML while allowing safe elements. This filter is safe, meaning its output skips auto-escaping. Requires `symfony/html-sanitizer`.
+- `strip` removes HTML tags via `strip_tags()`. This filter is not safe, so its output is still auto-escaped.
+
+Register custom filters on the engine with the fluent `filter()` method. Read [the engine](engine.md) for details.
+
+Use filters for trusted formatting scenarios where you want to transform values. Use normal escaped output or `$this->escape()` when plain text output is enough.
 
 ## Trusted class whitelist
 
@@ -119,4 +117,4 @@ In that mode:
 
 - `<?= $value ?>` outputs unescaped string content
 - `$this->unwrap()` usually returns the same value you already have
-- `$this->sanitize()` is still available when you want sanitization
+- `$this->filter()` and string filters like `->sanitize()` are still available when you want to transform values

@@ -18,7 +18,7 @@ Key differences from Plates:
 Other highlights:
 
 - Layouts, inserts/partials, and sections, including append and prepend support
-- Wrapper-driven escaping and optional HTML sanitization helpers
+- Wrapper-driven escaping and a pluggable filter system for value transformations
 - Custom template methods and optional whitelisting of trusted value classes
 
 ## Installation
@@ -27,7 +27,7 @@ Other highlights:
 composer require duon/boiler
 ```
 
-Install Symfony's HTML sanitizer when you want Boiler's built-in `$this->sanitize()` support without providing your own sanitizer:
+Install Symfony's HTML sanitizer when you want Boiler's built-in `sanitize` filter:
 
 ```console
 composer require symfony/html-sanitizer
@@ -105,29 +105,26 @@ $engine->render('page');
 $engine->renderEscaped('page');
 ```
 
-Configure output helpers with a custom wrapper:
+Register custom filters with the fluent `filter()` method:
 
 ```php
-use Duon\Boiler\Contract\Sanitizer;
-use Duon\Boiler\Wrapper;
+use Duon\Boiler\Contract\Filter;
 
-final class AppSanitizer implements Sanitizer
-{
-    public function sanitize(
-        string $value,
-        ?string $strategy = null,
-    ): string {
-        return strip_tags($value, '<b><i><a>');
-    }
-}
+$engine = Engine::create('/path/to/templates')
+    ->filter('upper', new class implements Filter {
+        public function apply(string $value, mixed ...$args): string
+        {
+            return strtoupper($value);
+        }
 
-$engine = Engine::create(
-    '/path/to/templates',
-    wrapper: new Wrapper(sanitizer: new AppSanitizer()),
-);
+        public function safe(): bool
+        {
+            return false;
+        }
+    });
 ```
 
-If `symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in `Sanitizer` automatically. Boiler's built-in `Escaper` and `Sanitizer` can also be extended per instance with constructor-seeded strategies or `->register()` when you only need extra named strategies instead of a full replacement.
+Filters are available as virtual methods on string values in templates. Boiler ships with built-in `sanitize` and `strip` filters. If `symfony/html-sanitizer` is installed, the `sanitize` filter is registered automatically.
 
 Template helpers available via `$this` inside templates:
 
@@ -136,7 +133,7 @@ Template helpers available via `$this` inside templates:
 - `$this->begin('name')` / `$this->append('name')` / `$this->prepend('name')` / `$this->end()`
 - `$this->section('name', 'default')` / `$this->has('name')`
 - `$this->unwrap($value)` when you need the original value instead of the escaped wrapper
-- `$this->escape($value)` and `$this->sanitize($value)`
+- `$this->escape($value)` and `$this->filter('sanitize', $value)`
 
 ## Error handling
 
@@ -148,8 +145,7 @@ Boiler fails fast when template lookup or render state is invalid. Common cases 
 - path traversal outside configured template roots
 - assigning more than one layout in the same template
 - nested or unclosed section capture blocks
-- calling `$this->sanitize()` when no custom or built-in sanitizer is available
-- calling an unknown custom template method
+- calling an unknown filter or custom template method
 
 See [rendering templates](docs/rendering.md), [layouts](docs/layouts.md), [sections](docs/sections.md), and [template](docs/template.md) for the relevant rules.
 

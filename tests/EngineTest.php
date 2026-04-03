@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Duon\Boiler\Tests;
 
 use Duon\Boiler\Contract\Escaper;
+use Duon\Boiler\Contract\Filter;
 use Duon\Boiler\Engine;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
@@ -185,7 +186,6 @@ final class EngineTest extends TestCase
 	{
 		$engine = Engine::create(
 			$this->templates(),
-			wrapper: new Wrapper(sanitizer: new FakeSanitizer()),
 		);
 
 		$this->assertSame(
@@ -215,7 +215,6 @@ final class EngineTest extends TestCase
 		$engine = Engine::create(
 			$this->templates(),
 			['obj' => $this->obj()],
-			wrapper: new Wrapper(sanitizer: new FakeSanitizer()),
 		);
 
 		$this->assertSame(
@@ -667,6 +666,66 @@ final class EngineTest extends TestCase
 			'<h2><b>BOILER</b></h2>',
 			$this->fullTrim($engine->render('method', ['text' => 'Boiler'])),
 		);
+	}
+
+	public function testRegisterFilter(): void
+	{
+		$engine = Engine::create($this->templates())
+			->filter('upper', new class implements Filter {
+				public function apply(string $value, mixed ...$args): string
+				{
+					return strtoupper($value);
+				}
+
+				public function safe(): bool
+				{
+					return false;
+				}
+			});
+
+		$this->assertSame(
+			'&lt;B&gt;BOILER&lt;/B&gt;',
+			$engine->render('filter', ['text' => '<b>boiler</b>']),
+		);
+	}
+
+	public function testRegisterSafeFilter(): void
+	{
+		$engine = Engine::create($this->templates())
+			->filter('upper', new class implements Filter {
+				public function apply(string $value, mixed ...$args): string
+				{
+					return strtoupper($value);
+				}
+
+				public function safe(): bool
+				{
+					return true;
+				}
+			});
+
+		$this->assertSame(
+			'<B>BOILER</B>',
+			$engine->render('filter', ['text' => '<b>boiler</b>']),
+		);
+	}
+
+	public function testRegisterFilterFluent(): void
+	{
+		$engine = Engine::create($this->templates());
+		$result = $engine->filter('upper', new class implements Filter {
+			public function apply(string $value, mixed ...$args): string
+			{
+				return strtoupper($value);
+			}
+
+			public function safe(): bool
+			{
+				return false;
+			}
+		});
+
+		$this->assertSame($engine, $result);
 	}
 
 	public function testUnknownCustomMethod(): void

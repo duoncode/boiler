@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Strategy;
+namespace Duon\Boiler\Filter;
 
 use Duon\Boiler\Contract;
 use Override;
@@ -10,19 +10,23 @@ use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 /** @api */
-final class SanitizeHtml implements Contract\SanitizeStrategy
+final class Sanitize implements Contract\Filter
 {
-	/** @var HtmlSanitizer|null */
-	private mixed $sanitizer = null;
+	private ?HtmlSanitizer $sanitizer = null;
 
 	#[Override]
-	public function apply(string $value): string
+	public function apply(string $value, mixed ...$args): string
 	{
 		return $this->sanitizer()->sanitize($value);
 	}
 
-	/** @return HtmlSanitizer */
-	private function sanitizer(): mixed
+	#[Override]
+	public function safe(): bool
+	{
+		return true;
+	}
+
+	private function sanitizer(): HtmlSanitizer
 	{
 		return $this->sanitizer ??= new HtmlSanitizer(
 			new HtmlSanitizerConfig()->allowSafeElements(),

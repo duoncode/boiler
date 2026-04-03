@@ -29,7 +29,7 @@
 		"symfony/html-sanitizer": "^8.0"
 	},
 	"suggest": {
-		"symfony/html-sanitizer": "Provides Boiler's built-in HTML sanitizer"
+		"symfony/html-sanitizer": "Provides the built-in sanitize filter"
 	},
 	"scripts": {
 		"test": [

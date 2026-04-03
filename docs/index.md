@@ -13,7 +13,7 @@ The main differences from Plates are:
 - A small API centered around the [Engine](engine.md)
 - Code reuse with [layouts](layouts.md), [inserts](inserts.md), and [sections](sections.md)
 - Plain PHP templates with no custom syntax
-- Wrapper-driven escaping and optional HTML sanitization via `$this->sanitize()` with a custom sanitizer or Symfony-backed built-in support
+- Wrapper-driven escaping and a pluggable filter system for value transformations such as HTML sanitization and tag stripping
 - Custom template methods and optional whitelisting of trusted value classes
 - Fully tested and statically analyzed with Psalm level 1
 
