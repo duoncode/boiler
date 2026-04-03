@@ -123,11 +123,18 @@ abstract class Context
 			: $this->wrapper->unwrap($value);
 	}
 
-	public function sanitize(
+	public function filter(
+		string $name,
 		StringProxy|ObjectProxy|string|Stringable $value,
-		?string $strategy = null,
+		mixed ...$args,
 	): string {
-		return $this->wrapper->sanitize($value, $strategy);
+		if ($value instanceof Proxy) {
+			$value = (string) $value->unwrap();
+		} elseif ($value instanceof Stringable) {
+			$value = (string) $value;
+		}
+
+		return $this->wrapper->applyFilter($name, $value, ...$args);
 	}
 
 	/**

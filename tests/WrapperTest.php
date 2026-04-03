@@ -6,8 +6,8 @@ namespace Duon\Boiler\Tests;
 
 use Duon\Boiler\Contract;
 use Duon\Boiler\Contract\Escaper;
-use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
+use Duon\Boiler\Filters;
 use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
 use Duon\Boiler\Proxy\ObjectProxy;
@@ -127,64 +127,61 @@ final class WrapperTest extends TestCase
 		$this->assertSame('&LT;B&GT;BOILER&LT;/B&GT;', (string) $wrapper->wrap('<b>boiler</b>'));
 	}
 
-	public function testSanitizeUsesConfiguredSanitizer(): void
+	public function testApplyFilterDelegatesToFilters(): void
 	{
-		$wrapper = new Wrapper(sanitizer: new FakeSanitizer());
+		$wrapper = new Wrapper();
 
-		$this->assertSame('<b>boiler</b>', $wrapper->sanitize('<b>boiler</b><script></script>'));
+		$this->assertSame('boiler', $wrapper->applyFilter('strip', '<b>boiler</b>'));
 	}
 
-	public function testSanitizeUnwrapsProxyValues(): void
+	public function testApplyFilterWithArgs(): void
 	{
-		$wrapper = new Wrapper(sanitizer: new FakeSanitizer());
+		$wrapper = new Wrapper();
 
+		$this->assertSame('<b>boiler</b>', $wrapper->applyFilter(
+			'strip',
+			'<b>boiler</b><script></script>',
+			'<b>',
+		));
+	}
+
+	public function testIsFilterSafe(): void
+	{
+		$wrapper = new Wrapper();
+
+		$this->assertTrue($wrapper->isFilterSafe('sanitize'));
+		$this->assertFalse($wrapper->isFilterSafe('strip'));
+	}
+
+	public function testHasFilter(): void
+	{
+		$wrapper = new Wrapper();
+
+		$this->assertTrue($wrapper->hasFilter('strip'));
+		$this->assertTrue($wrapper->hasFilter('sanitize'));
+		$this->assertFalse($wrapper->hasFilter('nope'));
+	}
+
+	public function testApplyFilterRejectsUnknownFilter(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'Unknown filter `nope`');
+
+		new Wrapper()->applyFilter('nope', 'value');
+	}
+
+	public function testFiltersAccessor(): void
+	{
+		$filters = new Filters();
+		$wrapper = new Wrapper(filters: $filters);
+
+		$this->assertSame($filters, $wrapper->filters());
+	}
+
+	public function testSanitizeFilterUsesBuiltinSanitizer(): void
+	{
 		$this->assertSame(
 			'<b>boiler</b>',
-			$wrapper->sanitize($this->stringProxy('<b>boiler</b><script></script>')),
+			new Wrapper()->applyFilter('sanitize', '<script></script><b>boiler</b>'),
 		);
-	}
-
-	public function testSanitizeSupportsStringableValues(): void
-	{
-		$wrapper = new Wrapper(sanitizer: new FakeSanitizer());
-		$value = new class {
-			public function __toString(): string
-			{
-				return '<b>boiler</b><script></script>';
-			}
-		};
-
-		$this->assertSame('<b>boiler</b>', $wrapper->sanitize($value));
-	}
-
-	public function testSanitizePassesStrategyToSanitizer(): void
-	{
-		$wrapper = new Wrapper(sanitizer: new class implements \Duon\Boiler\Contract\Sanitizer {
-			public function sanitize(
-				string $value,
-				?string $strategy = null,
-			): string {
-				return $strategy === 'text'
-					? strip_tags($value)
-					: $value;
-			}
-		});
-
-		$this->assertSame('boiler', $wrapper->sanitize('<b>boiler</b>', 'text'));
-	}
-
-	public function testSanitizeUsesBuiltinSanitizer(): void
-	{
-		$this->assertSame(
-			'<b>boiler</b>',
-			new Wrapper()->sanitize('<script></script><b>boiler</b>'),
-		);
-	}
-
-	public function testSanitizeRejectsNonStringableValues(): void
-	{
-		$this->throws(RuntimeException::class, 'Value cannot be sanitized as string');
-
-		new Wrapper(sanitizer: new FakeSanitizer())->sanitize(13);
 	}
 }

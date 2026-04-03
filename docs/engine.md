@@ -84,37 +84,30 @@ Read [displaying values](values.md) for the escaping model.
 
 ## Customize the wrapper
 
-Pass a custom `Wrapper` when you want to replace Boiler's default escaping or provide custom HTML sanitization for `$this->sanitize()`:
+Pass a custom `Wrapper` when you want to replace Boiler's default escaping:
 
 ```php
-use Duon\Boiler\Contract\Sanitizer;
+use Duon\Boiler\Contract\Escaper;
 use Duon\Boiler\Wrapper;
-
-final class AppSanitizer implements Sanitizer
-{
-    public function sanitize(
-        string $value,
-        ?string $strategy = null,
-    ): string {
-        return strip_tags($value, '<b><i><a>');
-    }
-}
 
 $engine = \Duon\Boiler\Engine::create(
     '/path/to/templates',
-    wrapper: new Wrapper(sanitizer: new AppSanitizer()),
+    wrapper: new Wrapper(new class implements Escaper {
+        public function escape(
+            string $value,
+            ?string $strategy = null,
+        ): string {
+            return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE);
+        }
+    }),
 );
 ```
 
-`Wrapper` accepts an optional escaper and an optional sanitizer. If `symfony/html-sanitizer` is installed, `Wrapper` uses Boiler's built-in `Sanitizer` automatically. If you call `$this->sanitize()` when no custom or built-in sanitizer is available, Boiler throws `\Duon\Boiler\Exception\MissingSanitizerException`.
-
-When you only need extra named strategies, you can extend Boiler's built-in escaper or sanitizer instead of replacing the whole implementation:
+`Wrapper` accepts an optional escaper and optional pre-registered filters. Boiler's built-in `Escaper` supports constructor-seeded strategies and incremental `->register()` calls when you only need extra named strategies instead of a full replacement:
 
 ```php
 use Duon\Boiler\Contract\EscapeStrategy;
-use Duon\Boiler\Contract\SanitizeStrategy;
 use Duon\Boiler\Escaper;
-use Duon\Boiler\Sanitizer;
 use Duon\Boiler\Wrapper;
 
 $escaper = new Escaper(
@@ -130,19 +123,64 @@ $escaper = new Escaper(
     ],
 );
 
-$sanitizer = new Sanitizer();
-$sanitizer->register('text', new class implements SanitizeStrategy {
-    public function apply(string $value): string
-    {
-        return strip_tags($value);
-    }
-});
-
 $engine = \Duon\Boiler\Engine::create(
     '/path/to/templates',
-    wrapper: new Wrapper(escaper: $escaper, sanitizer: $sanitizer),
+    wrapper: new Wrapper(escaper: $escaper),
 );
 ```
+
+## Register filters
+
+Filters are value transformations you can apply to template values. Register filters on the engine with the fluent `filter()` method:
+
+```php
+use Duon\Boiler\Contract\Filter;
+
+$engine = \Duon\Boiler\Engine::create('/path/to/templates')
+    ->filter('upper', new class implements Filter {
+        public function apply(string $value, mixed ...$args): string
+        {
+            return strtoupper($value);
+        }
+
+        public function safe(): bool
+        {
+            return false;
+        }
+    });
+```
+
+A filter implements `Duon\Boiler\Contract\Filter` with two methods:
+
+- `apply(string $value, mixed ...$args): string` transforms the value.
+- `safe(): bool` returns `true` when the filter output is safe HTML and should skip auto-escaping.
+
+Filters are available as virtual methods on string values in templates:
+
+```php
+<?= $title->upper() ?>
+<?= $html->sanitize() ?>
+<?= $body->strip('<b>') ?>
+```
+
+Filters can be chained. Once a safe filter is applied, the chain stays safe:
+
+```php
+<?= $html->sanitize()->strip('<b>') ?>
+```
+
+Boiler ships with two built-in filters:
+
+- `sanitize` removes unsafe HTML (requires `symfony/html-sanitizer`). This filter is safe.
+- `strip` removes HTML tags via `strip_tags()`. This filter is not safe.
+
+You can also apply filters from the template context with `$this->filter()`:
+
+```php
+<?= $this->filter('sanitize', $html) ?>
+```
+
+Read [displaying values](values.md) for more on filters and escaping.
 
 ## Control escaping
 

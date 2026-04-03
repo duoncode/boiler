@@ -16,8 +16,11 @@ interface Wrapper
 		?string $strategy = null,
 	): string;
 
-	public function sanitize(
-		mixed $value,
-		?string $strategy = null,
-	): string;
+	public function applyFilter(string $name, string $value, mixed ...$args): string;
+
+	public function isFilterSafe(string $name): bool;
+
+	public function hasFilter(string $name): bool;
+
+	public function registerFilter(string $name, Filter $filter): void;
 }

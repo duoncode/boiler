@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-use Duon\Boiler\Exception\MissingSanitizerException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ArrayProxy;
@@ -19,23 +18,15 @@ use Traversable;
 /** @api */
 final class Wrapper implements Contract\Wrapper
 {
-	private const string HTML_SANITIZER_CLASS = 'Symfony\\Component\\HtmlSanitizer\\HtmlSanitizer';
-
 	private readonly Contract\Escaper $escaper;
-	private readonly ?Contract\Sanitizer $sanitizer;
+	private readonly Filters $filters;
 
 	public function __construct(
 		?Contract\Escaper $escaper = null,
-		?Contract\Sanitizer $sanitizer = null,
+		?Filters $filters = null,
 	) {
 		$this->escaper = $escaper ?? new Escaper();
-		$this->sanitizer =
-			$sanitizer
-			?? (
-				class_exists(self::HTML_SANITIZER_CLASS)
-					? new Sanitizer()
-					: null
-			);
+		$this->filters = $filters ?? new Filters();
 	}
 
 	#[Override]
@@ -118,28 +109,31 @@ final class Wrapper implements Contract\Wrapper
 	}
 
 	#[Override]
-	public function sanitize(
-		mixed $value,
-		?string $strategy = null,
-	): string {
-		if ($value instanceof Proxy) {
-			/** @psalm-suppress MixedAssignment unwrap returns mixed by design */
-			$value = $value->unwrap();
-		}
-
-		if (is_string($value)) {
-			return $this->sanitizer()->sanitize($value, $strategy);
-		}
-
-		if ($value instanceof Stringable) {
-			return $this->sanitizer()->sanitize((string) $value, $strategy);
-		}
-
-		throw new RuntimeException('Value cannot be sanitized as string');
+	public function applyFilter(string $name, string $value, mixed ...$args): string
+	{
+		return $this->filters->apply($name, $value, ...$args);
 	}
 
-	private function sanitizer(): Contract\Sanitizer
+	#[Override]
+	public function isFilterSafe(string $name): bool
 	{
-		return $this->sanitizer ?? throw new MissingSanitizerException('No sanitizer configured');
+		return $this->filters->safe($name);
+	}
+
+	#[Override]
+	public function hasFilter(string $name): bool
+	{
+		return $this->filters->has($name);
+	}
+
+	#[Override]
+	public function registerFilter(string $name, Contract\Filter $filter): void
+	{
+		$this->filters->register($name, $filter);
+	}
+
+	public function filters(): Filters
+	{
+		return $this->filters;
 	}
 }
