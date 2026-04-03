@@ -24,7 +24,7 @@
 - Changed `Wrapper` from a static helper into an instance-based API that drives wrapping, unwrapping, escaping, and sanitizing.
 - Changed `Wrapper` to use Boiler's built-in `Sanitizer` automatically when `symfony/html-sanitizer` is installed.
 - Changed `sanitize()` to throw `MissingSanitizerException` only when no custom or built-in sanitizer is available.
-- Changed `Escaper` and `Sanitizer` to validate configured and requested strategy names and throw `UnexpectedValueException` for unknown strategies.
+- Changed `Escaper` and `Sanitizer` to validate configured strategy names and throw `UnexpectedValueException` for unknown strategies.
 
 ## [0.2.0](https://github.com/duonrun/boiler/releases/tag/0.2.0) (2026-03-25)
 
