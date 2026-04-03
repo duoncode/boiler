@@ -16,16 +16,13 @@ final class Sanitizer implements Contract\Sanitizer, Contract\SanitizeStrategyRe
 	/** @var array<non-empty-string, Contract\SanitizeStrategy> */
 	private array $registry;
 
-	/**
-	 * @param array<non-empty-string, Contract\SanitizeStrategy> $strategies
-	 */
+	/** @param array<non-empty-string, Contract\SanitizeStrategy> $strategies */
 	public function __construct(
 		private readonly string $defaultStrategy = self::HTML,
 		array $strategies = [],
 	) {
 		self::assertStrategyName($this->defaultStrategy);
-		$this->registry = array_replace($this->builtins(), self::normalizeStrategies($strategies));
-		$this->strategy($this->defaultStrategy);
+		$this->registry = $this->normalizeStrategies(array_replace($this->builtins(), $strategies));
 	}
 
 	#[Override]
@@ -42,11 +39,6 @@ final class Sanitizer implements Contract\Sanitizer, Contract\SanitizeStrategyRe
 		Contract\SanitizeStrategy $strategy,
 	): void {
 		self::assertStrategyName($name);
-
-		if (isset($this->registry[$name])) {
-			throw self::duplicateStrategy($name);
-		}
-
 		$this->registry[$name] = $strategy;
 	}
 
@@ -70,7 +62,7 @@ final class Sanitizer implements Contract\Sanitizer, Contract\SanitizeStrategyRe
 	 * @param array<array-key, Contract\SanitizeStrategy> $strategies
 	 * @return array<non-empty-string, Contract\SanitizeStrategy>
 	 */
-	private static function normalizeStrategies(array $strategies): array
+	private function normalizeStrategies(array $strategies): array
 	{
 		/** @var array<non-empty-string, Contract\SanitizeStrategy> $normalized */
 		$normalized = [];
@@ -91,19 +83,16 @@ final class Sanitizer implements Contract\Sanitizer, Contract\SanitizeStrategyRe
 			$normalized[$name] = $strategy;
 		}
 
+		if (!isset($normalized[$this->defaultStrategy])) {
+			throw self::unknownStrategy($this->defaultStrategy);
+		}
+
 		return $normalized;
 	}
 
 	private function strategy(string $strategy): Contract\SanitizeStrategy
 	{
-		self::assertStrategyName($strategy);
-
 		return $this->registry[$strategy] ?? throw self::unknownStrategy($strategy);
-	}
-
-	private static function duplicateStrategy(string $strategy): UnexpectedValueException
-	{
-		return new UnexpectedValueException("Sanitizer strategy `{$strategy}` is already registered");
 	}
 
 	private static function unknownStrategy(string $strategy): UnexpectedValueException

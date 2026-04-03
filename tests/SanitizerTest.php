@@ -75,18 +75,6 @@ final class SanitizerTest extends TestCase
 		$this->assertSame('Boiler', $sanitizer->sanitize('<script></script><b>Boiler</b>'));
 	}
 
-	public function testRegisterRejectsDuplicateStrategy(): void
-	{
-		$this->throws(UnexpectedValueException::class, 'Sanitizer strategy `html` is already registered');
-
-		new Sanitizer()->register(Sanitizer::HTML, new class implements Contract\SanitizeStrategy {
-			public function apply(string $value): string
-			{
-				return $value;
-			}
-		});
-	}
-
 	public function testRejectsUnknownStrategy(): void
 	{
 		$this->throws(UnexpectedValueException::class, 'Unknown sanitizer strategy `xml`');
