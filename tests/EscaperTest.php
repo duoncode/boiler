@@ -79,18 +79,6 @@ final class EscaperTest extends TestCase
 		$this->assertSame('<B>BOILER</B>', $escaper->escape('<b>boiler</b>'));
 	}
 
-	public function testRegisterRejectsDuplicateStrategy(): void
-	{
-		$this->throws(UnexpectedValueException::class, 'Escape strategy `html` is already registered');
-
-		new Escaper()->register(Escaper::HTML, new class implements Contract\EscapeStrategy {
-			public function apply(string $value): string
-			{
-				return $value;
-			}
-		});
-	}
-
 	public function testRejectsUnknownStrategy(): void
 	{
 		$this->throws(UnexpectedValueException::class, 'Unknown escape strategy `xml`');

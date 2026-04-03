@@ -16,16 +16,13 @@ final class Escaper implements Contract\Escaper, Contract\EscapeStrategyRegistry
 	/** @var array<non-empty-string, Contract\EscapeStrategy> */
 	private array $registry;
 
-	/**
-	 * @param array<non-empty-string, Contract\EscapeStrategy> $strategies
-	 */
+	/** @param array<non-empty-string, Contract\EscapeStrategy> $strategies */
 	public function __construct(
 		private readonly string $defaultStrategy = self::HTML,
 		array $strategies = [],
 	) {
 		self::assertStrategyName($this->defaultStrategy);
-		$this->registry = array_replace($this->builtins(), self::normalizeStrategies($strategies));
-		$this->strategy($this->defaultStrategy);
+		$this->registry = $this->normalizeStrategies(array_replace($this->builtins(), $strategies));
 	}
 
 	#[Override]
@@ -42,11 +39,6 @@ final class Escaper implements Contract\Escaper, Contract\EscapeStrategyRegistry
 		Contract\EscapeStrategy $strategy,
 	): void {
 		self::assertStrategyName($name);
-
-		if (isset($this->registry[$name])) {
-			throw self::duplicateStrategy($name);
-		}
-
 		$this->registry[$name] = $strategy;
 	}
 
@@ -70,7 +62,7 @@ final class Escaper implements Contract\Escaper, Contract\EscapeStrategyRegistry
 	 * @param array<array-key, Contract\EscapeStrategy> $strategies
 	 * @return array<non-empty-string, Contract\EscapeStrategy>
 	 */
-	private static function normalizeStrategies(array $strategies): array
+	private function normalizeStrategies(array $strategies): array
 	{
 		/** @var array<non-empty-string, Contract\EscapeStrategy> $normalized */
 		$normalized = [];
@@ -91,19 +83,16 @@ final class Escaper implements Contract\Escaper, Contract\EscapeStrategyRegistry
 			$normalized[$name] = $strategy;
 		}
 
+		if (!isset($normalized[$this->defaultStrategy])) {
+			throw self::unknownStrategy($this->defaultStrategy);
+		}
+
 		return $normalized;
 	}
 
 	private function strategy(string $name): Contract\EscapeStrategy
 	{
-		self::assertStrategyName($name);
-
 		return $this->registry[$name] ?? throw self::unknownStrategy($name);
-	}
-
-	private static function duplicateStrategy(string $name): UnexpectedValueException
-	{
-		return new UnexpectedValueException("Escape strategy `{$name}` is already registered");
 	}
 
 	private static function unknownStrategy(string $name): UnexpectedValueException
