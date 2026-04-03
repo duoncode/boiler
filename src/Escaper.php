@@ -9,7 +9,7 @@ use Duon\Boiler\Strategy\EscapeHtml;
 use Override;
 
 /** @api */
-final class Escaper implements Contract\Escaper
+final class Escaper implements Contract\Escaper, Contract\EscapeStrategyRegistry
 {
 	public const string HTML = 'html';
 
@@ -23,22 +23,9 @@ final class Escaper implements Contract\Escaper
 		private readonly string $defaultStrategy = self::HTML,
 		array $strategies = [],
 	) {
-		self::assertStrategyId($this->defaultStrategy);
+		self::assertStrategyName($this->defaultStrategy);
 		$this->registry = array_replace($this->builtins(), self::normalizeStrategies($strategies));
 		$this->strategy($this->defaultStrategy);
-	}
-
-	public function register(
-		string $id,
-		Contract\EscapeStrategy $strategy,
-	): void {
-		self::assertStrategyId($id);
-
-		if (isset($this->registry[$id])) {
-			throw self::duplicateStrategy($id);
-		}
-
-		$this->registry[$id] = $strategy;
 	}
 
 	#[Override]
@@ -49,6 +36,20 @@ final class Escaper implements Contract\Escaper
 		return $this->strategy($strategy ?? $this->defaultStrategy)->apply($value);
 	}
 
+	#[Override]
+	public function register(
+		string $name,
+		Contract\EscapeStrategy $strategy,
+	): void {
+		self::assertStrategyName($name);
+
+		if (isset($this->registry[$name])) {
+			throw self::duplicateStrategy($name);
+		}
+
+		$this->registry[$name] = $strategy;
+	}
+
 	/** @return array<non-empty-string, Contract\EscapeStrategy> */
 	private function builtins(): array
 	{
@@ -57,11 +58,11 @@ final class Escaper implements Contract\Escaper
 		];
 	}
 
-	/** @psalm-assert non-empty-string $id */
-	private static function assertStrategyId(string $id): void
+	/** @psalm-assert non-empty-string $name */
+	private static function assertStrategyName(string $name): void
 	{
-		if ($id === '') {
-			throw new UnexpectedValueException('Escape strategy id must be a non-empty string');
+		if ($name === '') {
+			throw new UnexpectedValueException('Escape strategy name must be a non-empty string');
 		}
 	}
 
@@ -74,39 +75,39 @@ final class Escaper implements Contract\Escaper
 		/** @var array<non-empty-string, Contract\EscapeStrategy> $normalized */
 		$normalized = [];
 
-		foreach ($strategies as $id => $strategy) {
-			if (!is_string($id)) {
-				throw new UnexpectedValueException('Escape strategy id must be a non-empty string');
+		foreach ($strategies as $name => $strategy) {
+			if (!is_string($name)) {
+				throw new UnexpectedValueException('Escape strategy name must be a non-empty string');
 			}
 
-			self::assertStrategyId($id);
+			self::assertStrategyName($name);
 
 			if (!$strategy instanceof Contract\EscapeStrategy) {
 				throw new UnexpectedValueException(
-					"Escape strategy `{$id}` must implement `Duon\\Boiler\\Contract\\EscapeStrategy`",
+					"Escape strategy `{$name}` must implement `Duon\\Boiler\\Contract\\EscapeStrategy`",
 				);
 			}
 
-			$normalized[$id] = $strategy;
+			$normalized[$name] = $strategy;
 		}
 
 		return $normalized;
 	}
 
-	private function strategy(string $strategy): Contract\EscapeStrategy
+	private function strategy(string $name): Contract\EscapeStrategy
 	{
-		self::assertStrategyId($strategy);
+		self::assertStrategyName($name);
 
-		return $this->registry[$strategy] ?? throw self::unknownStrategy($strategy);
+		return $this->registry[$name] ?? throw self::unknownStrategy($name);
 	}
 
-	private static function duplicateStrategy(string $strategy): UnexpectedValueException
+	private static function duplicateStrategy(string $name): UnexpectedValueException
 	{
-		return new UnexpectedValueException("Escape strategy `{$strategy}` is already registered");
+		return new UnexpectedValueException("Escape strategy `{$name}` is already registered");
 	}
 
-	private static function unknownStrategy(string $strategy): UnexpectedValueException
+	private static function unknownStrategy(string $name): UnexpectedValueException
 	{
-		return new UnexpectedValueException("Unknown escape strategy `{$strategy}`");
+		return new UnexpectedValueException("Unknown escape strategy `{$name}`");
 	}
 }

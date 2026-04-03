@@ -9,7 +9,7 @@ use Duon\Boiler\Strategy\SanitizeHtml;
 use Override;
 
 /** @api */
-final class Sanitizer implements Contract\Sanitizer
+final class Sanitizer implements Contract\Sanitizer, Contract\SanitizeStrategyRegistry
 {
 	public const string HTML = 'html';
 
@@ -23,22 +23,9 @@ final class Sanitizer implements Contract\Sanitizer
 		private readonly string $defaultStrategy = self::HTML,
 		array $strategies = [],
 	) {
-		self::assertStrategyId($this->defaultStrategy);
+		self::assertStrategyName($this->defaultStrategy);
 		$this->registry = array_replace($this->builtins(), self::normalizeStrategies($strategies));
 		$this->strategy($this->defaultStrategy);
-	}
-
-	public function register(
-		string $id,
-		Contract\SanitizeStrategy $strategy,
-	): void {
-		self::assertStrategyId($id);
-
-		if (isset($this->registry[$id])) {
-			throw self::duplicateStrategy($id);
-		}
-
-		$this->registry[$id] = $strategy;
 	}
 
 	#[Override]
@@ -49,6 +36,20 @@ final class Sanitizer implements Contract\Sanitizer
 		return $this->strategy($strategy ?? $this->defaultStrategy)->apply($value);
 	}
 
+	#[Override]
+	public function register(
+		string $name,
+		Contract\SanitizeStrategy $strategy,
+	): void {
+		self::assertStrategyName($name);
+
+		if (isset($this->registry[$name])) {
+			throw self::duplicateStrategy($name);
+		}
+
+		$this->registry[$name] = $strategy;
+	}
+
 	/** @return array<non-empty-string, Contract\SanitizeStrategy> */
 	private function builtins(): array
 	{
@@ -57,11 +58,11 @@ final class Sanitizer implements Contract\Sanitizer
 		];
 	}
 
-	/** @psalm-assert non-empty-string $id */
-	private static function assertStrategyId(string $id): void
+	/** @psalm-assert non-empty-string $name */
+	private static function assertStrategyName(string $name): void
 	{
-		if ($id === '') {
-			throw new UnexpectedValueException('Sanitizer strategy id must be a non-empty string');
+		if ($name === '') {
+			throw new UnexpectedValueException('Sanitizer strategy name must be a non-empty string');
 		}
 	}
 
@@ -74,20 +75,20 @@ final class Sanitizer implements Contract\Sanitizer
 		/** @var array<non-empty-string, Contract\SanitizeStrategy> $normalized */
 		$normalized = [];
 
-		foreach ($strategies as $id => $strategy) {
-			if (!is_string($id)) {
-				throw new UnexpectedValueException('Sanitizer strategy id must be a non-empty string');
+		foreach ($strategies as $name => $strategy) {
+			if (!is_string($name)) {
+				throw new UnexpectedValueException('Sanitizer strategy name must be a non-empty string');
 			}
 
-			self::assertStrategyId($id);
+			self::assertStrategyName($name);
 
 			if (!$strategy instanceof Contract\SanitizeStrategy) {
 				throw new UnexpectedValueException(
-					"Sanitizer strategy `{$id}` must implement `Duon\\Boiler\\Contract\\SanitizeStrategy`",
+					"Sanitizer strategy `{$name}` must implement `Duon\\Boiler\\Contract\\SanitizeStrategy`",
 				);
 			}
 
-			$normalized[$id] = $strategy;
+			$normalized[$name] = $strategy;
 		}
 
 		return $normalized;
@@ -95,7 +96,7 @@ final class Sanitizer implements Contract\Sanitizer
 
 	private function strategy(string $strategy): Contract\SanitizeStrategy
 	{
-		self::assertStrategyId($strategy);
+		self::assertStrategyName($strategy);
 
 		return $this->registry[$strategy] ?? throw self::unknownStrategy($strategy);
 	}
