@@ -12,6 +12,7 @@
 ### Added
 
 - Added `Contract\Escaper`, `Contract\Sanitizer`, and `Contract\Wrapper`.
+- Added `Contract\EscapeStrategyRegistry` and `Contract\SanitizeStrategyRegistry` so strategy registration can be type-hinted separately from escaping and sanitizing.
 - Added `Escaper` as the default escaper implementation.
 - Added `Sanitizer` as Boiler's optional built-in HTML sanitizer implementation.
 - Added wrapper injection to `Engine::__construct()`, `Engine::create()`, and `Engine::unescaped()`.
