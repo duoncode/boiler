@@ -103,6 +103,8 @@ $engine = \Duon\Boiler\Engine::create(
 );
 ```
 
+`Contract\Wrapper` only covers wrapping, unwrapping, escaping, and filter lookup. Boiler's built-in `Wrapper` also implements `Contract\FilterRegister`, so `Engine::filter()` can register new filters on it. If you provide your own wrapper and want to keep using `Engine::filter()`, implement `Contract\FilterRegister` too.
+
 `Wrapper` accepts an optional escaper and optional pre-registered filters. Boiler's built-in `Escaper` supports constructor-seeded strategies and incremental `->register()` calls when you only need extra named strategies instead of a full replacement:
 
 ```php
@@ -149,6 +151,8 @@ $engine = \Duon\Boiler\Engine::create('/path/to/templates')
         }
     });
 ```
+
+`Engine::filter()` requires a wrapper that implements `Contract\FilterRegister`. Boiler's built-in `Wrapper` already does.
 
 A filter implements `Duon\Boiler\Contract\Filter` with two methods:
 
