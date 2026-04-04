@@ -11,8 +11,6 @@ use Duon\Boiler\Filter\Strip;
 /** @api */
 final class Filters
 {
-	private const string HTML_SANITIZER_CLASS = 'Symfony\\Component\\HtmlSanitizer\\HtmlSanitizer';
-
 	/** @var array<non-empty-string, Contract\Filter> */
 	private array $registry;
 
@@ -50,7 +48,7 @@ final class Filters
 			'strip' => new Strip(),
 		];
 
-		if (class_exists(self::HTML_SANITIZER_CLASS)) {
+		if (class_exists(\Symfony\Component\HtmlSanitizer\HtmlSanitizer::class)) {
 			$builtins['sanitize'] = new Sanitize();
 		}
 
