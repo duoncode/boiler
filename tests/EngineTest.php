@@ -223,6 +223,29 @@ final class EngineTest extends TestCase
 		);
 	}
 
+	public function testHelperWrapWorksInUnescapedRendering(): void
+	{
+		$engine = Engine::unescaped(
+			$this->templates(),
+			['obj' => $this->obj()],
+		);
+
+		$this->assertSame(
+			'&lt;script&gt;<b>clean</b>',
+			$this->fullTrim($engine->render('helper')),
+		);
+	}
+
+	public function testWrappedHelperStripRespectsEscaping(): void
+	{
+		$engine = Engine::create($this->templates());
+
+		$this->assertSame(
+			'boiler&lt;br&gt;plate',
+			trim($engine->render('wrapstrip', ['html' => '<b>boiler<br>plate</b>'])),
+		);
+	}
+
 	public function testSanitizeRenderingUsesBuiltinSanitizer(): void
 	{
 		$engine = Engine::create($this->templates());
@@ -234,6 +257,15 @@ final class EngineTest extends TestCase
 				['html' => '<script src="/evil.js"></script><b>boiler</b>'],
 			),
 		);
+	}
+
+	public function testUnescapedPlainStringsDoNotExposeFilterMethods(): void
+	{
+		$this->throws(RenderException::class, 'sanitize');
+
+		$engine = Engine::unescaped($this->templates());
+
+		$engine->render('sanitize', ['html' => '<script src="/evil.js"></script><b>boiler</b>']);
 	}
 
 	public function testRawHelperSupportsExplicitStringChecks(): void
