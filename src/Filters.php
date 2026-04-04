@@ -93,7 +93,7 @@ final class Filters
 		return $normalized;
 	}
 
-	private function filter(string $name): Contract\Filter
+	public function filter(string $name): Contract\Filter
 	{
 		return $this->registry[$name] ?? throw new UnexpectedValueException("Unknown filter `{$name}`");
 	}

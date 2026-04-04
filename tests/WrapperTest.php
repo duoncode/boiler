@@ -7,7 +7,6 @@ namespace Duon\Boiler\Tests;
 use Duon\Boiler\Contract;
 use Duon\Boiler\Contract\Escaper;
 use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Filters;
 use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
 use Duon\Boiler\Proxy\ObjectProxy;
@@ -20,6 +19,7 @@ final class WrapperTest extends TestCase
 	public function testWrapperImplementsContract(): void
 	{
 		$this->assertInstanceOf(Contract\Wrapper::class, new Wrapper());
+		$this->assertInstanceOf(Contract\FilterRegister::class, new Wrapper());
 	}
 
 	public function testWrapNumber(): void
@@ -127,61 +127,63 @@ final class WrapperTest extends TestCase
 		$this->assertSame('&LT;B&GT;BOILER&LT;/B&GT;', (string) $wrapper->wrap('<b>boiler</b>'));
 	}
 
-	public function testApplyFilterDelegatesToFilters(): void
+	public function testFilterReturnsBuiltinFilter(): void
 	{
 		$wrapper = new Wrapper();
 
-		$this->assertSame('boiler', $wrapper->applyFilter('strip', '<b>boiler</b>'));
+		$this->assertInstanceOf(Contract\Filter::class, $wrapper->filter('strip'));
 	}
 
-	public function testApplyFilterWithArgs(): void
+	public function testFilterApplySupportsArgs(): void
 	{
 		$wrapper = new Wrapper();
 
-		$this->assertSame('<b>boiler</b>', $wrapper->applyFilter(
-			'strip',
+		$this->assertSame('<b>boiler</b>', $wrapper->filter('strip')->apply(
 			'<b>boiler</b><script></script>',
 			'<b>',
 		));
 	}
 
-	public function testIsFilterSafe(): void
+	public function testFilterExposesSafety(): void
 	{
 		$wrapper = new Wrapper();
 
-		$this->assertTrue($wrapper->isFilterSafe('sanitize'));
-		$this->assertFalse($wrapper->isFilterSafe('strip'));
+		$this->assertTrue($wrapper->filter('sanitize')->safe());
+		$this->assertFalse($wrapper->filter('strip')->safe());
 	}
 
-	public function testHasFilter(): void
+	public function testRegisterFilterAddsLookup(): void
 	{
 		$wrapper = new Wrapper();
+		$wrapper->registerFilter('upper', new class implements Contract\Filter {
+			public function apply(string $value, mixed ...$args): string
+			{
+				return strtoupper($value);
+			}
 
-		$this->assertTrue($wrapper->hasFilter('strip'));
-		$this->assertTrue($wrapper->hasFilter('sanitize'));
-		$this->assertFalse($wrapper->hasFilter('nope'));
+			public function safe(): bool
+			{
+				return false;
+			}
+		});
+
+		$this->assertSame('BOILER', $wrapper->filter('upper')->apply('boiler'));
 	}
 
-	public function testApplyFilterRejectsUnknownFilter(): void
+	public function testFilterRejectsUnknownFilter(): void
 	{
 		$this->throws(UnexpectedValueException::class, 'Unknown filter `nope`');
 
-		new Wrapper()->applyFilter('nope', 'value');
-	}
-
-	public function testFiltersAccessor(): void
-	{
-		$filters = new Filters();
-		$wrapper = new Wrapper(filters: $filters);
-
-		$this->assertSame($filters, $wrapper->filters());
+		new Wrapper()->filter('nope');
 	}
 
 	public function testSanitizeFilterUsesBuiltinSanitizer(): void
 	{
 		$this->assertSame(
 			'<b>boiler</b>',
-			new Wrapper()->applyFilter('sanitize', '<script></script><b>boiler</b>'),
+			new Wrapper()
+				->filter('sanitize')
+				->apply('<script></script><b>boiler</b>'),
 		);
 	}
 }

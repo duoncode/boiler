@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Duon\Boiler\Proxy;
 
 use Duon\Boiler\Contract\Wrapper;
-use Duon\Boiler\Exception\UnexpectedValueException;
 use Override;
 
 /**
@@ -30,13 +29,10 @@ final class StringProxy implements Proxy
 	 */
 	public function __call(string $name, array $args): self
 	{
-		if (!$this->wrapper->hasFilter($name)) {
-			throw new UnexpectedValueException("Unknown filter `{$name}`");
-		}
-
-		$filtered = $this->wrapper->applyFilter($name, $this->value, ...$args);
+		$filter = $this->wrapper->filter($name);
+		$filtered = $filter->apply($this->value, ...$args);
 		$proxy = new self($filtered, $this->wrapper);
-		$proxy->safe = $this->safe || $this->wrapper->isFilterSafe($name);
+		$proxy->safe = $this->safe || $filter->safe();
 
 		return $proxy;
 	}

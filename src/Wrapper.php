@@ -16,7 +16,7 @@ use Stringable;
 use Traversable;
 
 /** @api */
-final class Wrapper implements Contract\Wrapper
+final class Wrapper implements Contract\FilterRegister, Contract\Wrapper
 {
 	private readonly Contract\Escaper $escaper;
 	private readonly Filters $filters;
@@ -109,31 +109,14 @@ final class Wrapper implements Contract\Wrapper
 	}
 
 	#[Override]
-	public function applyFilter(string $name, string $value, mixed ...$args): string
+	public function filter(string $name): Contract\Filter
 	{
-		return $this->filters->apply($name, $value, ...$args);
-	}
-
-	#[Override]
-	public function isFilterSafe(string $name): bool
-	{
-		return $this->filters->safe($name);
-	}
-
-	#[Override]
-	public function hasFilter(string $name): bool
-	{
-		return $this->filters->has($name);
+		return $this->filters->filter($name);
 	}
 
 	#[Override]
 	public function registerFilter(string $name, Contract\Filter $filter): void
 	{
 		$this->filters->register($name, $filter);
-	}
-
-	public function filters(): Filters
-	{
-		return $this->filters;
 	}
 }
