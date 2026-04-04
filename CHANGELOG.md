@@ -4,27 +4,24 @@
 
 ### Breaking
 
-- Renamed the `Contract\Wrapper`, `Contract\Sanitizer`, `Context`, and `StringProxy` method `::clean()` to `::sanitize()`.
-- Changed `Context::sanitize()` and `StringProxy::sanitize()` to use the configured or auto-detected wrapper sanitizer and removed per-call Symfony config support.
 - Renamed `Context::esc()` to `Context::escape()`, so templates now call `$this->escape()` instead of `$this->esc()`.
-- Replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escape strategies on `Contract\Escaper`, `Contract\Wrapper`, `Context::escape()`, and `Wrapper::escape()`.
+- Replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escape strategies.
 
 ### Added
 
-- Added `Contract\Escaper`, `Contract\Sanitizer`, and `Contract\Wrapper`.
-- Added `Contract\EscapeStrategyRegistry` and `Contract\SanitizeStrategyRegistry` so strategy registration can be type-hinted separately from escaping and sanitizing.
+- Added `Contract\Escaper`, `Contract\Wrapper`, `Contract\EscapeStrategy`, `Contract\EscapeStrategyRegistry`, `Contract\Filter`, and `Contract\FilterRegister`.
 - Added `Escaper` as the default escaper implementation.
-- Added `Sanitizer` as Boiler's optional built-in HTML sanitizer implementation.
 - Added wrapper injection to `Engine::__construct()`, `Engine::create()`, and `Engine::unescaped()`.
-- Added `Escaper::HTML` and `Sanitizer::HTML` as the built-in strategy constants for Boiler's default escaping and sanitizing modes.
-- Added a Composer suggestion for `symfony/html-sanitizer` to enable Boiler's built-in sanitizer.
+- Added `Engine::filter()` for registering custom filters on wrappers that implement `Contract\FilterRegister`.
+- Added `Escaper::HTML` as the built-in strategy constant for Boiler's default escaping mode.
+- Added the built-in `strip` filter and the optional `sanitize` filter when `symfony/html-sanitizer` is installed.
+- Added a Composer suggestion for `symfony/html-sanitizer` to enable the built-in `sanitize` filter.
 
 ### Changed
 
-- Changed `Wrapper` from a static helper into an instance-based API that drives wrapping, unwrapping, escaping, and sanitizing.
-- Changed `Wrapper` to use Boiler's built-in `Sanitizer` automatically when `symfony/html-sanitizer` is installed.
-- Changed `sanitize()` to throw `MissingSanitizerException` only when no custom or built-in sanitizer is available.
-- Changed `Escaper` and `Sanitizer` to validate configured strategy names and throw `UnexpectedValueException` for unknown strategies.
+- Changed `Wrapper` from a static helper into an instance-based API that drives wrapping, unwrapping, escaping, and filter lookup.
+- Changed `StringProxy` to dispatch registered filters as virtual methods.
+- Changed `Escaper` to validate configured strategy names and throw `UnexpectedValueException` for unknown strategies.
 
 ## [0.2.0](https://github.com/duonrun/boiler/releases/tag/0.2.0) (2026-03-25)
 
