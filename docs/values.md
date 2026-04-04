@@ -2,7 +2,7 @@
 
 In escaped renders, Boiler wraps strings and most objects before exposing them to templates. This gives you automatic escaping while still allowing objects, arrays, and iterators to be used naturally in template code.
 
-Read this page if you want to understand when Boiler escapes values and when you need `$this->unwrap()`, `$this->escape()`, or `$this->filter()`.
+Read this page if you want to understand when Boiler escapes values and when you need `$this->unwrap()`, `$this->escape()`, or `$this->wrap()`.
 
 ## What Boiler escapes automatically
 
@@ -48,29 +48,35 @@ Boiler ships with the `html` strategy. It uses PHP's `htmlspecialchars()` with `
 
 `$this->escape()` accepts strings, `Stringable` values, and Boiler's wrapped string or object proxies. The `strategy` argument is forwarded to the wrapper's configured escaper. Boiler's built-in `Escaper` supports constructor-seeded strategies and incremental `->register()` calls, and custom escaper implementations can expose additional strategy names too.
 
+## Wrap a value explicitly
+
+Use `$this->wrap()` when you need Boiler's proxy behavior for a raw value inside a template.
+
+This is most useful when you want string filter methods on a literal or raw string value, especially in unescaped renders:
+
+```php
+<?= $this->wrap($html)->sanitize() ?>
+<?= $this->wrap('<b>Boiler</b>')->strip('<b>') ?>
+```
+
+`$this->wrap()` always uses the wrapper directly, so it still returns proxies even when the engine is rendering unescaped output.
+
 ## Filters
 
-Filters are value transformations applied as virtual methods on string values inside templates:
+Filters are value transformations applied as virtual methods on wrapped string values inside templates:
 
 ```php
 <?= $html->sanitize() ?>
 <?= $title->strip('<b>') ?>
 ```
 
+In escaped renders, string values from template context are already wrapped. In unescaped renders, or when you start from a literal string in the template, call `$this->wrap()` first.
+
 Filters can be chained. Once a safe filter is applied in a chain, the result stays safe and skips auto-escaping:
 
 ```php
 <?= $html->sanitize()->strip('<b>') ?>
 ```
-
-You can also apply filters from the template context with `$this->filter()`:
-
-```php
-<?= $this->filter('sanitize', $html) ?>
-<?= $this->filter('strip', $body, '<b><i>') ?>
-```
-
-`$this->filter()` accepts strings, `Stringable` values, and Boiler's wrapped string or object proxies.
 
 Boiler ships with two built-in filters:
 
@@ -117,5 +123,5 @@ In that mode:
 
 - `<?= $value ?>` outputs unescaped string content
 - `$this->unwrap()` usually returns the same value you already have
-- `$this->filter()` is still available when you want to transform values
+- `$this->wrap()` is still available when you need proxy behavior such as string filters
 - string filter methods such as `->sanitize()` only exist on wrapped string proxies, so plain strings in unescaped renders do not expose them automatically

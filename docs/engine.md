@@ -159,12 +159,18 @@ A filter implements `Duon\Boiler\Contract\Filter` with two methods:
 - `apply(string $value, mixed ...$args): string` transforms the value.
 - `safe(): bool` returns `true` when the filter output is safe HTML and should skip auto-escaping.
 
-Filters are available as virtual methods on string values in templates:
+Filters are available as virtual methods on wrapped string values in templates:
 
 ```php
 <?= $title->upper() ?>
 <?= $html->sanitize() ?>
 <?= $body->strip('<b>') ?>
+```
+
+In escaped renders, Boiler wraps string values for you. When you need filters on a raw value or in an unescaped render, call `$this->wrap($value)` first:
+
+```php
+<?= $this->wrap($html)->sanitize() ?>
 ```
 
 Filters can be chained. Once a safe filter is applied, the chain stays safe:
@@ -177,12 +183,6 @@ Boiler ships with two built-in filters:
 
 - `sanitize` removes unsafe HTML (requires `symfony/html-sanitizer`). This filter is safe.
 - `strip` removes HTML tags via `strip_tags()`. This filter is not safe.
-
-You can also apply filters from the template context with `$this->filter()`:
-
-```php
-<?= $this->filter('sanitize', $html) ?>
-```
 
 Read [displaying values](values.md) for more on filters and escaping.
 

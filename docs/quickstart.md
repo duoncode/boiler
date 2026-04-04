@@ -53,5 +53,5 @@ In templates, prefer PHP's alternative control structure syntax such as `if (...
 ## Next steps
 
 - Read [the engine](engine.md) to learn about multiple template directories, namespaces, default values, and escape modes.
-- Read [displaying values](values.md) to learn when to use `$this->unwrap()`, `$this->escape()`, and `$this->filter()`.
+- Read [displaying values](values.md) to learn when to use `$this->unwrap()`, `$this->escape()`, and `$this->wrap()`.
 - Read [layouts](layouts.md), [inserts](inserts.md), and [sections](sections.md) for the main composition features.
