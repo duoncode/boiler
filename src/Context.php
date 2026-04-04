@@ -110,6 +110,11 @@ abstract class Context
 		return $this->wrapper->escape($value, $strategy);
 	}
 
+	public function wrap(mixed $value): mixed
+	{
+		return $this->wrapper->wrap($value);
+	}
+
 	/** @return array<array-key, mixed> */
 	private function wrappedContext(): array
 	{
@@ -121,22 +126,6 @@ abstract class Context
 		return $this->autoescape
 			? $this->wrapper->wrap($value)
 			: $this->wrapper->unwrap($value);
-	}
-
-	public function filter(
-		string $name,
-		StringProxy|ObjectProxy|string|Stringable $value,
-		mixed ...$args,
-	): string {
-		$filter = $this->wrapper->filter($name);
-
-		if ($value instanceof Proxy) {
-			$value = (string) $value->unwrap();
-		} elseif ($value instanceof Stringable) {
-			$value = (string) $value;
-		}
-
-		return $filter->apply($value, ...$args);
 	}
 
 	/**

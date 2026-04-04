@@ -154,4 +154,13 @@ final class TemplateContextTest extends TestCase
 		$tmplContext = new TemplateContext($this->template, [], [], true);
 		$tmplContext->escape($this->objectProxy(new class {}));
 	}
+
+	public function testWrapReturnsWrappedValueInUnescapedContext(): void
+	{
+		$tmplContext = new TemplateContext($this->template, [], [], false);
+		$wrapped = $tmplContext->wrap('<b>Value</b>');
+
+		$this->assertInstanceOf(StringProxy::class, $wrapped);
+		$this->assertSame('&lt;b&gt;Value&lt;/b&gt;', (string) $wrapped);
+	}
 }
