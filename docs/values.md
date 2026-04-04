@@ -117,4 +117,5 @@ In that mode:
 
 - `<?= $value ?>` outputs unescaped string content
 - `$this->unwrap()` usually returns the same value you already have
-- `$this->filter()` and string filters like `->sanitize()` are still available when you want to transform values
+- `$this->filter()` is still available when you want to transform values
+- string filter methods such as `->sanitize()` only exist on wrapped string proxies, so plain strings in unescaped renders do not expose them automatically
