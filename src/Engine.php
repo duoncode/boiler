@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\LookupException;
+use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Override;
 
@@ -79,6 +80,10 @@ class Engine implements Contract\Engine
 
 	public function filter(string $name, Contract\Filter $with): static
 	{
+		if (!$this->wrapper instanceof Contract\FilterRegister) {
+			throw new RuntimeException('Configured wrapper does not support filter registration');
+		}
+
 		$this->wrapper->registerFilter($name, $with);
 
 		return $this;

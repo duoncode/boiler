@@ -128,13 +128,15 @@ abstract class Context
 		StringProxy|ObjectProxy|string|Stringable $value,
 		mixed ...$args,
 	): string {
+		$filter = $this->wrapper->filter($name);
+
 		if ($value instanceof Proxy) {
 			$value = (string) $value->unwrap();
 		} elseif ($value instanceof Stringable) {
 			$value = (string) $value;
 		}
 
-		return $this->wrapper->applyFilter($name, $value, ...$args);
+		return $filter->apply($value, ...$args);
 	}
 
 	/**

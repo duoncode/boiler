@@ -728,6 +728,48 @@ final class EngineTest extends TestCase
 		$this->assertSame($engine, $result);
 	}
 
+	public function testRegisterFilterRequiresWrapperWithFilterRegister(): void
+	{
+		$this->throws(RuntimeException::class, 'Configured wrapper does not support filter registration');
+
+		$engine = Engine::create(
+			$this->templates(),
+			wrapper: new class implements \Duon\Boiler\Contract\Wrapper {
+				public function wrap(mixed $value): mixed
+				{
+					return $value;
+				}
+
+				public function unwrap(mixed $value): mixed
+				{
+					return $value;
+				}
+
+				public function escape(mixed $value, ?string $strategy = null): string
+				{
+					return (string) $value;
+				}
+
+				public function filter(string $name): Filter
+				{
+					throw new UnexpectedValueException("Unknown filter `{$name}`");
+				}
+			},
+		);
+
+		$engine->filter('upper', new class implements Filter {
+			public function apply(string $value, mixed ...$args): string
+			{
+				return strtoupper($value);
+			}
+
+			public function safe(): bool
+			{
+				return false;
+			}
+		});
+	}
+
 	public function testUnknownCustomMethod(): void
 	{
 		$this->throws(RenderException::class, 'upper');
