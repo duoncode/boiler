@@ -126,6 +126,8 @@ $engine = Engine::create('/path/to/templates')
 
 Filters are available as virtual methods on string values in templates. Boiler ships with built-in `sanitize` and `strip` filters. If `symfony/html-sanitizer` is installed, the `sanitize` filter is registered automatically.
 
+If you provide your own wrapper and still want to use `Engine::filter()`, implement `Duon\Boiler\Contract\FilterRegister` on that wrapper too.
+
 Template helpers available via `$this` inside templates:
 
 - `$this->layout('layout')`
