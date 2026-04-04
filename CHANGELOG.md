@@ -5,7 +5,6 @@
 ### Breaking
 
 - Renamed `Context::esc()` to `Context::escape()`, so templates now call `$this->escape()` instead of `$this->esc()`.
-- Removed `Context::filter()`. Templates now call filters on wrapped string proxies and use `$this->wrap($value)` when they need that behavior for a raw value.
 - Replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escape strategies.
 
 ### Added
