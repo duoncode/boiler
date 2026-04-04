@@ -5,11 +5,13 @@
 ### Breaking
 
 - Renamed `Context::esc()` to `Context::escape()`, so templates now call `$this->escape()` instead of `$this->esc()`.
+- Removed `Context::filter()`. Templates now call filters on wrapped string proxies and use `$this->wrap($value)` when they need that behavior for a raw value.
 - Replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escape strategies.
 
 ### Added
 
 - Added `Contract\Escaper`, `Contract\Wrapper`, `Contract\EscapeStrategy`, `Contract\EscapeStrategyRegistry`, `Contract\Filter`, and `Contract\FilterRegister`.
+- Added `Context::wrap()` as an explicit way to opt into wrapper proxy behavior inside templates.
 - Added `Escaper` as the default escaper implementation.
 - Added wrapper injection to `Engine::__construct()`, `Engine::create()`, and `Engine::unescaped()`.
 - Added `Engine::filter()` for registering custom filters on wrappers that implement `Contract\FilterRegister`.
