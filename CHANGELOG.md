@@ -21,9 +21,6 @@
 
 - Changed `Wrapper` from a static helper into an instance-based API that drives wrapping, unwrapping, escaping, and filter lookup.
 - Changed `StringProxy` to dispatch registered filters as virtual methods.
-- Changed `Escapers` to validate configured escaper names and throw `UnexpectedValueException` for unknown escapers.
-- Changed `Filters` to expose lookup through `filter()` instead of `has()`, `safe()`, and `apply()` convenience methods.
-- Changed `Engine::filter()` to register through the engine-managed filters registry instead of requiring a registering wrapper.
 
 ## [0.2.0](https://github.com/duonrun/boiler/releases/tag/0.2.0) (2026-03-25)
 
