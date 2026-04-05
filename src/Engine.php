@@ -22,7 +22,7 @@ class Engine implements Contract\Engine
 	protected readonly array $dirs;
 	/** @psalm-var array<string, non-empty-string> */
 	protected array $pathCache = [];
-	private readonly EngineRuntime $runtime;
+	private readonly Environment $environment;
 
 	public private(set) bool $autoescape {
 		get => $this->autoescape;
@@ -41,7 +41,7 @@ class Engine implements Contract\Engine
 	) {
 		$this->autoescape = $autoescape;
 		$this->dirs = $this->prepareDirs($dirs);
-		$this->runtime = new EngineRuntime();
+		$this->environment = new Environment();
 		$this->customMethods = new CustomMethods();
 	}
 
@@ -72,13 +72,13 @@ class Engine implements Contract\Engine
 	#[Override]
 	public function wrapper(): Contract\Wrapper
 	{
-		return $this->runtime->wrapper();
+		return $this->environment->wrapper();
 	}
 
 	#[Override]
 	public function setWrapper(Contract\Wrapper $wrapper): static
 	{
-		$this->runtime->setWrapper($wrapper);
+		$this->environment->setWrapper($wrapper);
 
 		return $this;
 	}
@@ -86,7 +86,7 @@ class Engine implements Contract\Engine
 	#[Override]
 	public function setFilters(Contract\Filters $filters): static
 	{
-		$this->runtime->setFilters($filters);
+		$this->environment->setFilters($filters);
 
 		return $this;
 	}
@@ -94,14 +94,14 @@ class Engine implements Contract\Engine
 	#[Override]
 	public function setEscapers(Contract\Escapers $escapers): static
 	{
-		$this->runtime->setEscapers($escapers);
+		$this->environment->setEscapers($escapers);
 
 		return $this;
 	}
 
 	public function filter(string $name, Contract\Filter $with): static
 	{
-		$filters = $this->runtime->filters();
+		$filters = $this->environment->filters();
 
 		if (!$filters instanceof Filters) {
 			throw new RuntimeException('Configured filters registry does not support filter registration');
@@ -163,7 +163,7 @@ class Engine implements Contract\Engine
 		array $context,
 		bool $autoescape,
 	): string {
-		$this->runtime->wrapper();
+		$this->environment->wrapper();
 
 		$template = $this->template($path);
 		$context = $this->defaults === []

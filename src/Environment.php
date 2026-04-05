@@ -6,7 +6,7 @@ namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\RuntimeException;
 
-final class EngineRuntime
+final class Environment
 {
 	private ?Contract\Wrapper $wrapper = null;
 	private ?Contract\Filters $filters = null;
