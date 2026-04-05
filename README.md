@@ -129,6 +129,7 @@ Filters are available as virtual methods on wrapped string values in templates. 
 Use `setWrapper()` when you want to replace Boiler's runtime wrapper entirely. Use `setFilters()` and `setEscapers()` when you want Boiler to keep building the wrapper internally. These modes are mutually exclusive, and engine configuration is sealed on first `wrapper()` or render.
 
 Filter lookups use `Duon\Boiler\Contract\Filters`, which only needs a `get(string $name): Duon\Boiler\Contract\Filter` method.
+Filter registration is exposed separately through `Duon\Boiler\Contract\RegistersFilters`.
 
 Template helpers available via `$this` inside templates:
 

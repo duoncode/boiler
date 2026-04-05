@@ -9,7 +9,7 @@ use Duon\Boiler\Filter\Sanitize;
 use Duon\Boiler\Filter\Strip;
 
 /** @api */
-final class Filters implements Contract\Filters
+final class Filters implements Contract\RegistersFilters
 {
 	/** @var array<non-empty-string, Contract\Filter> */
 	private array $registry;
@@ -20,6 +20,7 @@ final class Filters implements Contract\Filters
 		$this->registry = $this->normalize(array_replace($this->builtins(), $filters));
 	}
 
+	#[\Override]
 	public function register(string $name, Contract\Filter $filter): void
 	{
 		self::assertName($name);

@@ -122,7 +122,7 @@ final class Wrapper implements Contract\FilterRegister, Contract\Wrapper
 	#[Override]
 	public function registerFilter(string $name, Contract\Filter $filter): void
 	{
-		if (!$this->filters instanceof Filters) {
+		if (!$this->filters instanceof Contract\RegistersFilters) {
 			throw new RuntimeException('Configured filters do not support registration');
 		}
 
