@@ -5,16 +5,16 @@
 ### Breaking
 
 - Renamed `Context::esc()` to `Context::escape()`, so templates now call `$this->escape()` instead of `$this->esc()`.
-- Replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escape strategies.
+- Replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escapers.
 
 ### Added
 
-- Added `Contract\Escaper`, `Contract\Wrapper`, `Contract\EscapeStrategy`, `Contract\EscapeStrategyRegistry`, `Contract\Filter`, and `Contract\FilterRegister`.
+- Added `Contract\Escaper`, `Contract\Escapers`, `Contract\Wrapper`, `Contract\Filter`, and `Contract\FilterRegister`.
 - Added `Context::wrap()` as an explicit way to opt into wrapper proxy behavior inside templates.
-- Added `Escaper` as the default escaper implementation.
+- Added `Escapers` as the default escaper registry implementation.
 - Added wrapper injection to `Engine::__construct()`, `Engine::create()`, and `Engine::unescaped()`.
 - Added `Engine::filter()` for registering custom filters on wrappers that implement `Contract\FilterRegister`.
-- Added `Escaper::HTML` as the built-in strategy constant for Boiler's default escaping mode.
+- Added `Escapers::HTML` as the built-in escaper constant for Boiler's default escaping mode.
 - Added the built-in `strip` filter and the optional `sanitize` filter when `symfony/html-sanitizer` is installed.
 - Added a Composer suggestion for `symfony/html-sanitizer` to enable the built-in `sanitize` filter.
 
@@ -22,7 +22,7 @@
 
 - Changed `Wrapper` from a static helper into an instance-based API that drives wrapping, unwrapping, escaping, and filter lookup.
 - Changed `StringProxy` to dispatch registered filters as virtual methods.
-- Changed `Escaper` to validate configured strategy names and throw `UnexpectedValueException` for unknown strategies.
+- Changed `Escapers` to validate configured escaper names and throw `UnexpectedValueException` for unknown escapers.
 
 ## [0.2.0](https://github.com/duonrun/boiler/releases/tag/0.2.0) (2026-03-25)
 
