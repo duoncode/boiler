@@ -14,7 +14,6 @@
 - Added `Escapers` as the default escaper registry implementation.
 - Added wrapper injection to `Engine::__construct()`, `Engine::create()`, and `Engine::unescaped()`.
 - Added `Engine::filter()` for registering custom filters on wrappers that implement `Contract\FilterRegister`.
-- Added `Escapers::HTML` as the built-in escaper constant for Boiler's default escaping mode.
 - Added the built-in `strip` filter and the optional `sanitize` filter when `symfony/html-sanitizer` is installed.
 - Added a Composer suggestion for `symfony/html-sanitizer` to enable the built-in `sanitize` filter.
 

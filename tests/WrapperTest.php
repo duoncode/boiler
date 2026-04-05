@@ -117,7 +117,7 @@ final class WrapperTest extends TestCase
 	public function testWrapUsesCustomEscaper(): void
 	{
 		$wrapper = new Wrapper(new Escapers([
-			Escapers::HTML => new class implements Escaper {
+			'html' => new class implements Escaper {
 				public function escape(string $value): string
 				{
 					return strtoupper(htmlspecialchars($value));

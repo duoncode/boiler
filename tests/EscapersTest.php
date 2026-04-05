@@ -16,7 +16,7 @@ final class EscapersTest extends TestCase
 
 		$this->assertSame(
 			'&lt;b&gt;&quot;Boiler&quot; &amp; more&lt;/b&gt;',
-			$escapers->get(Escapers::HTML)->escape('<b>"Boiler" & more</b>'),
+			$escapers->get('html')->escape('<b>"Boiler" & more</b>'),
 		);
 	}
 
@@ -27,7 +27,7 @@ final class EscapersTest extends TestCase
 
 	public function testDefaultsToBuiltinHtmlEscaper(): void
 	{
-		$this->assertSame(Escapers::HTML, new Escapers()->default);
+		$this->assertSame('html', new Escapers()->default);
 	}
 
 	public function testCanRegisterAdditionalEscaper(): void
@@ -46,7 +46,7 @@ final class EscapersTest extends TestCase
 	public function testConstructorEscapersCanOverrideBuiltins(): void
 	{
 		$escapers = new Escapers([
-			Escapers::HTML => new class implements Contract\Escaper {
+			'html' => new class implements Contract\Escaper {
 				public function escape(string $value): string
 				{
 					return strtoupper($value);
@@ -54,7 +54,7 @@ final class EscapersTest extends TestCase
 			},
 		]);
 
-		$this->assertSame('<B>BOILER</B>', $escapers->get(Escapers::HTML)->escape('<b>boiler</b>'));
+		$this->assertSame('<B>BOILER</B>', $escapers->get('html')->escape('<b>boiler</b>'));
 	}
 
 	public function testConstructorCanSetCustomDefaultEscaper(): void

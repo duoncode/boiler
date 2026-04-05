@@ -9,7 +9,7 @@ use Duon\Boiler\Exception\UnexpectedValueException;
 /** @api */
 final class Escapers implements Contract\Escapers
 {
-	public const string HTML = 'html';
+	private const string HTML = 'html';
 
 	public readonly string $default;
 

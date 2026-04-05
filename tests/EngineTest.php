@@ -49,7 +49,7 @@ final class EngineTest extends TestCase
 			TestCase::DEFAULT_DIR,
 			['obj' => $this->obj()],
 			wrapper: new Wrapper(new Escapers([
-				Escapers::HTML => new class implements Escaper {
+				'html' => new class implements Escaper {
 					public function escape(string $value): string
 					{
 						return strtoupper(htmlspecialchars($value));

@@ -94,7 +94,7 @@ use Duon\Boiler\Wrapper;
 $engine = \Duon\Boiler\Engine::create(
     '/path/to/templates',
     wrapper: new Wrapper(new Escapers([
-        Escapers::HTML => new class implements Escaper {
+        'html' => new class implements Escaper {
             public function escape(string $value): string
             {
                 return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -106,7 +106,9 @@ $engine = \Duon\Boiler\Engine::create(
 
 `Contract\Wrapper` only covers wrapping, unwrapping, escaping, and filter lookup. Boiler's built-in `Wrapper` also implements `Contract\FilterRegister`, so `Engine::filter()` can register new filters on it. If you provide your own wrapper and want to keep using `Engine::filter()`, implement `Contract\FilterRegister` too.
 
-`Wrapper` accepts an optional escaper registry and optional pre-registered filters. Boiler's built-in `Escapers` registry includes the `html` escaper, exposes its constructor-configured default via `default`, and supports constructor-seeded entries plus incremental `->register()` calls when you only need extra named escapers instead of a full wrapper replacement:
+`Wrapper` accepts an optional escaper registry and optional pre-registered filters. Boiler's built-in `Escapers` registry includes the `html` escaper, exposes its constructor-configured default via `default`, and supports constructor-seeded entries plus incremental `->register()` calls when you only need extra named escapers instead of a full wrapper replacement.
+
+Provide an escaper under the `html` name when you want to replace Boiler's built-in HTML escaper:
 
 ```php
 use Duon\Boiler\Contract\Escaper;
