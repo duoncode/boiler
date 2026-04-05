@@ -13,6 +13,7 @@
 - Added `Context::wrap()` as an explicit way to opt into wrapper proxy behavior inside templates.
 - Added `Escapers` as the default escaper registry implementation.
 - Added lazy engine-owned wrapper composition with `setWrapper()`, `setFilters()`, and `setEscapers()`.
+- Added `Engine::escape()` for registering custom escapers on the engine-managed escapers registry.
 - Added the built-in `strip` filter and the optional `sanitize` filter when `symfony/html-sanitizer` is installed.
 - Added a Composer suggestion for `symfony/html-sanitizer` to enable the built-in `sanitize` filter.
 

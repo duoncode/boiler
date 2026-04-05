@@ -17,6 +17,9 @@ interface Engine extends MethodRegister
 
 	public function setEscapers(Escapers $escapers): static;
 
+	/** @psalm-assert non-empty-string $name */
+	public function escape(string $name, Escaper $with): static;
+
 	/** @psalm-param non-empty-string $path */
 	public function template(string $path): Template;
 
