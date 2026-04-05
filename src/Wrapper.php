@@ -24,14 +24,8 @@ final class Wrapper implements Contract\FilterRegister, Contract\Wrapper
 	public function __construct(
 		?Contract\Escapers $escapers = null,
 		?Filters $filters = null,
-		private readonly string $defaultEscaper = Escapers::HTML,
 	) {
 		$this->escapers = $escapers ?? new Escapers();
-
-		if (!$this->escapers->has($this->defaultEscaper)) {
-			throw new UnexpectedValueException("Unknown escaper `{$this->defaultEscaper}`");
-		}
-
 		$this->filters = $filters ?? new Filters();
 	}
 
@@ -116,7 +110,7 @@ final class Wrapper implements Contract\FilterRegister, Contract\Wrapper
 
 	private function escapeString(string $value, ?string $escaper = null): string
 	{
-		return $this->escapers->get($escaper ?? $this->defaultEscaper)->escape($value);
+		return $this->escapers->get($escaper ?? $this->escapers->default)->escape($value);
 	}
 
 	#[Override]

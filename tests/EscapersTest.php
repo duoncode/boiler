@@ -25,9 +25,9 @@ final class EscapersTest extends TestCase
 		$this->assertInstanceOf(Contract\Escapers::class, new Escapers());
 	}
 
-	public function testHasBuiltinHtmlEscaper(): void
+	public function testDefaultsToBuiltinHtmlEscaper(): void
 	{
-		$this->assertTrue(new Escapers()->has(Escapers::HTML));
+		$this->assertSame(Escapers::HTML, new Escapers()->default);
 	}
 
 	public function testCanRegisterAdditionalEscaper(): void
@@ -57,10 +57,31 @@ final class EscapersTest extends TestCase
 		$this->assertSame('<B>BOILER</B>', $escapers->get(Escapers::HTML)->escape('<b>boiler</b>'));
 	}
 
+	public function testConstructorCanSetCustomDefaultEscaper(): void
+	{
+		$escapers = new Escapers([
+			'caps' => new class implements Contract\Escaper {
+				public function escape(string $value): string
+				{
+					return strtoupper(htmlspecialchars($value));
+				}
+			},
+		], default: 'caps');
+
+		$this->assertSame('caps', $escapers->default);
+	}
+
 	public function testRejectsUnknownEscaper(): void
 	{
 		$this->throws(UnexpectedValueException::class, 'Unknown escaper `xml`');
 
 		new Escapers()->get('xml');
+	}
+
+	public function testRejectsUnknownDefaultEscaper(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'Unknown escaper `xml`');
+
+		new Escapers(default: 'xml');
 	}
 }

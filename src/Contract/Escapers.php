@@ -7,9 +7,9 @@ namespace Duon\Boiler\Contract;
 /** @api */
 interface Escapers
 {
-	public function get(string $name): Escaper;
+	public string $default { get; }
 
-	public function has(string $name): bool;
+	public function get(string $name): Escaper;
 
 	/** @psalm-assert non-empty-string $name */
 	public function register(string $name, Escaper $escaper): void;

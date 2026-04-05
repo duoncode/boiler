@@ -138,18 +138,10 @@ final class WrapperTest extends TestCase
 						return strtoupper(htmlspecialchars($value));
 					}
 				},
-			]),
-			defaultEscaper: 'caps',
+			], default: 'caps'),
 		);
 
 		$this->assertSame('&LT;B&GT;BOILER&LT;/B&GT;', (string) $wrapper->wrap('<b>boiler</b>'));
-	}
-
-	public function testRejectsUnknownDefaultEscaper(): void
-	{
-		$this->throws(UnexpectedValueException::class, 'Unknown escaper `xml`');
-
-		new Wrapper(defaultEscaper: 'xml');
 	}
 
 	public function testFilterReturnsBuiltinFilter(): void

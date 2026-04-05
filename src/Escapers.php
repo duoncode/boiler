@@ -11,25 +11,30 @@ final class Escapers implements Contract\Escapers
 {
 	public const string HTML = 'html';
 
+	public readonly string $default;
+
 	/** @var array<non-empty-string, Contract\Escaper> */
 	private array $registry;
 
 	/** @param array<non-empty-string, Contract\Escaper> $escapers */
-	public function __construct(array $escapers = [])
-	{
+	public function __construct(
+		array $escapers = [],
+		string $default = self::HTML,
+	) {
 		$this->registry = $this->normalize(array_replace($this->builtins(), $escapers));
+		self::assertName($default);
+
+		if (!isset($this->registry[$default])) {
+			throw self::unknown($default);
+		}
+
+		$this->default = $default;
 	}
 
 	#[\Override]
 	public function get(string $name): Contract\Escaper
 	{
 		return $this->registry[$name] ?? throw self::unknown($name);
-	}
-
-	#[\Override]
-	public function has(string $name): bool
-	{
-		return isset($this->registry[$name]);
 	}
 
 	#[\Override]

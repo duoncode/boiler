@@ -106,7 +106,7 @@ $engine = \Duon\Boiler\Engine::create(
 
 `Contract\Wrapper` only covers wrapping, unwrapping, escaping, and filter lookup. Boiler's built-in `Wrapper` also implements `Contract\FilterRegister`, so `Engine::filter()` can register new filters on it. If you provide your own wrapper and want to keep using `Engine::filter()`, implement `Contract\FilterRegister` too.
 
-`Wrapper` accepts an optional escaper registry, optional pre-registered filters, and an optional default escaper name. Boiler's built-in `Escapers` registry includes the `html` escaper and supports constructor-seeded entries plus incremental `->register()` calls when you only need extra named escapers instead of a full wrapper replacement:
+`Wrapper` accepts an optional escaper registry and optional pre-registered filters. Boiler's built-in `Escapers` registry includes the `html` escaper, exposes its constructor-configured default via `default`, and supports constructor-seeded entries plus incremental `->register()` calls when you only need extra named escapers instead of a full wrapper replacement:
 
 ```php
 use Duon\Boiler\Contract\Escaper;
@@ -122,14 +122,11 @@ $escapers = new Escapers([
             );
         }
     },
-]);
+], default: 'caps');
 
 $engine = \Duon\Boiler\Engine::create(
     '/path/to/templates',
-    wrapper: new Wrapper(
-        escapers: $escapers,
-        defaultEscaper: 'caps',
-    ),
+    wrapper: new Wrapper(escapers: $escapers),
 );
 ```
 
@@ -149,10 +146,7 @@ $escapers->register('caps', new class implements Escaper {
 
 $engine = \Duon\Boiler\Engine::create(
     '/path/to/templates',
-    wrapper: new Wrapper(
-        escapers: $escapers,
-        defaultEscaper: 'caps',
-    ),
+    wrapper: new Wrapper(escapers: $escapers),
 );
 ```
 
