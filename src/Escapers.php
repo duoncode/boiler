@@ -7,7 +7,7 @@ namespace Duon\Boiler;
 use Duon\Boiler\Exception\UnexpectedValueException;
 
 /** @api */
-final class Escapers implements Contract\Escapers
+final class Escapers implements Contract\RegistersEscapers
 {
 	private const string HTML = 'html';
 

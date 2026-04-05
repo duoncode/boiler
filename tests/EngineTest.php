@@ -45,18 +45,15 @@ final class EngineTest extends TestCase
 
 	public function testCustomWrapperEscaperIsUsedDuringRendering(): void
 	{
-		$engine = Engine::create(
-			TestCase::DEFAULT_DIR,
-			['obj' => $this->obj()],
-			wrapper: new Wrapper(new Escapers([
+		$engine = Engine::create(TestCase::DEFAULT_DIR, ['obj' => $this->obj()])
+			->setWrapper(new Wrapper(new Escapers([
 				'html' => new class implements Escaper {
 					public function escape(string $value): string
 					{
 						return strtoupper(htmlspecialchars($value));
 					}
 				},
-			])),
-		);
+			])));
 
 		$this->assertSame(
 			'<h1>BOILER</h1><p>&LT;B&GT;ROCKS&LT;/B&GT;</p>',
@@ -761,13 +758,38 @@ final class EngineTest extends TestCase
 		$this->assertSame($engine, $result);
 	}
 
-	public function testRegisterFilterRequiresWrapperWithFilterRegister(): void
+	public function testRegisterFilterRequiresFiltersRegistryWithRegistration(): void
 	{
-		$this->throws(RuntimeException::class, 'Configured wrapper does not support filter registration');
+		$this->throws(
+			RuntimeException::class,
+			'Configured filters registry does not support filter registration',
+		);
 
-		$engine = Engine::create(
-			$this->templates(),
-			wrapper: new class implements \Duon\Boiler\Contract\Wrapper {
+		$engine = Engine::create($this->templates())
+			->setFilters(new class implements \Duon\Boiler\Contract\Filters {
+				public function get(string $name): Filter
+				{
+					throw new UnexpectedValueException("Unknown filter `{$name}`");
+				}
+			});
+
+		$engine->filter('upper', new class implements Filter {
+			public function apply(string $value, mixed ...$args): string
+			{
+				return strtoupper($value);
+			}
+
+			public function safe(): bool
+			{
+				return false;
+			}
+		});
+	}
+
+	public function testSetWrapperAcceptsCustomWrapper(): void
+	{
+		$engine = Engine::create($this->templates())
+			->setWrapper(new class implements \Duon\Boiler\Contract\Wrapper {
 				public function wrap(mixed $value): mixed
 				{
 					return $value;
@@ -787,20 +809,9 @@ final class EngineTest extends TestCase
 				{
 					throw new UnexpectedValueException("Unknown filter `{$name}`");
 				}
-			},
-		);
+			});
 
-		$engine->filter('upper', new class implements Filter {
-			public function apply(string $value, mixed ...$args): string
-			{
-				return strtoupper($value);
-			}
-
-			public function safe(): bool
-			{
-				return false;
-			}
-		});
+		$this->assertInstanceOf(\Duon\Boiler\Contract\Wrapper::class, $engine->wrapper());
 	}
 
 	public function testUnknownCustomMethod(): void

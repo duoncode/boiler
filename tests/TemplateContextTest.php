@@ -11,7 +11,6 @@ use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Proxy\StringProxy;
 use Duon\Boiler\Template;
 use Duon\Boiler\TemplateContext;
-use Duon\Boiler\Wrapper;
 
 final class TemplateContextTest extends TestCase
 {
@@ -127,17 +126,15 @@ final class TemplateContextTest extends TestCase
 	{
 		$template = new Template(
 			$this->templates . 'simple.php',
-			engine: Engine::create(
-				$this->templates,
-				wrapper: new Wrapper(escapers: new Escapers([
+			engine: Engine::create($this->templates)
+				->setEscapers(new Escapers([
 					'caps' => new class implements Escaper {
 						public function escape(string $value): string
 						{
 							return strtoupper(htmlspecialchars($value));
 						}
 					},
-				])),
-			),
+				], default: 'caps')),
 		);
 		$tmplContext = new TemplateContext($template, [], [], true);
 		$value = $this->stringProxy('<tag>');

@@ -22,7 +22,7 @@ class Engine implements Contract\Engine
 	protected readonly array $dirs;
 	/** @psalm-var array<string, non-empty-string> */
 	protected array $pathCache = [];
-	protected readonly Contract\Wrapper $wrapper;
+	private readonly EngineRuntime $runtime;
 
 	public private(set) bool $autoescape {
 		get => $this->autoescape;
@@ -38,11 +38,10 @@ class Engine implements Contract\Engine
 		bool $autoescape,
 		protected readonly array $defaults,
 		protected readonly array $whitelist,
-		?Contract\Wrapper $wrapper = null,
 	) {
 		$this->autoescape = $autoescape;
 		$this->dirs = $this->prepareDirs($dirs);
-		$this->wrapper = $wrapper ?? new Wrapper();
+		$this->runtime = new EngineRuntime();
 		$this->customMethods = new CustomMethods();
 	}
 
@@ -54,9 +53,8 @@ class Engine implements Contract\Engine
 		array|string $dirs,
 		array $defaults = [],
 		array $whitelist = [],
-		?Contract\Wrapper $wrapper = null,
 	): self {
-		return new self($dirs, true, $defaults, $whitelist, $wrapper);
+		return new self($dirs, true, $defaults, $whitelist);
 	}
 
 	/**
@@ -67,24 +65,49 @@ class Engine implements Contract\Engine
 		array|string $dirs,
 		array $defaults = [],
 		array $whitelist = [],
-		?Contract\Wrapper $wrapper = null,
 	): self {
-		return new self($dirs, false, $defaults, $whitelist, $wrapper);
+		return new self($dirs, false, $defaults, $whitelist);
 	}
 
 	#[Override]
 	public function wrapper(): Contract\Wrapper
 	{
-		return $this->wrapper;
+		return $this->runtime->wrapper();
+	}
+
+	#[Override]
+	public function setWrapper(Contract\Wrapper $wrapper): static
+	{
+		$this->runtime->setWrapper($wrapper);
+
+		return $this;
+	}
+
+	#[Override]
+	public function setFilters(Contract\Filters $filters): static
+	{
+		$this->runtime->setFilters($filters);
+
+		return $this;
+	}
+
+	#[Override]
+	public function setEscapers(Contract\Escapers $escapers): static
+	{
+		$this->runtime->setEscapers($escapers);
+
+		return $this;
 	}
 
 	public function filter(string $name, Contract\Filter $with): static
 	{
-		if (!$this->wrapper instanceof Contract\FilterRegister) {
-			throw new RuntimeException('Configured wrapper does not support filter registration');
+		$filters = $this->runtime->filters();
+
+		if (!$filters instanceof Filters) {
+			throw new RuntimeException('Configured filters registry does not support filter registration');
 		}
 
-		$this->wrapper->registerFilter($name, $with);
+		$filters->register($name, $with);
 
 		return $this;
 	}
@@ -140,6 +163,8 @@ class Engine implements Contract\Engine
 		array $context,
 		bool $autoescape,
 	): string {
+		$this->runtime->wrapper();
+
 		$template = $this->template($path);
 		$context = $this->defaults === []
 			? $context
