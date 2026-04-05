@@ -18,14 +18,20 @@ use Traversable;
 /** @api */
 final class Wrapper implements Contract\FilterRegister, Contract\Wrapper
 {
-	private readonly Contract\Escaper $escaper;
+	private readonly Contract\Escapers $escapers;
 	private readonly Filters $filters;
 
 	public function __construct(
-		?Contract\Escaper $escaper = null,
+		?Contract\Escapers $escapers = null,
 		?Filters $filters = null,
+		private readonly string $defaultEscaper = Escapers::HTML,
 	) {
-		$this->escaper = $escaper ?? new Escaper();
+		$this->escapers = $escapers ?? new Escapers();
+
+		if (!$this->escapers->has($this->defaultEscaper)) {
+			throw new UnexpectedValueException("Unknown escaper `{$this->defaultEscaper}`");
+		}
+
 		$this->filters = $filters ?? new Filters();
 	}
 
@@ -82,14 +88,14 @@ final class Wrapper implements Contract\FilterRegister, Contract\Wrapper
 	#[Override]
 	public function escape(
 		mixed $value,
-		?string $strategy = null,
+		?string $escaper = null,
 	): string {
 		if ($value instanceof StringProxy) {
-			if ($strategy === null) {
+			if ($escaper === null) {
 				return (string) $value;
 			}
 
-			return $this->escaper->escape($value->unwrap(), $strategy);
+			return $this->escapeString($value->unwrap(), $escaper);
 		}
 
 		if ($value instanceof Proxy) {
@@ -98,14 +104,19 @@ final class Wrapper implements Contract\FilterRegister, Contract\Wrapper
 		}
 
 		if (is_string($value)) {
-			return $this->escaper->escape($value, $strategy);
+			return $this->escapeString($value, $escaper);
 		}
 
 		if ($value instanceof Stringable) {
-			return $this->escaper->escape((string) $value, $strategy);
+			return $this->escapeString((string) $value, $escaper);
 		}
 
 		throw new RuntimeException('Value cannot be escaped as string');
+	}
+
+	private function escapeString(string $value, ?string $escaper = null): string
+	{
+		return $this->escapers->get($escaper ?? $this->defaultEscaper)->escape($value);
 	}
 
 	#[Override]

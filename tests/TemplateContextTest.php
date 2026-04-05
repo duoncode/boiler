@@ -6,6 +6,7 @@ namespace Duon\Boiler\Tests;
 
 use Duon\Boiler\Contract\Escaper;
 use Duon\Boiler\Engine;
+use Duon\Boiler\Escapers;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Proxy\StringProxy;
 use Duon\Boiler\Template;
@@ -122,23 +123,20 @@ final class TemplateContextTest extends TestCase
 		$this->assertSame('&lt;b&gt;Value&lt;/b&gt;', $tmplContext->escape($value));
 	}
 
-	public function testEscapeCanUseExplicitStrategyForStringProxy(): void
+	public function testEscapeCanUseExplicitEscaperForStringProxy(): void
 	{
 		$template = new Template(
 			$this->templates . 'simple.php',
 			engine: Engine::create(
 				$this->templates,
-				wrapper: new Wrapper(new class implements Escaper {
-					public function escape(
-						string $value,
-						?string $strategy = null,
-					): string {
-						return match ($strategy) {
-							'caps' => strtoupper(htmlspecialchars($value)),
-							default => htmlspecialchars($value),
-						};
-					}
-				}),
+				wrapper: new Wrapper(escapers: new Escapers([
+					'caps' => new class implements Escaper {
+						public function escape(string $value): string
+						{
+							return strtoupper(htmlspecialchars($value));
+						}
+					},
+				])),
 			),
 		);
 		$tmplContext = new TemplateContext($template, [], [], true);

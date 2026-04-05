@@ -105,9 +105,9 @@ abstract class Context
 
 	public function escape(
 		StringProxy|ObjectProxy|string|Stringable $value,
-		?string $strategy = null,
+		?string $escaper = null,
 	): string {
-		return $this->wrapper->escape($value, $strategy);
+		return $this->wrapper->escape($value, $escaper);
 	}
 
 	public function wrap(mixed $value): mixed

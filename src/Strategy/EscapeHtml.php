@@ -8,10 +8,10 @@ use Duon\Boiler\Contract;
 use Override;
 
 /** @api */
-final class EscapeHtml implements Contract\EscapeStrategy
+final class EscapeHtml implements Contract\Escaper
 {
 	#[Override]
-	public function apply(string $value): string
+	public function escape(string $value): string
 	{
 		return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 	}

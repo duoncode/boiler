@@ -13,7 +13,7 @@ interface Wrapper
 
 	public function escape(
 		mixed $value,
-		?string $strategy = null,
+		?string $escaper = null,
 	): string;
 
 	public function filter(string $name): Filter;
