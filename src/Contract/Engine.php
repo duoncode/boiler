@@ -11,6 +11,12 @@ interface Engine extends MethodRegister
 
 	public function wrapper(): Wrapper;
 
+	public function setWrapper(Wrapper $wrapper): static;
+
+	public function setFilters(Filters $filters): static;
+
+	public function setEscapers(Escapers $escapers): static;
+
 	/** @psalm-param non-empty-string $path */
 	public function template(string $path): Template;
 
