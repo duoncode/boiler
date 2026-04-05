@@ -7,7 +7,6 @@ namespace Duon\Boiler\Tests;
 use Duon\Boiler\Contract;
 use Duon\Boiler\Contract\Escaper;
 use Duon\Boiler\Escapers;
-use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
@@ -21,7 +20,6 @@ final class WrapperTest extends TestCase
 	public function testWrapperImplementsContract(): void
 	{
 		$this->assertInstanceOf(Contract\Wrapper::class, new Wrapper());
-		$this->assertInstanceOf(Contract\FilterRegister::class, new Wrapper());
 	}
 
 	public function testWrapNumber(): void
@@ -168,48 +166,6 @@ final class WrapperTest extends TestCase
 
 		$this->assertTrue($wrapper->filter('sanitize')->safe());
 		$this->assertFalse($wrapper->filter('strip')->safe());
-	}
-
-	public function testRegisterFilterAddsLookup(): void
-	{
-		$wrapper = new Wrapper();
-		$wrapper->registerFilter('upper', new class implements Contract\Filter {
-			public function apply(string $value, mixed ...$args): string
-			{
-				return strtoupper($value);
-			}
-
-			public function safe(): bool
-			{
-				return false;
-			}
-		});
-
-		$this->assertSame('BOILER', $wrapper->filter('upper')->apply('boiler'));
-	}
-
-	public function testRegisterFilterRequiresConcreteRegistry(): void
-	{
-		$this->throws(RuntimeException::class, 'Configured filters do not support registration');
-
-		$wrapper = new Wrapper(filters: new class implements Contract\Filters {
-			public function get(string $name): Contract\Filter
-			{
-				throw new UnexpectedValueException("Unknown filter `{$name}`");
-			}
-		});
-
-		$wrapper->registerFilter('upper', new class implements Contract\Filter {
-			public function apply(string $value, mixed ...$args): string
-			{
-				return strtoupper($value);
-			}
-
-			public function safe(): bool
-			{
-				return false;
-			}
-		});
 	}
 
 	public function testFilterRejectsUnknownFilter(): void

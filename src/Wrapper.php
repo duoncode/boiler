@@ -16,7 +16,7 @@ use Stringable;
 use Traversable;
 
 /** @api */
-final class Wrapper implements Contract\FilterRegister, Contract\Wrapper
+final class Wrapper implements Contract\Wrapper
 {
 	private readonly Contract\Escapers $escapers;
 	private readonly Contract\Filters $filters;
@@ -108,24 +108,14 @@ final class Wrapper implements Contract\FilterRegister, Contract\Wrapper
 		throw new RuntimeException('Value cannot be escaped as string');
 	}
 
-	private function escapeString(string $value, ?string $escaper = null): string
-	{
-		return $this->escapers->get($escaper ?? $this->escapers->default)->escape($value);
-	}
-
 	#[Override]
 	public function filter(string $name): Contract\Filter
 	{
 		return $this->filters->get($name);
 	}
 
-	#[Override]
-	public function registerFilter(string $name, Contract\Filter $filter): void
+	private function escapeString(string $value, ?string $escaper = null): string
 	{
-		if (!$this->filters instanceof Contract\RegistersFilters) {
-			throw new RuntimeException('Configured filters do not support registration');
-		}
-
-		$this->filters->register($name, $filter);
+		return $this->escapers->get($escaper ?? $this->escapers->default)->escape($value);
 	}
 }
