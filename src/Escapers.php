@@ -1,0 +1,90 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Duon\Boiler;
+
+use Duon\Boiler\Exception\UnexpectedValueException;
+
+/** @api */
+final class Escapers implements Contract\Escapers
+{
+	public const string HTML = 'html';
+
+	/** @var array<non-empty-string, Contract\Escaper> */
+	private array $registry;
+
+	/** @param array<non-empty-string, Contract\Escaper> $escapers */
+	public function __construct(array $escapers = [])
+	{
+		$this->registry = $this->normalize(array_replace($this->builtins(), $escapers));
+	}
+
+	#[\Override]
+	public function get(string $name): Contract\Escaper
+	{
+		return $this->registry[$name] ?? throw self::unknown($name);
+	}
+
+	#[\Override]
+	public function has(string $name): bool
+	{
+		return isset($this->registry[$name]);
+	}
+
+	#[\Override]
+	public function register(string $name, Contract\Escaper $escaper): void
+	{
+		self::assertName($name);
+		$this->registry[$name] = $escaper;
+	}
+
+	/** @return array<non-empty-string, Contract\Escaper> */
+	private function builtins(): array
+	{
+		return [
+			self::HTML => new Strategy\EscapeHtml(),
+		];
+	}
+
+	/** @psalm-assert non-empty-string $name */
+	private static function assertName(string $name): void
+	{
+		if ($name === '') {
+			throw new UnexpectedValueException('Escaper name must be a non-empty string');
+		}
+	}
+
+	/**
+	 * @param array<array-key, Contract\Escaper> $escapers
+	 * @return array<non-empty-string, Contract\Escaper>
+	 */
+	private function normalize(array $escapers): array
+	{
+		/** @var array<non-empty-string, Contract\Escaper> $normalized */
+		$normalized = [];
+
+		foreach ($escapers as $name => $escaper) {
+			if (!is_string($name)) {
+				throw new UnexpectedValueException('Escaper name must be a non-empty string');
+			}
+
+			self::assertName($name);
+
+			if (!$escaper instanceof Contract\Escaper) {
+				throw new UnexpectedValueException(
+					"Escaper `{$name}` must implement `Duon\\Boiler\\Contract\\Escaper`",
+				);
+			}
+
+			$normalized[$name] = $escaper;
+		}
+
+		return $normalized;
+	}
+
+	private static function unknown(string $name): UnexpectedValueException
+	{
+		return new UnexpectedValueException("Unknown escaper `{$name}`");
+	}
+}

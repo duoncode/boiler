@@ -6,6 +6,7 @@ namespace Duon\Boiler\Tests;
 
 use Duon\Boiler\Contract;
 use Duon\Boiler\Contract\Escaper;
+use Duon\Boiler\Escapers;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
@@ -115,16 +116,40 @@ final class WrapperTest extends TestCase
 
 	public function testWrapUsesCustomEscaper(): void
 	{
-		$wrapper = new Wrapper(new class implements Escaper {
-			public function escape(
-				string $value,
-				?string $strategy = null,
-			): string {
-				return strtoupper(htmlspecialchars($value));
-			}
-		});
+		$wrapper = new Wrapper(new Escapers([
+			Escapers::HTML => new class implements Escaper {
+				public function escape(string $value): string
+				{
+					return strtoupper(htmlspecialchars($value));
+				}
+			},
+		]));
 
 		$this->assertSame('&LT;B&GT;BOILER&LT;/B&GT;', (string) $wrapper->wrap('<b>boiler</b>'));
+	}
+
+	public function testWrapCanUseCustomDefaultEscaper(): void
+	{
+		$wrapper = new Wrapper(
+			escapers: new Escapers([
+				'caps' => new class implements Escaper {
+					public function escape(string $value): string
+					{
+						return strtoupper(htmlspecialchars($value));
+					}
+				},
+			]),
+			defaultEscaper: 'caps',
+		);
+
+		$this->assertSame('&LT;B&GT;BOILER&LT;/B&GT;', (string) $wrapper->wrap('<b>boiler</b>'));
+	}
+
+	public function testRejectsUnknownDefaultEscaper(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'Unknown escaper `xml`');
+
+		new Wrapper(defaultEscaper: 'xml');
 	}
 
 	public function testFilterReturnsBuiltinFilter(): void

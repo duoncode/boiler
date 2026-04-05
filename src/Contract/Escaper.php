@@ -7,8 +7,5 @@ namespace Duon\Boiler\Contract;
 /** @api */
 interface Escaper
 {
-	public function escape(
-		string $value,
-		?string $strategy = null,
-	): string;
+	public function escape(string $value): string;
 }

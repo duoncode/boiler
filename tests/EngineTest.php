@@ -7,6 +7,7 @@ namespace Duon\Boiler\Tests;
 use Duon\Boiler\Contract\Escaper;
 use Duon\Boiler\Contract\Filter;
 use Duon\Boiler\Engine;
+use Duon\Boiler\Escapers;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Exception\RuntimeException;
@@ -47,14 +48,14 @@ final class EngineTest extends TestCase
 		$engine = Engine::create(
 			TestCase::DEFAULT_DIR,
 			['obj' => $this->obj()],
-			wrapper: new Wrapper(new class implements Escaper {
-				public function escape(
-					string $value,
-					?string $strategy = null,
-				): string {
-					return strtoupper(htmlspecialchars($value));
-				}
-			}),
+			wrapper: new Wrapper(new Escapers([
+				Escapers::HTML => new class implements Escaper {
+					public function escape(string $value): string
+					{
+						return strtoupper(htmlspecialchars($value));
+					}
+				},
+			])),
 		);
 
 		$this->assertSame(
@@ -777,7 +778,7 @@ final class EngineTest extends TestCase
 					return $value;
 				}
 
-				public function escape(mixed $value, ?string $strategy = null): string
+				public function escape(mixed $value, ?string $escaper = null): string
 				{
 					return (string) $value;
 				}
