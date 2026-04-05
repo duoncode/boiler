@@ -68,6 +68,7 @@ final class FiltersTest extends TestCase
 	public function testFiltersImplementsContract(): void
 	{
 		$this->assertInstanceOf(Contract\Filters::class, new Filters());
+		$this->assertInstanceOf(Contract\RegistersFilters::class, new Filters());
 	}
 
 	public function testCanRegisterCustomFilter(): void

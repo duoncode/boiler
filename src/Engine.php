@@ -103,7 +103,7 @@ class Engine implements Contract\Engine
 	{
 		$filters = $this->environment->filters();
 
-		if (!$filters instanceof Filters) {
+		if (!$filters instanceof Contract\RegistersFilters) {
 			throw new RuntimeException('Configured filters registry does not support filter registration');
 		}
 

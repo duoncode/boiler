@@ -176,6 +176,7 @@ $engine = \Duon\Boiler\Engine::create('/path/to/templates')
 `Engine::filter()` registers filters on the engine-managed filters registry. If you replace the wrapper entirely with `setWrapper()`, you cannot use engine-managed filter registration on that engine instance.
 
 Lookups go through `Contract\Filters`, which only needs a `get(string $name): Contract\Filter` method.
+Registration is an optional capability exposed through `Contract\RegistersFilters`.
 
 A filter implements `Duon\Boiler\Contract\Filter` with two methods:
 
