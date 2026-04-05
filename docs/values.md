@@ -33,20 +33,20 @@ This is mainly useful for explicit checks or when you need the original array of
 
 ## Escape a value explicitly
 
-Use `$this->escape()` when you need to escape a value manually, or when you want to select a named escape strategy:
+Use `$this->escape()` when you need to escape a value manually, or when you want to select a named escaper:
 
 ```php
 $this->escape($value);
 $this->escape($value, 'html');
 $this->escape(
     value: $value,
-    strategy: 'html',
+    escaper: 'html',
 );
 ```
 
-Boiler ships with the `html` strategy. It uses PHP's `htmlspecialchars()` with `ENT_QUOTES | ENT_SUBSTITUTE` and `UTF-8`.
+Boiler ships with the `html` escaper. It uses PHP's `htmlspecialchars()` with `ENT_QUOTES | ENT_SUBSTITUTE` and `UTF-8`.
 
-`$this->escape()` accepts strings, `Stringable` values, and Boiler's wrapped string or object proxies. The `strategy` argument is forwarded to the wrapper's configured escaper. Boiler's built-in `Escaper` supports constructor-seeded strategies and incremental `->register()` calls, and custom escaper implementations can expose additional strategy names too.
+`$this->escape()` accepts strings, `Stringable` values, and Boiler's wrapped string or object proxies. The `escaper` argument is forwarded to the wrapper's configured escaper registry. Boiler's built-in `Escapers` registry supports constructor-seeded entries and incremental `->register()` calls, and custom escaper implementations can expose additional escaper names too.
 
 ## Wrap a value explicitly
 

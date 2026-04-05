@@ -88,46 +88,71 @@ Pass a custom `Wrapper` when you want to replace Boiler's default escaping:
 
 ```php
 use Duon\Boiler\Contract\Escaper;
+use Duon\Boiler\Escapers;
 use Duon\Boiler\Wrapper;
 
 $engine = \Duon\Boiler\Engine::create(
     '/path/to/templates',
-    wrapper: new Wrapper(new class implements Escaper {
-        public function escape(
-            string $value,
-            ?string $strategy = null,
-        ): string {
-            return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE);
-        }
-    }),
+    wrapper: new Wrapper(new Escapers([
+        Escapers::HTML => new class implements Escaper {
+            public function escape(string $value): string
+            {
+                return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            }
+        },
+    ])),
 );
 ```
 
 `Contract\Wrapper` only covers wrapping, unwrapping, escaping, and filter lookup. Boiler's built-in `Wrapper` also implements `Contract\FilterRegister`, so `Engine::filter()` can register new filters on it. If you provide your own wrapper and want to keep using `Engine::filter()`, implement `Contract\FilterRegister` too.
 
-`Wrapper` accepts an optional escaper and optional pre-registered filters. Boiler's built-in `Escaper` supports constructor-seeded strategies and incremental `->register()` calls when you only need extra named strategies instead of a full replacement:
+`Wrapper` accepts an optional escaper registry, optional pre-registered filters, and an optional default escaper name. Boiler's built-in `Escapers` registry includes the `html` escaper and supports constructor-seeded entries plus incremental `->register()` calls when you only need extra named escapers instead of a full wrapper replacement:
 
 ```php
-use Duon\Boiler\Contract\EscapeStrategy;
-use Duon\Boiler\Escaper;
+use Duon\Boiler\Contract\Escaper;
+use Duon\Boiler\Escapers;
 use Duon\Boiler\Wrapper;
 
-$escaper = new Escaper(
-    strategies: [
-        'caps' => new class implements EscapeStrategy {
-            public function apply(string $value): string
-            {
-                return strtoupper(
-                    htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
-                );
-            }
-        },
-    ],
-);
+$escapers = new Escapers([
+    'caps' => new class implements Escaper {
+        public function escape(string $value): string
+        {
+            return strtoupper(
+                htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+            );
+        }
+    },
+]);
 
 $engine = \Duon\Boiler\Engine::create(
     '/path/to/templates',
-    wrapper: new Wrapper(escaper: $escaper),
+    wrapper: new Wrapper(
+        escapers: $escapers,
+        defaultEscaper: 'caps',
+    ),
+);
+```
+
+You can also register another named escaper after construction:
+
+```php
+$escapers = new Escapers();
+
+$escapers->register('caps', new class implements Escaper {
+    public function escape(string $value): string
+    {
+        return strtoupper(
+            htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+        );
+    }
+});
+
+$engine = \Duon\Boiler\Engine::create(
+    '/path/to/templates',
+    wrapper: new Wrapper(
+        escapers: $escapers,
+        defaultEscaper: 'caps',
+    ),
 );
 ```
 
