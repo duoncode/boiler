@@ -103,7 +103,7 @@ $engine = \Duon\Boiler\Engine::create(
     ])));
 ```
 
-`Contract\Wrapper` only covers wrapping, unwrapping, escaping, and filter lookup. Boiler's built-in `Engine` now owns wrapper construction internally and exposes `setWrapper()`, `setEscapers()`, and `setFilters()` for configuration.
+`Contract\Wrapper` covers wrapping, unwrapping, escaping, and filter lookup. Configure wrapper behavior through `setWrapper()`, `setEscapers()`, and `setFilters()`.
 
 `Wrapper` accepts an optional escaper registry and optional pre-registered filters. Boiler's built-in `Escapers` registry includes the `html` escaper, exposes its constructor-configured default via `default`, and supports constructor-seeded entries plus incremental `->register()` calls when you only need extra named escapers instead of a full wrapper replacement.
 
@@ -189,7 +189,7 @@ $engine = \Duon\Boiler\Engine::create('/path/to/templates')
     });
 ```
 
-`Engine::filter()` registers filters on the engine-managed filters registry. If you replace the wrapper entirely with `setWrapper()`, you cannot use engine-managed filter registration on that engine instance.
+`Engine::filter()` registers filters on the engine-managed filters registry. If you configure the engine with `setWrapper()`, filter registration must be handled by that wrapper setup instead.
 
 Lookups go through `Contract\Filters`, which only needs a `get(string $name): Contract\Filter` method.
 Registration is an optional capability exposed through `Contract\RegistersFilters`.
