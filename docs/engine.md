@@ -175,6 +175,8 @@ $engine = \Duon\Boiler\Engine::create('/path/to/templates')
 
 `Engine::filter()` requires a wrapper that implements `Contract\FilterRegister`. Boiler's built-in `Wrapper` already does.
 
+Lookups go through `Contract\Filters`, which only needs a `get(string $name): Contract\Filter` method.
+
 A filter implements `Duon\Boiler\Contract\Filter` with two methods:
 
 - `apply(string $value, mixed ...$args): string` transforms the value.

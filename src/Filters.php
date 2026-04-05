@@ -9,7 +9,7 @@ use Duon\Boiler\Filter\Sanitize;
 use Duon\Boiler\Filter\Strip;
 
 /** @api */
-final class Filters
+final class Filters implements Contract\Filters
 {
 	/** @var array<non-empty-string, Contract\Filter> */
 	private array $registry;
@@ -20,25 +20,16 @@ final class Filters
 		$this->registry = $this->normalize(array_replace($this->builtins(), $filters));
 	}
 
-	public function apply(string $name, string $value, mixed ...$args): string
-	{
-		return $this->filter($name)->apply($value, ...$args);
-	}
-
-	public function safe(string $name): bool
-	{
-		return $this->filter($name)->safe();
-	}
-
-	public function has(string $name): bool
-	{
-		return isset($this->registry[$name]);
-	}
-
 	public function register(string $name, Contract\Filter $filter): void
 	{
 		self::assertName($name);
 		$this->registry[$name] = $filter;
+	}
+
+	#[\Override]
+	public function get(string $name): Contract\Filter
+	{
+		return $this->registry[$name] ?? throw new UnexpectedValueException("Unknown filter `{$name}`");
 	}
 
 	/** @return array<non-empty-string, Contract\Filter> */
@@ -89,10 +80,5 @@ final class Filters
 		}
 
 		return $normalized;
-	}
-
-	public function filter(string $name): Contract\Filter
-	{
-		return $this->registry[$name] ?? throw new UnexpectedValueException("Unknown filter `{$name}`");
 	}
 }

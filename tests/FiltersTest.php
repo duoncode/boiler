@@ -14,29 +14,28 @@ final class FiltersTest extends TestCase
 	{
 		$filters = new Filters();
 
-		$this->assertTrue($filters->has('strip'));
+		$this->assertInstanceOf(Contract\Filter::class, $filters->get('strip'));
 	}
 
 	public function testHasBuiltinSanitizeFilter(): void
 	{
 		$filters = new Filters();
 
-		$this->assertTrue($filters->has('sanitize'));
+		$this->assertInstanceOf(Contract\Filter::class, $filters->get('sanitize'));
 	}
 
 	public function testStripRemovesTags(): void
 	{
 		$filters = new Filters();
 
-		$this->assertSame('Boiler', $filters->apply('strip', '<b>Boiler</b>'));
+		$this->assertSame('Boiler', $filters->get('strip')->apply('<b>Boiler</b>'));
 	}
 
 	public function testStripAllowsSpecificTags(): void
 	{
 		$filters = new Filters();
 
-		$this->assertSame('<b>Boiler</b>', $filters->apply(
-			'strip',
+		$this->assertSame('<b>Boiler</b>', $filters->get('strip')->apply(
 			'<b>Boiler</b><script></script>',
 			'<b>',
 		));
@@ -46,21 +45,29 @@ final class FiltersTest extends TestCase
 	{
 		$filters = new Filters();
 
-		$this->assertFalse($filters->safe('strip'));
+		$this->assertFalse($filters->get('strip')->safe());
 	}
 
 	public function testSanitizeRemovesScripts(): void
 	{
 		$filters = new Filters();
 
-		$this->assertSame('<b>Boiler</b>', $filters->apply('sanitize', '<script></script><b>Boiler</b>'));
+		$this->assertSame(
+			'<b>Boiler</b>',
+			$filters->get('sanitize')->apply('<script></script><b>Boiler</b>'),
+		);
 	}
 
 	public function testSanitizeIsSafe(): void
 	{
 		$filters = new Filters();
 
-		$this->assertTrue($filters->safe('sanitize'));
+		$this->assertTrue($filters->get('sanitize')->safe());
+	}
+
+	public function testFiltersImplementsContract(): void
+	{
+		$this->assertInstanceOf(Contract\Filters::class, new Filters());
 	}
 
 	public function testCanRegisterCustomFilter(): void
@@ -78,8 +85,7 @@ final class FiltersTest extends TestCase
 			}
 		});
 
-		$this->assertTrue($filters->has('upper'));
-		$this->assertSame('BOILER', $filters->apply('upper', 'boiler'));
+		$this->assertSame('BOILER', $filters->get('upper')->apply('boiler'));
 	}
 
 	public function testCanOverrideBuiltinFilter(): void
@@ -98,15 +104,15 @@ final class FiltersTest extends TestCase
 			},
 		]);
 
-		$this->assertSame('custom', $filters->apply('strip', '<b>Boiler</b>'));
-		$this->assertTrue($filters->safe('strip'));
+		$this->assertSame('custom', $filters->get('strip')->apply('<b>Boiler</b>'));
+		$this->assertTrue($filters->get('strip')->safe());
 	}
 
 	public function testRejectsUnknownFilter(): void
 	{
 		$this->throws(UnexpectedValueException::class, 'Unknown filter `nope`');
 
-		new Filters()->apply('nope', 'value');
+		new Filters()->get('nope');
 	}
 
 	public function testRejectsEmptyFilterName(): void
@@ -127,11 +133,6 @@ final class FiltersTest extends TestCase
 		});
 	}
 
-	public function testHasReturnsFalseForUnknown(): void
-	{
-		$this->assertFalse(new Filters()->has('nope'));
-	}
-
 	public function testFilterReceivesVariadicArgs(): void
 	{
 		$filters = new Filters();
@@ -149,6 +150,6 @@ final class FiltersTest extends TestCase
 			}
 		});
 
-		$this->assertSame('Hel', $filters->apply('truncate', 'Hello World', 3));
+		$this->assertSame('Hel', $filters->get('truncate')->apply('Hello World', 3));
 	}
 }

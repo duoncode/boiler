@@ -128,6 +128,8 @@ Filters are available as virtual methods on wrapped string values in templates. 
 
 If you provide your own wrapper and still want to use `Engine::filter()`, implement `Duon\Boiler\Contract\FilterRegister` on that wrapper too.
 
+Filter lookups use `Duon\Boiler\Contract\Filters`, which only needs a `get(string $name): Duon\Boiler\Contract\Filter` method.
+
 Template helpers available via `$this` inside templates:
 
 - `$this->layout('layout')`

@@ -19,11 +19,11 @@ use Traversable;
 final class Wrapper implements Contract\FilterRegister, Contract\Wrapper
 {
 	private readonly Contract\Escapers $escapers;
-	private readonly Filters $filters;
+	private readonly Contract\Filters $filters;
 
 	public function __construct(
 		?Contract\Escapers $escapers = null,
-		?Filters $filters = null,
+		?Contract\Filters $filters = null,
 	) {
 		$this->escapers = $escapers ?? new Escapers();
 		$this->filters = $filters ?? new Filters();
@@ -116,12 +116,16 @@ final class Wrapper implements Contract\FilterRegister, Contract\Wrapper
 	#[Override]
 	public function filter(string $name): Contract\Filter
 	{
-		return $this->filters->filter($name);
+		return $this->filters->get($name);
 	}
 
 	#[Override]
 	public function registerFilter(string $name, Contract\Filter $filter): void
 	{
+		if (!$this->filters instanceof Filters) {
+			throw new RuntimeException('Configured filters do not support registration');
+		}
+
 		$this->filters->register($name, $filter);
 	}
 }

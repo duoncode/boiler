@@ -9,7 +9,7 @@
 
 ### Added
 
-- Added `Contract\Escaper`, `Contract\Escapers`, `Contract\Wrapper`, `Contract\Filter`, and `Contract\FilterRegister`.
+- Added `Contract\Escaper`, `Contract\Escapers`, `Contract\Filters`, `Contract\Wrapper`, `Contract\Filter`, and `Contract\FilterRegister`.
 - Added `Context::wrap()` as an explicit way to opt into wrapper proxy behavior inside templates.
 - Added `Escapers` as the default escaper registry implementation.
 - Added wrapper injection to `Engine::__construct()`, `Engine::create()`, and `Engine::unescaped()`.
@@ -22,6 +22,7 @@
 - Changed `Wrapper` from a static helper into an instance-based API that drives wrapping, unwrapping, escaping, and filter lookup.
 - Changed `StringProxy` to dispatch registered filters as virtual methods.
 - Changed `Escapers` to validate configured escaper names and throw `UnexpectedValueException` for unknown escapers.
+- Changed `Filters` to expose lookup through `filter()` instead of `has()`, `safe()`, and `apply()` convenience methods.
 
 ## [0.2.0](https://github.com/duonrun/boiler/releases/tag/0.2.0) (2026-03-25)
 
