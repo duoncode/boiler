@@ -9,11 +9,10 @@
 
 ### Added
 
-- Added `Contract\Escaper`, `Contract\Escapers`, `Contract\Filters`, `Contract\Wrapper`, `Contract\Filter`, and `Contract\FilterRegister`.
+- Added `Contract\Escaper`, `Contract\Escapers`, `Contract\RegistersEscapers`, `Contract\Filters`, `Contract\Wrapper`, `Contract\Filter`, and `Contract\FilterRegister`.
 - Added `Context::wrap()` as an explicit way to opt into wrapper proxy behavior inside templates.
 - Added `Escapers` as the default escaper registry implementation.
-- Added wrapper injection to `Engine::__construct()`, `Engine::create()`, and `Engine::unescaped()`.
-- Added `Engine::filter()` for registering custom filters on wrappers that implement `Contract\FilterRegister`.
+- Added lazy engine-owned wrapper composition with `setWrapper()`, `setFilters()`, and `setEscapers()`.
 - Added the built-in `strip` filter and the optional `sanitize` filter when `symfony/html-sanitizer` is installed.
 - Added a Composer suggestion for `symfony/html-sanitizer` to enable the built-in `sanitize` filter.
 
@@ -23,6 +22,7 @@
 - Changed `StringProxy` to dispatch registered filters as virtual methods.
 - Changed `Escapers` to validate configured escaper names and throw `UnexpectedValueException` for unknown escapers.
 - Changed `Filters` to expose lookup through `filter()` instead of `has()`, `safe()`, and `apply()` convenience methods.
+- Changed `Engine::filter()` to register through the engine-managed filters registry instead of requiring a registering wrapper.
 
 ## [0.2.0](https://github.com/duonrun/boiler/releases/tag/0.2.0) (2026-03-25)
 

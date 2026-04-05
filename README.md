@@ -126,7 +126,7 @@ $engine = Engine::create('/path/to/templates')
 
 Filters are available as virtual methods on wrapped string values in templates. In escaped renders, Boiler wraps string values for you. When you need filters on a raw value inside a template, call `$this->wrap($value)` first. Boiler ships with built-in `sanitize` and `strip` filters. If `symfony/html-sanitizer` is installed, the `sanitize` filter is registered automatically.
 
-If you provide your own wrapper and still want to use `Engine::filter()`, implement `Duon\Boiler\Contract\FilterRegister` on that wrapper too.
+Use `setWrapper()` when you want to replace Boiler's runtime wrapper entirely. Use `setFilters()` and `setEscapers()` when you want Boiler to keep building the wrapper internally. These modes are mutually exclusive, and engine configuration is sealed on first `wrapper()` or render.
 
 Filter lookups use `Duon\Boiler\Contract\Filters`, which only needs a `get(string $name): Duon\Boiler\Contract\Filter` method.
 
