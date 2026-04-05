@@ -814,6 +814,46 @@ final class EngineTest extends TestCase
 		$this->assertInstanceOf(\Duon\Boiler\Contract\Wrapper::class, $engine->wrapper());
 	}
 
+	public function testSetWrapperRejectsEngineManagedFilters(): void
+	{
+		$this->throws(
+			RuntimeException::class,
+			'Cannot set wrapper after filters or escapers are configured',
+		);
+
+		Engine::create($this->templates())
+			->filter('upper', new class implements Filter {
+				public function apply(string $value, mixed ...$args): string
+				{
+					return strtoupper($value);
+				}
+
+				public function safe(): bool
+				{
+					return false;
+				}
+			})
+			->setWrapper(new Wrapper());
+	}
+
+	public function testSetFiltersRejectsConfiguredWrapper(): void
+	{
+		$this->throws(RuntimeException::class, 'Cannot set filters after wrapper is configured');
+
+		Engine::create($this->templates())
+			->setWrapper(new Wrapper())
+			->setFilters(new \Duon\Boiler\Filters());
+	}
+
+	public function testConfigurationIsSealedAfterWrapperIsMaterialized(): void
+	{
+		$this->throws(RuntimeException::class, 'Engine configuration is sealed');
+
+		$engine = Engine::create($this->templates());
+		$engine->wrapper();
+		$engine->setEscapers(new Escapers());
+	}
+
 	public function testUnknownCustomMethod(): void
 	{
 		$this->throws(RenderException::class, 'upper');

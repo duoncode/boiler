@@ -11,9 +11,12 @@ final class EngineRuntime
 	private ?Contract\Wrapper $wrapper = null;
 	private ?Contract\Filters $filters = null;
 	private ?Contract\Escapers $escapers = null;
+	private bool $sealed = false;
 
 	public function setWrapper(Contract\Wrapper $wrapper): void
 	{
+		$this->assertNotSealed();
+
 		if ($this->filters !== null || $this->escapers !== null) {
 			throw new RuntimeException('Cannot set wrapper after filters or escapers are configured');
 		}
@@ -27,6 +30,8 @@ final class EngineRuntime
 
 	public function setFilters(Contract\Filters $filters): void
 	{
+		$this->assertNotSealed();
+
 		if ($this->wrapper !== null) {
 			throw new RuntimeException('Cannot set filters after wrapper is configured');
 		}
@@ -40,6 +45,8 @@ final class EngineRuntime
 
 	public function setEscapers(Contract\Escapers $escapers): void
 	{
+		$this->assertNotSealed();
+
 		if ($this->wrapper !== null) {
 			throw new RuntimeException('Cannot set escapers after wrapper is configured');
 		}
@@ -53,6 +60,8 @@ final class EngineRuntime
 
 	public function wrapper(): Contract\Wrapper
 	{
+		$this->sealed = true;
+
 		return $this->wrapper ??= new Wrapper($this->escapers(), $this->filters());
 	}
 
@@ -64,5 +73,12 @@ final class EngineRuntime
 	public function escapers(): Contract\Escapers
 	{
 		return $this->escapers ??= new Escapers();
+	}
+
+	private function assertNotSealed(): void
+	{
+		if ($this->sealed) {
+			throw new RuntimeException('Engine configuration is sealed');
+		}
 	}
 }
