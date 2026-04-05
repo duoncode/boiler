@@ -99,6 +99,20 @@ class Engine implements Contract\Engine
 		return $this;
 	}
 
+	#[Override]
+	public function escape(string $name, Contract\Escaper $with): static
+	{
+		$escapers = $this->environment->escapers();
+
+		if (!$escapers instanceof Contract\RegistersEscapers) {
+			throw new RuntimeException('Configured escapers registry does not support escaper registration');
+		}
+
+		$escapers->register($name, $with);
+
+		return $this;
+	}
+
 	public function filter(string $name, Contract\Filter $with): static
 	{
 		$filters = $this->environment->filters();

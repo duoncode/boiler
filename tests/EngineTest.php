@@ -12,6 +12,8 @@ use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
+use Duon\Boiler\Template;
+use Duon\Boiler\TemplateContext;
 use Duon\Boiler\Wrapper;
 use PHPUnit\Framework\Attributes\TestDox;
 
@@ -756,6 +758,65 @@ final class EngineTest extends TestCase
 		});
 
 		$this->assertSame($engine, $result);
+	}
+
+	public function testRegisterEscaper(): void
+	{
+		$engine = Engine::create($this->templates())
+			->escape('caps', new class implements Escaper {
+				public function escape(string $value): string
+				{
+					return strtoupper(htmlspecialchars($value));
+				}
+			});
+
+		$template = new Template(
+			TestCase::DEFAULT_DIR . '/simple.php',
+			engine: $engine,
+		);
+		$context = new TemplateContext($template, ['text' => '<tag>'], [], true);
+
+		$this->assertSame('&LT;TAG&GT;', $context->escape('<tag>', 'caps'));
+	}
+
+	public function testRegisterEscaperFluent(): void
+	{
+		$engine = Engine::create($this->templates());
+		$result = $engine->escape('caps', new class implements Escaper {
+			public function escape(string $value): string
+			{
+				return strtoupper(htmlspecialchars($value));
+			}
+		});
+
+		$this->assertSame($engine, $result);
+	}
+
+	public function testRegisterEscaperRequiresEscapersRegistryWithRegistration(): void
+	{
+		$this->throws(
+			RuntimeException::class,
+			'Configured escapers registry does not support escaper registration',
+		);
+
+		$engine = Engine::create($this->templates())
+			->setEscapers(new class implements \Duon\Boiler\Contract\Escapers {
+				public string $default {
+					get => 'html';
+				}
+
+				public function get(string $name): Escaper
+				{
+					throw new UnexpectedValueException("Unknown escaper `{$name}`");
+				}
+			});
+
+		$engine->escape('caps', new class implements Escaper {
+			public function escape(string $value): string
+			{
+				return strtoupper(htmlspecialchars($value));
+			}
+		});
 	}
 
 	public function testRegisterFilterRequiresFiltersRegistryWithRegistration(): void
