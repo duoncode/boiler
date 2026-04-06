@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
+use Duon\Boiler\Contract\Escaper;
+use Duon\Boiler\Escapers;
 use Duon\Boiler\Filters;
 use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
@@ -105,5 +107,20 @@ class TestCase extends BaseTestCase
 		?Filters $filters = null,
 	): StringProxy {
 		return new StringProxy($value, $this->wrapper($filters));
+	}
+
+	/**
+	 * @param array<non-empty-string, Escaper> $escapers
+	 */
+	protected function escapedStringProxy(
+		string $value,
+		array $escapers,
+		string $default = 'html',
+		?Filters $filters = null,
+	): StringProxy {
+		return new StringProxy(
+			$value,
+			new \Duon\Boiler\Wrapper(new Escapers($escapers, $default), $filters),
+		);
 	}
 }

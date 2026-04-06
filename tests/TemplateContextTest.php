@@ -122,6 +122,15 @@ final class TemplateContextTest extends TestCase
 		$this->assertSame('&lt;b&gt;Value&lt;/b&gt;', $tmplContext->escape($value));
 	}
 
+	public function testEscapeAlwaysEscapesSafeStringProxy(): void
+	{
+		$tmplContext = new TemplateContext($this->template, [], [], true);
+		$value = $tmplContext->wrap('<b>Value</b>');
+		assert($value instanceof StringProxy, 'wrap() must return a string proxy for string input');
+
+		$this->assertSame('&lt;b&gt;Value&lt;/b&gt;', $tmplContext->escape($value->sanitize()));
+	}
+
 	public function testEscapeCanUseExplicitEscaperForStringProxy(): void
 	{
 		$template = new Template(
@@ -137,9 +146,10 @@ final class TemplateContextTest extends TestCase
 				], default: 'caps')),
 		);
 		$tmplContext = new TemplateContext($template, [], [], true);
-		$value = $this->stringProxy('<tag>');
+		$value = $tmplContext->wrap('<b>tag</b>');
+		assert($value instanceof StringProxy, 'wrap() must return a string proxy for string input');
 
-		$this->assertSame('&LT;TAG&GT;', $tmplContext->escape($value, 'caps'));
+		$this->assertSame('&LT;B&GT;TAG&LT;/B&GT;', $tmplContext->escape($value->sanitize(), 'caps'));
 	}
 
 	public function testEscapeRejectsNonStringableWrappedObjects(): void

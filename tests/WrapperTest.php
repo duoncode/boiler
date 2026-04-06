@@ -143,6 +143,16 @@ final class WrapperTest extends TestCase
 		$this->assertSame('&LT;B&GT;BOILER&LT;/B&GT;', (string) $wrapper->wrap('<b>boiler</b>'));
 	}
 
+	public function testEscapeAlwaysEscapesSafeWrappedString(): void
+	{
+		$wrapper = new Wrapper();
+		$value = $wrapper->wrap('<b>boiler</b>');
+		assert($value instanceof StringProxy, 'wrap() must return a string proxy for string input');
+
+		$this->assertSame('&lt;b&gt;boiler&lt;/b&gt;', $wrapper->escape($value->sanitize()));
+		$this->assertSame('&lt;b&gt;boiler&lt;/b&gt;', $value->sanitize()->escape());
+	}
+
 	public function testFilterReturnsBuiltinFilter(): void
 	{
 		$wrapper = new Wrapper();

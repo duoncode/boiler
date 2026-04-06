@@ -294,6 +294,19 @@ final class EngineTest extends TestCase
 		);
 	}
 
+	public function testEscapeAlwaysEscapesSafeWrappedProxy(): void
+	{
+		$engine = Engine::create($this->templates());
+
+		$this->assertSame(
+			'<p>&lt;b&gt;wrapped&lt;/b&gt;</p>',
+			$this->fullTrim($engine->render(
+				'escapesafevalue',
+				['wrapped' => '<b>wrapped</b>'],
+			)),
+		);
+	}
+
 	public function testIteratorRendering(): void
 	{
 		$engine = Engine::create($this->templates());

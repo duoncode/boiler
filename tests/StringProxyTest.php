@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
+use Duon\Boiler\Contract\Escaper;
 use Duon\Boiler\Exception\UnexpectedValueException;
 
 final class StringProxyTest extends TestCase
@@ -83,6 +84,48 @@ final class StringProxyTest extends TestCase
 		// sanitize marks as safe, subsequent strip keeps it safe
 		$result = $proxy->sanitize()->strip();
 		$this->assertSame('boiler', (string) $result);
+	}
+
+	public function testEscapeReturnsDefaultEscapedValue(): void
+	{
+		$proxy = $this->stringProxy('<b>boiler</b>');
+
+		$this->assertSame('&lt;b&gt;boiler&lt;/b&gt;', $proxy->escape());
+	}
+
+	public function testEscapeCanUseNamedEscaper(): void
+	{
+		$proxy = $this->escapedStringProxy(
+			'<b>boiler</b>',
+			[
+				'caps' => new class implements Escaper {
+					public function escape(string $value): string
+					{
+						return strtoupper(htmlspecialchars($value));
+					}
+				},
+			],
+		);
+
+		$this->assertSame('&LT;B&GT;BOILER&LT;/B&GT;', $proxy->escape('caps'));
+	}
+
+	public function testExplicitEscapeIgnoresSafeFlag(): void
+	{
+		$proxy = $this->escapedStringProxy(
+			'<b>boiler</b>',
+			[
+				'caps' => new class implements Escaper {
+					public function escape(string $value): string
+					{
+						return strtoupper(htmlspecialchars($value));
+					}
+				},
+			],
+		);
+
+		$this->assertSame('&lt;b&gt;boiler&lt;/b&gt;', $proxy->sanitize()->escape());
+		$this->assertSame('&LT;B&GT;BOILER&LT;/B&GT;', $proxy->sanitize()->escape('caps'));
 	}
 
 	public function testUnsafeChainStaysUnsafe(): void

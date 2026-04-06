@@ -84,14 +84,6 @@ final class Wrapper implements Contract\Wrapper
 		mixed $value,
 		?string $escaper = null,
 	): string {
-		if ($value instanceof StringProxy) {
-			if ($escaper === null) {
-				return (string) $value;
-			}
-
-			return $this->escapeString($value->unwrap(), $escaper);
-		}
-
 		if ($value instanceof Proxy) {
 			/** @psalm-suppress MixedAssignment unwrap returns mixed by design */
 			$value = $value->unwrap();

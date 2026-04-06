@@ -201,6 +201,8 @@ A filter implements `Duon\Boiler\Contract\Filter` with two methods:
 - `apply(string $value, mixed ...$args): string` transforms the value.
 - `safe(): bool` returns `true` when the filter output is safe HTML and should skip auto-escaping.
 
+Use filters for transformations. When you need a different escaping context, register a named escaper instead.
+
 Filters are available as virtual methods on wrapped string values in templates:
 
 ```php
