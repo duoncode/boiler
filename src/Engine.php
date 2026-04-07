@@ -20,7 +20,7 @@ class Engine
 	/** @psalm-var array<string, non-empty-string> */
 	protected array $pathCache = [];
 	private readonly Environment $environment;
-	protected CustomMethods $customMethods;
+	protected Methods $methods;
 
 	public private(set) bool $autoescape {
 		get => $this->autoescape;
@@ -40,7 +40,7 @@ class Engine
 		$this->autoescape = $autoescape;
 		$this->dirs = $this->prepareDirs($dirs);
 		$this->environment = new Environment();
-		$this->customMethods = new CustomMethods();
+		$this->methods = new Methods();
 	}
 
 	/**
@@ -70,7 +70,7 @@ class Engine
 	/** @psalm-param non-empty-string $name */
 	public function method(string $name, callable $callable): static
 	{
-		$this->customMethods->add($name, $callable);
+		$this->methods->add($name, $callable);
 
 		return $this;
 	}
@@ -141,7 +141,7 @@ class Engine
 		}
 
 		$template = new Template($file, engine: $this);
-		$template->setCustomMethods($this->customMethods);
+		$template->setMethods($this->methods);
 
 		return $template;
 	}

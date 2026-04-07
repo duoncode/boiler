@@ -12,7 +12,7 @@ use Throwable;
 abstract class BaseTemplate
 {
 	protected ?LayoutValue $layout = null;
-	protected CustomMethods $customMethods;
+	protected Methods $methods;
 	protected readonly bool $ownsSections;
 
 	public private(set) Engine $engine {
@@ -31,7 +31,7 @@ abstract class BaseTemplate
 	) {
 		$this->ownsSections = $sections === null;
 		$this->sections = $sections ?? new Sections();
-		$this->customMethods = new CustomMethods();
+		$this->methods = new Methods();
 
 		if ($engine === null) {
 			$dir = dirname($path);
@@ -94,15 +94,16 @@ abstract class BaseTemplate
 		return $this->layout;
 	}
 
-	public function setCustomMethods(CustomMethods $customMethods): void
+	/** @internal */
+	public function setMethods(Methods $methods): void
 	{
-		$this->customMethods = $customMethods;
+		$this->methods = $methods;
 	}
 
 	/** @internal */
-	public function customMethods(): CustomMethods
+	public function methods(): Methods
 	{
-		return $this->customMethods;
+		return $this->methods;
 	}
 
 	/** @psalm-param list<class-string> $whitelist */
@@ -206,14 +207,14 @@ abstract class BaseTemplate
 	): string {
 		while ($layout = $template->layout()) {
 			$file = $template->engine->getFile($layout->layout);
-			$methods = $template->customMethods();
+			$methods = $template->methods();
 			$template = new Layout(
 				$file,
 				$content,
 				$this->sections,
 				$template->engine,
 			);
-			$template->setCustomMethods($methods);
+			$template->setMethods($methods);
 
 			$layoutContext = is_null($layout->context)
 				? $context->context()

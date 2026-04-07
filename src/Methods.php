@@ -6,7 +6,7 @@ namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\UnexpectedValueException;
 
-final class CustomMethods
+final class Methods
 {
 	/** @psalm-var array<non-empty-string, callable> */
 	private array $methods = [];
@@ -21,6 +21,6 @@ final class CustomMethods
 	{
 		return array_key_exists($name, $this->methods)
 			? $this->methods[$name]
-			: throw new UnexpectedValueException("Custom method '{$name}' does not exist");
+			: throw new UnexpectedValueException("Method '{$name}' does not exist");
 	}
 }

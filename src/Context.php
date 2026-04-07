@@ -31,7 +31,7 @@ abstract class Context
 
 	public function __call(string $name, array $args): mixed
 	{
-		$callable = $this->template->customMethods()->get($name);
+		$callable = $this->template->methods()->get($name);
 
 		/** @var array<array-key, mixed> $args */
 		$args = $this->unwrap($args);
@@ -152,7 +152,7 @@ abstract class Context
 			engine: $this->template->engine,
 		);
 
-		$template->setCustomMethods($this->template->customMethods());
+		$template->setMethods($this->template->methods());
 
 		echo
 			$this->autoescape
