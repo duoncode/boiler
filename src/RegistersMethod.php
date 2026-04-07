@@ -16,7 +16,7 @@ trait RegistersMethod
 		return $this;
 	}
 
-	public function getMethods(): CustomMethods
+	public function methods(): CustomMethods
 	{
 		return $this->customMethods;
 	}

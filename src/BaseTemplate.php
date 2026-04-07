@@ -218,7 +218,7 @@ abstract class BaseTemplate implements Template
 	): string {
 		while ($layout = $template->layout()) {
 			$file = $template->engine->getFile($layout->layout);
-			$methods = $template->getMethods();
+			$methods = $template->methods();
 			$template = new Layout(
 				$file,
 				$content,

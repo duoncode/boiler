@@ -12,5 +12,5 @@ interface MethodRegister
 	/** @psalm-param non-empty-string $name */
 	public function method(string $name, callable $callable): static;
 
-	public function getMethods(): CustomMethods;
+	public function methods(): CustomMethods;
 }
