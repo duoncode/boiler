@@ -39,7 +39,7 @@ abstract class Context
 		return $this->templateValue($callable(...$args));
 	}
 
-	public function context(array $values = []): array
+	public function get(array $values = []): array
 	{
 		if (!$this->autoescape) {
 			return $values === []
@@ -156,8 +156,8 @@ abstract class Context
 
 		echo
 			$this->autoescape
-				? $template->renderEscaped($this->context($context), $this->whitelist)
-				: $template->renderUnescaped($this->context($context), $this->whitelist)
+				? $template->renderEscaped($this->get($context), $this->whitelist)
+				: $template->renderUnescaped($this->get($context), $this->whitelist)
 		;
 	}
 

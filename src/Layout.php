@@ -29,7 +29,7 @@ final class Layout extends BaseTemplate
 	}
 
 	#[Override]
-	protected function templateContext(array $context, array $whitelist, bool $autoescape): Context
+	protected function context(array $context, array $whitelist, bool $autoescape): Context
 	{
 		return new LayoutContext($this, $context, $whitelist, $autoescape);
 	}

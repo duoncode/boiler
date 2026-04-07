@@ -128,7 +128,7 @@ abstract class BaseTemplate
 	}
 
 	/** @psalm-param list<class-string> $whitelist */
-	abstract protected function templateContext(
+	abstract protected function context(
 		array $context,
 		array $whitelist,
 		bool $autoescape,
@@ -155,7 +155,7 @@ abstract class BaseTemplate
 	/** @psalm-param list<class-string> $whitelist */
 	protected function getContent(array $context, array $whitelist, bool $autoescape): Content
 	{
-		$templateContext = $this->templateContext($context, $whitelist, $autoescape);
+		$templateContext = $this->context($context, $whitelist, $autoescape);
 
 		/** @mago-expect lint:prefer-static-closure Closure::call() binds $this to the template context at runtime. */
 		$load = function (string $templatePath, array $context = []): void {
@@ -178,7 +178,7 @@ abstract class BaseTemplate
 				$templateContext,
 				$this->path,
 				$autoescape
-					? $templateContext->context()
+					? $templateContext->get()
 					: $context,
 			);
 
@@ -217,8 +217,8 @@ abstract class BaseTemplate
 			$template->setMethods($methods);
 
 			$layoutContext = is_null($layout->context)
-				? $context->context()
-				: $context->context($layout->context);
+				? $context->get()
+				: $context->get($layout->context);
 
 			$content = $template->renderTemplate($layoutContext, $whitelist, $autoescape);
 		}

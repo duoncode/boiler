@@ -19,7 +19,7 @@ class Template extends BaseTemplate
 
 	/** @psalm-param list<class-string> $whitelist */
 	#[Override]
-	protected function templateContext(array $context, array $whitelist, bool $autoescape): Context
+	protected function context(array $context, array $whitelist, bool $autoescape): Context
 	{
 		return new TemplateContext($this, $context, $whitelist, $autoescape);
 	}

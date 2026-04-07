@@ -36,7 +36,7 @@ final class TemplateContextTest extends TestCase
 			[],
 			true,
 		);
-		$context = $tmplContext->context();
+		$context = $tmplContext->get();
 
 		$this->assertInstanceOf(StringProxy::class, $context['value1']);
 		$this->assertSame('Value 1', (string) $context['value1']);
@@ -54,7 +54,7 @@ final class TemplateContextTest extends TestCase
 			[\stdClass::class, WhitelistBase::class],
 			true,
 		);
-		$context = $tmplContext->context();
+		$context = $tmplContext->get();
 
 		$this->assertSame($value, $context['value']);
 	}
@@ -63,7 +63,7 @@ final class TemplateContextTest extends TestCase
 	{
 		$tmplContext = new TemplateContext($this->template, ['value1' => 'Value 1'], [], true);
 		$value2 = $tmplContext->add('value2', '<i>Value 2</i>');
-		$context = $tmplContext->context();
+		$context = $tmplContext->get();
 
 		$this->assertInstanceOf(StringProxy::class, $context['value1']);
 		$this->assertSame('Value 1', (string) $context['value1']);
@@ -76,9 +76,9 @@ final class TemplateContextTest extends TestCase
 	public function testAddingToEscapedContextInvalidatesCachedContext(): void
 	{
 		$tmplContext = new TemplateContext($this->template, ['value1' => 'Value 1'], [], true);
-		$tmplContext->context();
+		$tmplContext->get();
 		$tmplContext->add('value2', '<i>Value 2</i>');
-		$context = $tmplContext->context();
+		$context = $tmplContext->get();
 
 		$this->assertInstanceOf(StringProxy::class, $context['value2']);
 		$this->assertSame('&lt;i&gt;Value 2&lt;/i&gt;', (string) $context['value2']);
@@ -88,7 +88,7 @@ final class TemplateContextTest extends TestCase
 	{
 		$tmplContext = new TemplateContext($this->template, [], [], false);
 		$value = $tmplContext->add('value', '<i>Value</i>');
-		$context = $tmplContext->context();
+		$context = $tmplContext->get();
 
 		$this->assertSame('<i>Value</i>', $context['value']);
 		$this->assertSame('<i>Value</i>', $value);
@@ -101,7 +101,7 @@ final class TemplateContextTest extends TestCase
 
 		try {
 			$tmplContext = new TemplateContext($this->template, ['value' => $resource], [], true);
-			$context = $tmplContext->context();
+			$context = $tmplContext->get();
 
 			$this->assertSame($resource, $context['value']);
 		} finally {
