@@ -1,11 +1,13 @@
 # Changelog
 
-## [Unreleased](https://github.com/duonrun/boiler/compare/v0.2.0...HEAD)
+## [Unreleased](https://github.com/duonrun/boiler/compare/0.2.0...HEAD)
 
 ### Breaking
 
 - Renamed `Context::esc()` to `Context::escape()`, so templates now call `$this->escape()` instead of `$this->esc()`.
+- Renamed `Context::context()` to `Context::get()`.
 - Replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escapers.
+- Renamed the `BaseTemplate` extension hook from `templateContext()` to `context()`.
 
 ### Added
 
@@ -13,7 +15,7 @@
 - Added `Context::wrap()` as an explicit way to opt into wrapper proxy behavior inside templates.
 - Added `Escapers` as the default escaper registry implementation.
 - Added lazy engine-owned wrapper composition with `setWrapper()`, `setFilters()`, and `setEscapers()`.
-- Added `Engine::escape()` for registering custom escapers on the engine-managed escapers registry.
+- Added `Engine::escape()` and `Engine::filter()` for registering custom escapers and filters on engine-managed registries.
 - Added the built-in `strip` filter and the optional `sanitize` filter when `symfony/html-sanitizer` is installed.
 - Added a Composer suggestion for `symfony/html-sanitizer` to enable the built-in `sanitize` filter.
 
@@ -21,6 +23,11 @@
 
 - Changed `Wrapper` from a static helper into an instance-based API that drives wrapping, unwrapping, escaping, and filter lookup.
 - Changed `StringProxy` to dispatch registered filters as virtual methods.
+
+### Removed
+
+- Removed `Context::clean()` and the `Sanitizer` class; use `wrap($value)->sanitize()` / filter pipelines instead.
+- Removed `Contract\Engine`, `Contract\Template`, and `Contract\MethodRegister`.
 
 ## [0.2.0](https://github.com/duonrun/boiler/releases/tag/0.2.0) (2026-03-25)
 
