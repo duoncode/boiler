@@ -7,14 +7,13 @@ namespace Duon\Boiler;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
-use Override;
 
 /**
  * @api
  * @psalm-type DirsInput = non-empty-string|list<non-empty-string>|array<non-empty-string, non-empty-string>
  * @psalm-type Dirs = list<non-empty-string>|array<non-empty-string, non-empty-string>
  */
-class Engine implements Contract\Engine
+class Engine
 {
 	/** @psalm-var Dirs */
 	protected readonly array $dirs;
@@ -69,7 +68,6 @@ class Engine implements Contract\Engine
 	}
 
 	/** @psalm-param non-empty-string $name */
-	#[Override]
 	public function method(string $name, callable $callable): static
 	{
 		$this->customMethods->add($name, $callable);
@@ -77,13 +75,11 @@ class Engine implements Contract\Engine
 		return $this;
 	}
 
-	#[Override]
 	public function wrapper(): Contract\Wrapper
 	{
 		return $this->environment->wrapper();
 	}
 
-	#[Override]
 	public function setWrapper(Contract\Wrapper $wrapper): static
 	{
 		$this->environment->setWrapper($wrapper);
@@ -91,7 +87,6 @@ class Engine implements Contract\Engine
 		return $this;
 	}
 
-	#[Override]
 	public function setFilters(Contract\Filters $filters): static
 	{
 		$this->environment->setFilters($filters);
@@ -99,7 +94,6 @@ class Engine implements Contract\Engine
 		return $this;
 	}
 
-	#[Override]
 	public function setEscapers(Contract\Escapers $escapers): static
 	{
 		$this->environment->setEscapers($escapers);
@@ -107,7 +101,6 @@ class Engine implements Contract\Engine
 		return $this;
 	}
 
-	#[Override]
 	public function escape(string $name, Contract\Escaper $with): static
 	{
 		$escapers = $this->environment->escapers();
@@ -135,7 +128,6 @@ class Engine implements Contract\Engine
 	}
 
 	/** @psalm-param non-empty-string $path */
-	#[Override]
 	public function template(string $path): Template
 	{
 		$file = $this->pathCache[$path] ?? null;
@@ -155,7 +147,6 @@ class Engine implements Contract\Engine
 	}
 
 	/** @psalm-param non-empty-string $path */
-	#[Override]
 	public function render(
 		string $path,
 		array $context = [],
@@ -202,7 +193,6 @@ class Engine implements Contract\Engine
 	 *
 	 * @psalm-return non-empty-string
 	 */
-	#[Override]
 	public function getFile(string $path): string
 	{
 		if (isset($this->pathCache[$path])) {

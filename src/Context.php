@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Duon\Boiler;
 
 use Duon\Boiler\Contract\Wrapper;
-use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\Proxy;
 use Duon\Boiler\Proxy\StringProxy;
@@ -22,7 +21,7 @@ abstract class Context
 	 * @psalm-param list<class-string> $whitelist
 	 */
 	public function __construct(
-		protected readonly Contract\Template $template,
+		protected readonly BaseTemplate $template,
 		protected array $context,
 		public readonly array $whitelist,
 		public readonly bool $autoescape,
@@ -32,10 +31,6 @@ abstract class Context
 
 	public function __call(string $name, array $args): mixed
 	{
-		if (!$this->template instanceof BaseTemplate) {
-			throw new RuntimeException('Template does not expose custom methods');
-		}
-
 		$callable = $this->template->customMethods()->get($name);
 
 		/** @var array<array-key, mixed> $args */
@@ -157,9 +152,7 @@ abstract class Context
 			engine: $this->template->engine,
 		);
 
-		if ($this->template instanceof BaseTemplate) {
-			$template->setCustomMethods($this->template->customMethods());
-		}
+		$template->setCustomMethods($this->template->customMethods());
 
 		echo
 			$this->autoescape

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-use Duon\Boiler\Contract\Engine;
 use Override;
 
 final class Layout extends BaseTemplate

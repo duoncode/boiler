@@ -4,16 +4,12 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-use Duon\Boiler\Contract\Engine;
-use Duon\Boiler\Contract\Template;
-use Duon\Boiler\Engine as BoilerEngine;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Exception\RuntimeException;
-use Override;
 use Throwable;
 
-abstract class BaseTemplate implements Template
+abstract class BaseTemplate
 {
 	protected ?LayoutValue $layout = null;
 	protected CustomMethods $customMethods;
@@ -44,7 +40,7 @@ abstract class BaseTemplate implements Template
 				throw new LookupException('No directory given or empty path');
 			}
 
-			$this->engine = new BoilerEngine($dir, true, [], []);
+			$this->engine = new Engine($dir, true, [], []);
 
 			if (!is_file($path)) {
 				throw new LookupException('Template not found: ' . $path);
@@ -58,24 +54,20 @@ abstract class BaseTemplate implements Template
 
 	/**
 	 * @psalm-param list<class-string> $whitelist
+	 * @psalm-suppress PossiblyUnusedMethod Called through inherited API on concrete templates
 	 */
-	#[Override]
 	public function render(array $context = [], array $whitelist = []): string
 	{
 		return $this->renderIsolated($context, $whitelist, autoescape: $this->engine->autoescape);
 	}
 
-	/**
-	 * @psalm-param list<class-string> $whitelist
-	 */
+	/** @psalm-param list<class-string> $whitelist */
 	public function renderEscaped(array $context = [], array $whitelist = []): string
 	{
 		return $this->renderIsolated($context, $whitelist, autoescape: true);
 	}
 
-	/**
-	 * @psalm-param list<class-string> $whitelist
-	 */
+	/** @psalm-param list<class-string> $whitelist */
 	public function renderUnescaped(array $context = [], array $whitelist = []): string
 	{
 		return $this->renderIsolated($context, $whitelist, autoescape: false);
@@ -86,7 +78,6 @@ abstract class BaseTemplate implements Template
 	 *
 	 * Typically it’s placed at the top of the file.
 	 */
-	#[Override]
 	public function setLayout(LayoutValue $layout): void
 	{
 		if ($this->layout === null) {
@@ -98,7 +89,6 @@ abstract class BaseTemplate implements Template
 		throw new RuntimeException('Template error: layout already set');
 	}
 
-	#[Override]
 	public function layout(): ?LayoutValue
 	{
 		return $this->layout;
@@ -115,9 +105,7 @@ abstract class BaseTemplate implements Template
 		return $this->customMethods;
 	}
 
-	/**
-	 * @psalm-param list<class-string> $whitelist
-	 */
+	/** @psalm-param list<class-string> $whitelist */
 	protected function renderIsolated(array $context, array $whitelist, bool $autoescape): string
 	{
 		$this->resetRenderState();
@@ -145,9 +133,7 @@ abstract class BaseTemplate implements Template
 		bool $autoescape,
 	): Context;
 
-	/**
-	 * @psalm-param list<class-string> $whitelist
-	 */
+	/** @psalm-param list<class-string> $whitelist */
 	protected function renderTemplate(array $context, array $whitelist, bool $autoescape): string
 	{
 		$content = $this->getContent($context, $whitelist, $autoescape);
@@ -165,9 +151,7 @@ abstract class BaseTemplate implements Template
 		);
 	}
 
-	/**
-	 * @psalm-param list<class-string> $whitelist
-	 */
+	/** @psalm-param list<class-string> $whitelist */
 	protected function getContent(array $context, array $whitelist, bool $autoescape): Content
 	{
 		$templateContext = $this->templateContext($context, $whitelist, $autoescape);
