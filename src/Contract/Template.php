@@ -13,9 +13,6 @@ interface Template
 	public Engine $engine { get; }
 	public Sections $sections { get; }
 
-	/** @psalm-param non-empty-string $name */
-	public function method(string $name, callable $callable): static;
-
 	/**
 	 * @psalm-param list<class-string> $whitelist
 	 */

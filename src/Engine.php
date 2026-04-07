@@ -14,15 +14,14 @@ use Override;
  * @psalm-type DirsInput = non-empty-string|list<non-empty-string>|array<non-empty-string, non-empty-string>
  * @psalm-type Dirs = list<non-empty-string>|array<non-empty-string, non-empty-string>
  */
-class Engine implements Contract\Engine, HasMethods
+class Engine implements Contract\Engine
 {
-	use RegistersMethod;
-
 	/** @psalm-var Dirs */
 	protected readonly array $dirs;
 	/** @psalm-var array<string, non-empty-string> */
 	protected array $pathCache = [];
 	private readonly Environment $environment;
+	protected CustomMethods $customMethods;
 
 	public private(set) bool $autoescape {
 		get => $this->autoescape;
@@ -67,6 +66,15 @@ class Engine implements Contract\Engine, HasMethods
 		array $whitelist = [],
 	): self {
 		return new self($dirs, false, $defaults, $whitelist);
+	}
+
+	/** @psalm-param non-empty-string $name */
+	#[Override]
+	public function method(string $name, callable $callable): static
+	{
+		$this->customMethods->add($name, $callable);
+
+		return $this;
 	}
 
 	#[Override]

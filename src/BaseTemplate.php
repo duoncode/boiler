@@ -13,10 +13,8 @@ use Duon\Boiler\Exception\RuntimeException;
 use Override;
 use Throwable;
 
-abstract class BaseTemplate implements Template, HasMethods
+abstract class BaseTemplate implements Template
 {
-	use RegistersMethod;
-
 	protected ?LayoutValue $layout = null;
 	protected CustomMethods $customMethods;
 	protected readonly bool $ownsSections;
@@ -109,6 +107,12 @@ abstract class BaseTemplate implements Template, HasMethods
 	public function setCustomMethods(CustomMethods $customMethods): void
 	{
 		$this->customMethods = $customMethods;
+	}
+
+	/** @internal */
+	public function customMethods(): CustomMethods
+	{
+		return $this->customMethods;
 	}
 
 	/**
@@ -210,7 +214,7 @@ abstract class BaseTemplate implements Template, HasMethods
 
 	/** @psalm-param list<class-string> $whitelist */
 	protected function renderLayouts(
-		Template $template,
+		BaseTemplate $template,
 		Context $context,
 		array $whitelist,
 		string $content,
@@ -218,7 +222,7 @@ abstract class BaseTemplate implements Template, HasMethods
 	): string {
 		while ($layout = $template->layout()) {
 			$file = $template->engine->getFile($layout->layout);
-			$methods = $template->methods();
+			$methods = $template->customMethods();
 			$template = new Layout(
 				$file,
 				$content,

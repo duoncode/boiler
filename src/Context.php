@@ -32,11 +32,11 @@ abstract class Context
 
 	public function __call(string $name, array $args): mixed
 	{
-		if (!$this->template instanceof HasMethods) {
+		if (!$this->template instanceof BaseTemplate) {
 			throw new RuntimeException('Template does not expose custom methods');
 		}
 
-		$callable = $this->template->methods()->get($name);
+		$callable = $this->template->customMethods()->get($name);
 
 		/** @var array<array-key, mixed> $args */
 		$args = $this->unwrap($args);
@@ -157,8 +157,8 @@ abstract class Context
 			engine: $this->template->engine,
 		);
 
-		if ($this->template instanceof HasMethods) {
-			$template->setCustomMethods($this->template->methods());
+		if ($this->template instanceof BaseTemplate) {
+			$template->setCustomMethods($this->template->customMethods());
 		}
 
 		echo
