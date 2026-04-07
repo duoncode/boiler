@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Duon\Boiler\Contract;
 
 /** @api */
-interface Engine extends MethodRegister
+interface Engine
 {
 	public bool $autoescape { get; }
+
+	/** @psalm-param non-empty-string $name */
+	public function method(string $name, callable $callable): static;
 
 	public function wrapper(): Wrapper;
 

@@ -13,7 +13,7 @@ use Duon\Boiler\Exception\RuntimeException;
 use Override;
 use Throwable;
 
-abstract class BaseTemplate implements Template
+abstract class BaseTemplate implements Template, HasMethods
 {
 	use RegistersMethod;
 

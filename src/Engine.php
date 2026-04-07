@@ -14,7 +14,7 @@ use Override;
  * @psalm-type DirsInput = non-empty-string|list<non-empty-string>|array<non-empty-string, non-empty-string>
  * @psalm-type Dirs = list<non-empty-string>|array<non-empty-string, non-empty-string>
  */
-class Engine implements Contract\Engine
+class Engine implements Contract\Engine, HasMethods
 {
 	use RegistersMethod;
 

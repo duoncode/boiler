@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Duon\Boiler;
 
 use Duon\Boiler\Contract\Wrapper;
+use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\Proxy;
 use Duon\Boiler\Proxy\StringProxy;
@@ -31,6 +32,10 @@ abstract class Context
 
 	public function __call(string $name, array $args): mixed
 	{
+		if (!$this->template instanceof HasMethods) {
+			throw new RuntimeException('Template does not expose custom methods');
+		}
+
 		$callable = $this->template->methods()->get($name);
 
 		/** @var array<array-key, mixed> $args */
@@ -151,7 +156,10 @@ abstract class Context
 			sections: $this->template->sections,
 			engine: $this->template->engine,
 		);
-		$template->setCustomMethods($this->template->methods());
+
+		if ($this->template instanceof HasMethods) {
+			$template->setCustomMethods($this->template->methods());
+		}
 
 		echo
 			$this->autoescape
