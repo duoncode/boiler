@@ -688,7 +688,7 @@ final class EngineTest extends TestCase
 	public function testCustomTemplateMethod(): void
 	{
 		$engine = Engine::create($this->templates());
-		$engine->registerMethod(
+		$engine->method(
 			'upper',
 			static fn(string $value): string => '<b>' . strtoupper($value) . '</b>',
 		);
@@ -702,7 +702,7 @@ final class EngineTest extends TestCase
 	public function testCustomTemplateMethodRespectsUnescapedRendering(): void
 	{
 		$engine = Engine::unescaped($this->templates());
-		$engine->registerMethod(
+		$engine->method(
 			'upper',
 			static fn(string $value): string => '<b>' . strtoupper($value) . '</b>',
 		);
@@ -710,6 +710,28 @@ final class EngineTest extends TestCase
 		$this->assertSame(
 			'<h2><b>BOILER</b></h2>',
 			$this->fullTrim($engine->render('method', ['text' => 'Boiler'])),
+		);
+	}
+
+	public function testCustomTemplateMethodIsAvailableInInsertedTemplates(): void
+	{
+		$engine = Engine::create($this->templates())
+			->method('upper', static fn(string $value): string => strtoupper($value));
+
+		$this->assertSame(
+			'<p>BOILER</p><p>13</p>',
+			$this->fullTrim($engine->render('insertmethod', ['text' => 'Boiler'])),
+		);
+	}
+
+	public function testCustomTemplateMethodIsAvailableInLayouts(): void
+	{
+		$engine = Engine::create($this->templates())
+			->method('upper', static fn(string $value): string => strtoupper($value));
+
+		$this->assertSame(
+			'<body><p>BOILER</p></body>',
+			$this->fullTrim($engine->render('uselayoutmethod', ['text' => 'Boiler'])),
 		);
 	}
 

@@ -151,6 +151,7 @@ abstract class Context
 			sections: $this->template->sections,
 			engine: $this->template->engine,
 		);
+		$template->setCustomMethods($this->template->getMethods());
 
 		echo
 			$this->autoescape

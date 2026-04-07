@@ -10,7 +10,7 @@ use Duon\Boiler\CustomMethods;
 interface MethodRegister
 {
 	/** @psalm-param non-empty-string $name */
-	public function registerMethod(string $name, callable $callable): void;
+	public function method(string $name, callable $callable): static;
 
 	public function getMethods(): CustomMethods;
 }

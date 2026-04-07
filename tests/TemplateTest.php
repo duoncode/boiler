@@ -145,7 +145,7 @@ final class TemplateTest extends TestCase
 	public function testCustomTemplateMethod(): void
 	{
 		$template = new Template($this->templates . 'method.php');
-		$template->registerMethod(
+		$template->method(
 			'upper',
 			static fn(string $value): string => '<b>' . strtoupper($value) . '</b>',
 		);

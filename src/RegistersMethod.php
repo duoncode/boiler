@@ -9,9 +9,11 @@ trait RegistersMethod
 	protected CustomMethods $customMethods;
 
 	/** @psalm-param non-empty-string $name */
-	public function registerMethod(string $name, callable $callable): void
+	public function method(string $name, callable $callable): static
 	{
 		$this->customMethods->add($name, $callable);
+
+		return $this;
 	}
 
 	public function getMethods(): CustomMethods

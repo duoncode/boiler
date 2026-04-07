@@ -218,12 +218,14 @@ abstract class BaseTemplate implements Template
 	): string {
 		while ($layout = $template->layout()) {
 			$file = $template->engine->getFile($layout->layout);
+			$methods = $template->getMethods();
 			$template = new Layout(
 				$file,
 				$content,
 				$this->sections,
 				$template->engine,
 			);
+			$template->setCustomMethods($methods);
 
 			$layoutContext = is_null($layout->context)
 				? $context->context()

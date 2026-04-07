@@ -272,7 +272,7 @@ Read [rendering templates](rendering.md) for path syntax, subdirectories, overri
 Custom methods are available as `$this->methodName()` inside templates:
 
 ```php
-$engine->registerMethod('upper', function (string $value): string {
+$engine->method('upper', function (string $value): string {
     return strtoupper($value);
 });
 ```
