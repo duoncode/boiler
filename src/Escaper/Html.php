@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Strategy;
+namespace Duon\Boiler\Escaper;
 
-use Duon\Boiler\Contract;
+use Duon\Boiler\Contract\Escaper;
 use Override;
 
 /** @api */
-final class EscapeHtml implements Contract\Escaper
+final class Html implements Escaper
 {
 	#[Override]
 	public function escape(string $value): string

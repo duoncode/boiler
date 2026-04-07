@@ -48,7 +48,7 @@ final class Escapers implements Contract\RegistersEscapers
 	private function builtins(): array
 	{
 		return [
-			self::HTML => new Strategy\EscapeHtml(),
+			self::HTML => new Escaper\Html(),
 		];
 	}
 
