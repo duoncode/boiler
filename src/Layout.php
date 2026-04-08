@@ -29,8 +29,8 @@ final class Layout extends BaseTemplate
 	}
 
 	#[Override]
-	protected function context(array $context, array $whitelist, bool $autoescape): Context
+	protected function context(array $context, array $trusted, bool $autoescape): Context
 	{
-		return new LayoutContext($this, $context, $whitelist, $autoescape);
+		return new LayoutContext($this, $context, $trusted, $autoescape);
 	}
 }

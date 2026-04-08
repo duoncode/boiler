@@ -19,7 +19,7 @@ Other highlights:
 
 - Layouts, inserts/partials, and sections, including append and prepend support
 - Wrapper-driven escaping and a pluggable filter system for value transformations
-- Custom template methods and optional whitelisting of trusted value classes
+- Custom template methods and optional trusted classes
 
 ## Installation
 
@@ -103,6 +103,16 @@ $engine->renderUnescaped('page');
 $engine = Engine::unescaped('/path/to/templates');
 $engine->render('page');
 $engine->renderEscaped('page');
+```
+
+Configure shared defaults and trusted classes:
+
+```php
+$engine = Engine::create(
+    '/path/to/templates',
+    defaults: ['siteName' => 'Duon'],
+    trusted: [TrustedHtml::class],
+);
 ```
 
 Register custom filters with the fluent `filter()` method:

@@ -46,13 +46,16 @@ final class EngineTest extends TestCase
 		);
 	}
 
-	public function testConstructorAcceptsResolver(): void
+	public function testConstructorAcceptsResolverWithoutDefaultsAndTrusted(): void
 	{
-		$engine = new Engine(new Resolver(TestCase::DEFAULT_DIR), true, ['obj' => $this->obj()], []);
+		$engine = new Engine(new Resolver(TestCase::DEFAULT_DIR), true);
 
 		$this->assertSame(
 			'<h1>boiler</h1><p>rocks</p>',
-			$this->fullTrim($engine->render('simple', ['text' => 'rocks'])),
+			$this->fullTrim($engine->render('simple', [
+				'obj' => $this->obj(),
+				'text' => 'rocks',
+			])),
 		);
 	}
 

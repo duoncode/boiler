@@ -18,12 +18,12 @@ abstract class Context
 	protected readonly Wrapper $wrapper;
 
 	/**
-	 * @psalm-param list<class-string> $whitelist
+	 * @psalm-param list<class-string> $trusted
 	 */
 	public function __construct(
 		protected readonly BaseTemplate $template,
 		protected array $context,
-		public readonly array $whitelist,
+		public readonly array $trusted,
 		public readonly bool $autoescape,
 	) {
 		$this->wrapper = $template->engine->wrapper();
@@ -72,8 +72,8 @@ abstract class Context
 			}
 
 			if (is_object($value)) {
-				foreach ($this->whitelist as $whitelisted) {
-					if (!$value instanceof $whitelisted) {
+				foreach ($this->trusted as $trustedClass) {
+					if (!$value instanceof $trustedClass) {
 						continue;
 					}
 
@@ -156,8 +156,8 @@ abstract class Context
 
 		echo
 			$this->autoescape
-				? $template->renderEscaped($this->get($context), $this->whitelist)
-				: $template->renderUnescaped($this->get($context), $this->whitelist)
+				? $template->renderEscaped($this->get($context), $this->trusted)
+				: $template->renderUnescaped($this->get($context), $this->trusted)
 		;
 	}
 

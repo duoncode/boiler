@@ -90,19 +90,19 @@ Register custom filters on the engine with the fluent `filter()` method. Read [t
 
 Use filters when you want to transform wrapped values. Use named escapers when you intentionally need a different escaping context. Use normal escaped output or `$this->escape()` when plain text output is enough.
 
-## Trusted class whitelist
+## Trusted classes
 
-By default, Boiler wraps objects in escaped renders. If a specific class should stay unwrapped, add it to the whitelist when creating the `Engine` or when rendering a standalone `Template`.
+By default, Boiler wraps objects in escaped renders. If a specific class should stay unwrapped, add it to the trusted list when creating the `Engine` or when rendering a standalone `Template`.
 
 ```php
 $engine = \Duon\Boiler\Engine::create(
     '/path/to/templates',
     defaults: [],
-    whitelist: [TrustedHtml::class],
+    trusted: [TrustedHtml::class],
 );
 ```
 
-Use this carefully. Whitelisted objects bypass Boiler's normal wrapping and can output unescaped string content.
+Use this carefully. Trusted objects bypass Boiler's normal wrapping and can output unescaped string content.
 
 ## Working with arrays, iterators, and objects
 

@@ -45,13 +45,13 @@ final class TemplateContextTest extends TestCase
 		$this->assertSame(3, $context['value3']);
 	}
 
-	public function testWhitelistedObjectMatchesLaterWhitelistEntry(): void
+	public function testTrustedObjectMatchesLaterTrustedEntry(): void
 	{
-		$value = new Whitelisted();
+		$value = new TrustedValue();
 		$tmplContext = new TemplateContext(
 			$this->template,
 			['value' => $value],
-			[\stdClass::class, WhitelistBase::class],
+			[\stdClass::class, TrustedBase::class],
 			true,
 		);
 		$context = $tmplContext->get();

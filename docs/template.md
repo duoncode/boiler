@@ -32,14 +32,14 @@ Standalone templates can use the same composition helpers as engine-backed rende
 
 Those template references are resolved relative to the directory that contains the original template file.
 
-## Whitelisting trusted classes
+## Configure trusted classes
 
-When you render a standalone template, pass the whitelist directly to the render call:
+When you render a standalone template, pass the trusted list directly to the render call:
 
 ```php
 $html = $template->render(
     ['value' => new TrustedHtml()],
-    [TrustedHtml::class],
+    trusted: [TrustedHtml::class],
 );
 ```
 

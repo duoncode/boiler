@@ -93,7 +93,7 @@ $engine = \Duon\Boiler\Engine::create(
 
 Per-render context overrides defaults with the same key.
 
-## Whitelist trusted classes
+## Configure trusted classes
 
 Pass a list of class names as the third argument when specific objects should be left unwrapped in escaped renders:
 
@@ -101,11 +101,11 @@ Pass a list of class names as the third argument when specific objects should be
 $engine = \Duon\Boiler\Engine::create(
     '/path/to/templates',
     defaults: [],
-    whitelist: [TrustedHtml::class],
+    trusted: [TrustedHtml::class],
 );
 ```
 
-Use this only for values you fully trust. Whitelisted objects bypass Boiler's normal object wrapping and can output unescaped string content from methods such as `__toString()`.
+Use this only for values you fully trust. Trusted objects bypass Boiler's normal object wrapping and can output unescaped string content from methods such as `__toString()`.
 
 Read [displaying values](values.md) for the escaping model.
 

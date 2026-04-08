@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Tests;
 
-class Whitelisted extends WhitelistBase
+class TrustedValue extends TrustedBase
 {
 	public function __toString(): string
 	{

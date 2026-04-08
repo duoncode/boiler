@@ -25,14 +25,14 @@ final class Engine
 	}
 
 	/**
-	 * @psalm-param list<class-string> $whitelist
+	 * @psalm-param list<class-string> $trusted
 	 * @psalm-param Contract\Resolver $resolver
 	 */
 	public function __construct(
 		Contract\Resolver $resolver,
 		bool $autoescape,
-		protected readonly array $defaults,
-		protected readonly array $whitelist,
+		protected readonly array $defaults = [],
+		protected readonly array $trusted = [],
 	) {
 		$this->autoescape = $autoescape;
 		$this->resolver = $resolver;
@@ -42,26 +42,26 @@ final class Engine
 
 	/**
 	 * @psalm-param ResolverInput $resolver
-	 * @psalm-param list<class-string> $whitelist
+	 * @psalm-param list<class-string> $trusted
 	 */
 	public static function create(
 		Contract\Resolver|array|string $resolver,
 		array $defaults = [],
-		array $whitelist = [],
+		array $trusted = [],
 	): self {
-		return new self(self::prepareResolver($resolver), true, $defaults, $whitelist);
+		return new self(self::prepareResolver($resolver), true, $defaults, $trusted);
 	}
 
 	/**
 	 * @psalm-param ResolverInput $resolver
-	 * @psalm-param list<class-string> $whitelist
+	 * @psalm-param list<class-string> $trusted
 	 */
 	public static function unescaped(
 		Contract\Resolver|array|string $resolver,
 		array $defaults = [],
-		array $whitelist = [],
+		array $trusted = [],
 	): self {
-		return new self(self::prepareResolver($resolver), false, $defaults, $whitelist);
+		return new self(self::prepareResolver($resolver), false, $defaults, $trusted);
 	}
 
 	/** @psalm-param non-empty-string $name */
@@ -172,8 +172,8 @@ final class Engine
 			: array_merge($this->defaults, $context);
 
 		return $autoescape
-			? $template->renderEscaped($context, $this->whitelist)
-			: $template->renderUnescaped($context, $this->whitelist);
+			? $template->renderEscaped($context, $this->trusted)
+			: $template->renderUnescaped($context, $this->trusted);
 	}
 
 	/**

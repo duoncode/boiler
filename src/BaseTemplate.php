@@ -40,7 +40,7 @@ abstract class BaseTemplate
 				throw new LookupException('No directory given or empty path');
 			}
 
-			$this->engine = new Engine(new Resolver($dir), true, [], []);
+			$this->engine = new Engine(new Resolver($dir), true);
 
 			if (!is_file($path)) {
 				throw new LookupException('Template not found: ' . $path);
@@ -53,24 +53,24 @@ abstract class BaseTemplate
 	}
 
 	/**
-	 * @psalm-param list<class-string> $whitelist
+	 * @psalm-param list<class-string> $trusted
 	 * @psalm-suppress PossiblyUnusedMethod Called through inherited API on concrete templates
 	 */
-	public function render(array $context = [], array $whitelist = []): string
+	public function render(array $context = [], array $trusted = []): string
 	{
-		return $this->renderIsolated($context, $whitelist, autoescape: $this->engine->autoescape);
+		return $this->renderIsolated($context, $trusted, autoescape: $this->engine->autoescape);
 	}
 
-	/** @psalm-param list<class-string> $whitelist */
-	public function renderEscaped(array $context = [], array $whitelist = []): string
+	/** @psalm-param list<class-string> $trusted */
+	public function renderEscaped(array $context = [], array $trusted = []): string
 	{
-		return $this->renderIsolated($context, $whitelist, autoescape: true);
+		return $this->renderIsolated($context, $trusted, autoescape: true);
 	}
 
-	/** @psalm-param list<class-string> $whitelist */
-	public function renderUnescaped(array $context = [], array $whitelist = []): string
+	/** @psalm-param list<class-string> $trusted */
+	public function renderUnescaped(array $context = [], array $trusted = []): string
 	{
-		return $this->renderIsolated($context, $whitelist, autoescape: false);
+		return $this->renderIsolated($context, $trusted, autoescape: false);
 	}
 
 	/**
@@ -106,13 +106,13 @@ abstract class BaseTemplate
 		return $this->methods;
 	}
 
-	/** @psalm-param list<class-string> $whitelist */
-	protected function renderIsolated(array $context, array $whitelist, bool $autoescape): string
+	/** @psalm-param list<class-string> $trusted */
+	protected function renderIsolated(array $context, array $trusted, bool $autoescape): string
 	{
 		$this->resetRenderState();
 
 		try {
-			return $this->renderTemplate($context, $whitelist, $autoescape);
+			return $this->renderTemplate($context, $trusted, $autoescape);
 		} finally {
 			$this->resetRenderState();
 		}
@@ -127,17 +127,17 @@ abstract class BaseTemplate
 		}
 	}
 
-	/** @psalm-param list<class-string> $whitelist */
+	/** @psalm-param list<class-string> $trusted */
 	abstract protected function context(
 		array $context,
-		array $whitelist,
+		array $trusted,
 		bool $autoescape,
 	): Context;
 
-	/** @psalm-param list<class-string> $whitelist */
-	protected function renderTemplate(array $context, array $whitelist, bool $autoescape): string
+	/** @psalm-param list<class-string> $trusted */
+	protected function renderTemplate(array $context, array $trusted, bool $autoescape): string
 	{
-		$content = $this->getContent($context, $whitelist, $autoescape);
+		$content = $this->getContent($context, $trusted, $autoescape);
 
 		if ($this instanceof Layout) {
 			return $content->content;
@@ -146,16 +146,16 @@ abstract class BaseTemplate
 		return $this->renderLayouts(
 			$this,
 			$content->templateContext,
-			$whitelist,
+			$trusted,
 			$content->content,
 			$autoescape,
 		);
 	}
 
-	/** @psalm-param list<class-string> $whitelist */
-	protected function getContent(array $context, array $whitelist, bool $autoescape): Content
+	/** @psalm-param list<class-string> $trusted */
+	protected function getContent(array $context, array $trusted, bool $autoescape): Content
 	{
-		$templateContext = $this->context($context, $whitelist, $autoescape);
+		$templateContext = $this->context($context, $trusted, $autoescape);
 
 		/** @mago-expect lint:prefer-static-closure Closure::call() binds $this to the template context at runtime. */
 		$load = function (string $templatePath, array $context = []): void {
@@ -197,11 +197,11 @@ abstract class BaseTemplate
 		}
 	}
 
-	/** @psalm-param list<class-string> $whitelist */
+	/** @psalm-param list<class-string> $trusted */
 	protected function renderLayouts(
 		BaseTemplate $template,
 		Context $context,
-		array $whitelist,
+		array $trusted,
 		string $content,
 		bool $autoescape,
 	): string {
@@ -220,7 +220,7 @@ abstract class BaseTemplate
 				? $context->get()
 				: $context->get($layout->context);
 
-			$content = $template->renderTemplate($layoutContext, $whitelist, $autoescape);
+			$content = $template->renderTemplate($layoutContext, $trusted, $autoescape);
 		}
 
 		return $content;

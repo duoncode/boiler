@@ -31,50 +31,50 @@ final class TemplateTest extends TestCase
 		);
 	}
 
-	public function testValueWhitelisting(): void
+	public function testTrustedValueStaysUnwrapped(): void
 	{
-		$path = $this->templates . 'whitelist.php';
+		$path = $this->templates . 'trusted.php';
 		$template = new Template($path);
 
 		$this->assertSame(
 			'<h1>headline</h1><p>test</p>',
 			$this->fullTrim($template->render(
 				[
-					'wl' => new Whitelisted(),
+					'wl' => new TrustedValue(),
 					'content' => 'test',
 				],
-				[Whitelisted::class],
+				[TrustedValue::class],
 			)),
 		);
 	}
 
-	public function testWhitelistingWithBaseClass(): void
+	public function testTrustedBaseClassStaysUnwrapped(): void
 	{
-		$path = $this->templates . 'whitelist.php';
+		$path = $this->templates . 'trusted.php';
 		$template = new Template($path);
 
 		$this->assertSame(
 			'<h1>headline</h1><p>test</p>',
 			$this->fullTrim($template->render(
 				[
-					'wl' => new Whitelisted(),
+					'wl' => new TrustedValue(),
 					'content' => 'test',
 				],
-				[WhitelistBase::class],
+				[TrustedBase::class],
 			)),
 		);
 	}
 
-	public function testNotWhitelisted(): void
+	public function testUntrustedValueIsWrapped(): void
 	{
-		$path = $this->templates . 'whitelist.php';
+		$path = $this->templates . 'trusted.php';
 		$template = new Template($path);
 
 		$this->assertSame(
 			'&lt;h1&gt;headline&lt;/h1&gt;&lt;p&gt;test&lt;/p&gt;',
 			$this->fullTrim($template->render(
 				[
-					'wl' => new Whitelisted(),
+					'wl' => new TrustedValue(),
 					'content' => 'test',
 				],
 			)),

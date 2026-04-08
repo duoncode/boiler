@@ -17,10 +17,10 @@ final class Template extends BaseTemplate
 		return $this;
 	}
 
-	/** @psalm-param list<class-string> $whitelist */
+	/** @psalm-param list<class-string> $trusted */
 	#[Override]
-	protected function context(array $context, array $whitelist, bool $autoescape): Context
+	protected function context(array $context, array $trusted, bool $autoescape): Context
 	{
-		return new TemplateContext($this, $context, $whitelist, $autoescape);
+		return new TemplateContext($this, $context, $trusted, $autoescape);
 	}
 }

@@ -4,6 +4,7 @@
 
 ### Breaking
 
+- Renamed the `Engine` and standalone `Template` API's `whitelist` argument to `trusted`. This breaks named argument calls such as `whitelist: [...]`, which must now use `trusted: [...]`.
 - `Engine`, `Template`, and `TemplateContext` are now final.
 - Renamed `Engine::getFile()` to `Engine::resolve()`.
 - Renamed `Context::esc()` to `Context::escape()`, so templates now call `$this->escape()` instead of `$this->esc()`.
@@ -24,6 +25,7 @@
 
 ### Changed
 
+- Changed `Engine::__construct()` to make `defaults` and `trusted` optional, matching `Engine::create()` and `Engine::unescaped()`.
 - Changed `Wrapper` from a static helper into an instance-based API that drives wrapping, unwrapping, escaping, and filter lookup.
 - Changed `StringProxy` to dispatch registered filters as virtual methods.
 
@@ -93,4 +95,4 @@ Initial version.
 - Layouts (including stacked layouts) and inserts/partials
 - Sections with default values and append/prepend capabilities
 - HTML sanitization helper powered by `symfony/html-sanitizer`
-- Support for custom template methods and optional whitelisting of trusted value classes
+- Support for custom template methods and optional trusted classes
