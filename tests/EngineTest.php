@@ -489,6 +489,15 @@ final class EngineTest extends TestCase
 		$engine->render('nestedsections');
 	}
 
+	public function testUnclosedSectionError(): void
+	{
+		$this->throws(RenderException::class, 'Unclosed section capture block');
+
+		$engine = Engine::create($this->templates());
+
+		$engine->render('unclosedsection');
+	}
+
 	public function testClosingUnopenedSectionError(): void
 	{
 		$this->throws(RenderException::class);

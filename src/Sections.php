@@ -71,6 +71,18 @@ final class Sections
 		return isset($this->sections[$name]);
 	}
 
+	public function assertClosed(): void
+	{
+		if ($this->sectionMode === SectionMode::Closed) {
+			return;
+		}
+
+		assert($this->capture !== [], 'Capture stack must contain a section name while open');
+		$name = (string) end($this->capture);
+
+		throw new LogicException("Unclosed section capture block `{$name}`");
+	}
+
 	private function open(string $name, SectionMode $mode): void
 	{
 		if ($this->sectionMode !== SectionMode::Closed) {

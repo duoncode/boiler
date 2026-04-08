@@ -181,6 +181,7 @@ abstract class BaseTemplate
 					? $templateContext->get()
 					: $context,
 			);
+			$this->sections->assertClosed();
 
 			$content = (string) ob_get_clean();
 

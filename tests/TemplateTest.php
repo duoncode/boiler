@@ -191,4 +191,13 @@ final class TemplateTest extends TestCase
 
 		$template->render();
 	}
+
+	public function testUnclosedSectionCaptureThrowsRenderError(): void
+	{
+		$this->throws(RenderException::class, 'Unclosed section capture block');
+
+		$template = new Template($this->templates . 'unclosedsection.php');
+
+		$template->render();
+	}
 }
