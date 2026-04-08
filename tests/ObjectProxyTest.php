@@ -77,6 +77,39 @@ final class ObjectProxyTest extends TestCase
 		$this->assertSame('&lt;i&gt;test&lt;/i&gt;', (string) $value('test'));
 	}
 
+	public function testMethodCallUnwrapsProxyArguments(): void
+	{
+		$object = new class {
+			public function upper(string $value): string
+			{
+				return strtoupper($value);
+			}
+		};
+		$value = $this->objectProxy($object);
+
+		$this->assertSame('BOILER', (string) $value->upper($this->stringProxy('boiler')));
+	}
+
+	public function testInvokeUnwrapsProxyArguments(): void
+	{
+		$closure = static fn(string $value): string => strtoupper($value);
+		$value = $this->objectProxy($closure);
+
+		$this->assertSame('BOILER', (string) $value($this->stringProxy('boiler')));
+	}
+
+	public function testSetterUnwrapsProxyValue(): void
+	{
+		$object = new class {
+			public string $value = 'initial';
+		};
+		$value = $this->objectProxy($object);
+
+		$value->value = $this->stringProxy('boiler');
+
+		$this->assertSame('boiler', $object->value);
+	}
+
 	public function testNonStringableObjectThrowsOnStringCast(): void
 	{
 		$this->throws(RuntimeException::class, 'not stringable');

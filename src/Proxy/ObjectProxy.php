@@ -48,7 +48,7 @@ final class ObjectProxy implements Proxy
 	public function __set(string $name, mixed $value): void
 	{
 		if ($this->hasPublicProperty($name)) {
-			$this->value->{$name} = $value;
+			$this->value->{$name} = $this->wrapper->unwrap($value);
 
 			return;
 		}
@@ -59,7 +59,7 @@ final class ObjectProxy implements Proxy
 	public function __call(string $name, array $args): mixed
 	{
 		if (is_callable([$this->value, $name])) {
-			return $this->wrapper->wrap($this->value->{$name}(...$args));
+			return $this->wrapper->wrap($this->value->{$name}(...$this->unwrapArgs($args)));
 		}
 
 		throw new RuntimeException('No such method');
@@ -68,7 +68,7 @@ final class ObjectProxy implements Proxy
 	public function __invoke(mixed ...$args): mixed
 	{
 		if (is_callable($this->value)) {
-			return $this->wrapper->wrap(($this->value)(...$args));
+			return $this->wrapper->wrap(($this->value)(...$this->unwrapArgs($args)));
 		}
 
 		throw new RuntimeException('No such method');
@@ -83,5 +83,17 @@ final class ObjectProxy implements Proxy
 	private function hasPublicProperty(string $name): bool
 	{
 		return array_key_exists($name, get_object_vars($this->value));
+	}
+
+	/**
+	 * @param array<array-key, mixed> $args
+	 * @return array<array-key, mixed>
+	 */
+	private function unwrapArgs(array $args): array
+	{
+		$unwrapped = $this->wrapper->unwrap($args);
+		assert(is_array($unwrapped), 'Wrapper::unwrap must return an array for array input');
+
+		return $unwrapped;
 	}
 }
