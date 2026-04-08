@@ -7,6 +7,7 @@ namespace Duon\Boiler;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Exception\RuntimeException;
+use Duon\Boiler\Resolver\Filesystem;
 use Throwable;
 
 abstract class BaseTemplate
@@ -40,7 +41,7 @@ abstract class BaseTemplate
 				throw new LookupException('No directory given or empty path');
 			}
 
-			$this->engine = new Engine($dir, true, [], []);
+			$this->engine = new Engine(new Filesystem($dir), true, [], []);
 
 			if (!is_file($path)) {
 				throw new LookupException('Template not found: ' . $path);

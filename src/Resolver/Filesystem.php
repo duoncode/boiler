@@ -10,12 +10,21 @@ use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\TemplatePath;
 use Override;
 
+/**
+ * @psalm-type DirsInput = non-empty-string|list<non-empty-string>|array<non-empty-string, non-empty-string>
+ * @psalm-type Dirs = list<non-empty-string>|array<non-empty-string, non-empty-string>
+ */
 final class Filesystem implements Resolver
 {
-	/** @param list<non-empty-string>|array<non-empty-string, non-empty-string> $dirs */
+	/** @psalm-var Dirs */
+	private readonly array $dirs;
+
+	/** @psalm-param DirsInput $dirs */
 	public function __construct(
-		private readonly array $dirs,
-	) {}
+		array|string $dirs,
+	) {
+		$this->dirs = $this->prepareDirs($dirs);
+	}
 
 	/** @psalm-return non-empty-string */
 	#[Override]
@@ -85,5 +94,38 @@ final class Filesystem implements Resolver
 		}
 
 		return $templatePath;
+	}
+
+	/**
+	 * @psalm-param DirsInput $dirs
+	 *
+	 * @psalm-return Dirs
+	 */
+	private function prepareDirs(array|string $dirs): array
+	{
+		$preparePath = static function (string $dir): string {
+			$realpath = realpath($dir);
+
+			if ($realpath === false) {
+				throw new LookupException(
+					'Template directory does not exist ' . $dir,
+				);
+			}
+
+			assert($realpath !== '', 'Resolved template directory path must not be empty');
+
+			return $realpath;
+		};
+
+		if (is_string($dirs)) {
+			return [$preparePath($dirs)];
+		}
+
+		return array_map(
+			static function ($dir) use ($preparePath) {
+				return $preparePath($dir);
+			},
+			$dirs,
+		);
 	}
 }

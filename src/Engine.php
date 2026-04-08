@@ -13,7 +13,7 @@ use Duon\Boiler\Resolver\Filesystem;
 /**
  * @api
  * @psalm-type DirsInput = non-empty-string|list<non-empty-string>|array<non-empty-string, non-empty-string>
- * @psalm-type Dirs = list<non-empty-string>|array<non-empty-string, non-empty-string>
+ * @psalm-type ResolverInput = Resolver|DirsInput
  */
 final class Engine
 {
@@ -29,43 +29,43 @@ final class Engine
 	}
 
 	/**
-	 * @psalm-param DirsInput $dirs
 	 * @psalm-param list<class-string> $whitelist
+	 * @psalm-param Resolver $resolver
 	 */
 	public function __construct(
-		array|string $dirs,
+		Resolver $resolver,
 		bool $autoescape,
 		protected readonly array $defaults,
 		protected readonly array $whitelist,
 	) {
 		$this->autoescape = $autoescape;
-		$this->resolver = new Filesystem($this->prepareDirs($dirs));
+		$this->resolver = $resolver;
 		$this->environment = new Environment();
 		$this->methods = new Methods();
 	}
 
 	/**
-	 * @psalm-param DirsInput $dirs
+	 * @psalm-param ResolverInput $resolver
 	 * @psalm-param list<class-string> $whitelist
 	 */
 	public static function create(
-		array|string $dirs,
+		Resolver|array|string $resolver,
 		array $defaults = [],
 		array $whitelist = [],
 	): self {
-		return new self($dirs, true, $defaults, $whitelist);
+		return new self(self::prepareResolver($resolver), true, $defaults, $whitelist);
 	}
 
 	/**
-	 * @psalm-param DirsInput $dirs
+	 * @psalm-param ResolverInput $resolver
 	 * @psalm-param list<class-string> $whitelist
 	 */
 	public static function unescaped(
-		array|string $dirs,
+		Resolver|array|string $resolver,
 		array $defaults = [],
 		array $whitelist = [],
 	): self {
-		return new self($dirs, false, $defaults, $whitelist);
+		return new self(self::prepareResolver($resolver), false, $defaults, $whitelist);
 	}
 
 	/** @psalm-param non-empty-string $name */
@@ -219,36 +219,13 @@ final class Engine
 		}
 	}
 
-	/**
-	 * @psalm-param DirsInput $dirs
-	 *
-	 * @psalm-return Dirs
-	 */
-	private function prepareDirs(array|string $dirs): array
+	/** @psalm-param ResolverInput $resolver */
+	private static function prepareResolver(Resolver|array|string $resolver): Resolver
 	{
-		$preparePath = static function (string $dir): string {
-			$realpath = realpath($dir);
-
-			if ($realpath === false) {
-				throw new LookupException(
-					'Template directory does not exist ' . $dir,
-				);
-			}
-
-			assert($realpath !== '', 'Resolved template directory path must not be empty');
-
-			return $realpath;
-		};
-
-		if (is_string($dirs)) {
-			return [$preparePath($dirs)];
+		if ($resolver instanceof Resolver) {
+			return $resolver;
 		}
 
-		return array_map(
-			static function ($dir) use ($preparePath) {
-				return $preparePath($dir);
-			},
-			$dirs,
-		);
+		return new Filesystem($resolver);
 	}
 }
