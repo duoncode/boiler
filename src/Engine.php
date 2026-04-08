@@ -19,22 +19,16 @@ final class Engine
 	private Methods $methods;
 	private readonly Contract\Resolver $resolver;
 
-	public private(set) bool $autoescape {
-		get => $this->autoescape;
-		set(bool $value) => $this->autoescape = $value;
-	}
-
 	/**
 	 * @psalm-param list<class-string> $trusted
 	 * @psalm-param Contract\Resolver $resolver
 	 */
 	public function __construct(
 		Contract\Resolver $resolver,
-		bool $autoescape,
-		protected readonly array $defaults = [],
-		protected readonly array $trusted = [],
+		public readonly bool $autoescape,
+		private readonly array $defaults = [],
+		private readonly array $trusted = [],
 	) {
-		$this->autoescape = $autoescape;
 		$this->resolver = $resolver;
 		$this->environment = new Environment();
 		$this->methods = new Methods();
