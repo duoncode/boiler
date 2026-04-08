@@ -12,6 +12,7 @@ use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
+use Duon\Boiler\Resolver\Filesystem;
 use Duon\Boiler\Template;
 use Duon\Boiler\TemplateContext;
 use Duon\Boiler\Wrapper;
@@ -38,6 +39,16 @@ final class EngineTest extends TestCase
 	public function testSimpleRendering(): void
 	{
 		$engine = Engine::create(TestCase::DEFAULT_DIR, ['obj' => $this->obj()]);
+
+		$this->assertSame(
+			'<h1>boiler</h1><p>rocks</p>',
+			$this->fullTrim($engine->render('simple', ['text' => 'rocks'])),
+		);
+	}
+
+	public function testConstructorAcceptsResolver(): void
+	{
+		$engine = new Engine(new Filesystem(TestCase::DEFAULT_DIR), true, ['obj' => $this->obj()], []);
 
 		$this->assertSame(
 			'<h1>boiler</h1><p>rocks</p>',
