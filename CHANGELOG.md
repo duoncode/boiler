@@ -14,7 +14,7 @@
 ### Added
 
 - Added `Contract\Escaper`, `Contract\Escapers`, `Contract\RegistersEscapers`, `Contract\Filters`, `Contract\RegistersFilters`, `Contract\Wrapper`, and `Contract\Filter`.
-- Added `Contract\Resolver` and `Resolver\Filesystem` for template lookup.
+- Added `Contract\Resolver` and `Resolver` for template lookup.
 - Added `Context::wrap()` as an explicit way to opt into wrapper proxy behavior inside templates.
 - Added `Escapers` as the default escaper registry implementation.
 - Added lazy engine-owned wrapper composition with `setWrapper()`, `setFilters()`, and `setEscapers()`.
@@ -27,7 +27,6 @@
 
 - Changed `Wrapper` from a static helper into an instance-based API that drives wrapping, unwrapping, escaping, and filter lookup.
 - Changed `StringProxy` to dispatch registered filters as virtual methods.
-- Moved template path lookup caching from `Engine` to resolver implementations (`Resolver\Filesystem` caches successful resolutions).
 
 ### Removed
 
