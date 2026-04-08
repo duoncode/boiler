@@ -206,7 +206,7 @@ abstract class BaseTemplate
 		bool $autoescape,
 	): string {
 		while ($layout = $template->layout()) {
-			$file = $template->engine->getFile($layout->layout);
+			$file = $template->engine->resolve($layout->layout);
 			$methods = $template->methods();
 			$template = new Layout(
 				$file,

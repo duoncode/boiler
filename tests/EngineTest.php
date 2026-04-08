@@ -588,6 +588,93 @@ final class EngineTest extends TestCase
 		$this->assertSame(false, $engine->exists('wrongindex'));
 	}
 
+	public function testResolveReturnsResolvedTemplatePath(): void
+	{
+		$engine = Engine::create($this->templates());
+
+		$this->assertStringEndsWith(
+			'tests/templates/default/simple.php',
+			$engine->resolve('simple'),
+		);
+	}
+
+	public function testSetResolverIsFluent(): void
+	{
+		$resolver = new class implements \Duon\Boiler\Contract\Resolver {
+			public function resolve(string $path): string
+			{
+				throw new LookupException('No templates configured');
+			}
+		};
+
+		$engine = Engine::create($this->templates());
+
+		$this->assertSame($engine, $engine->setResolver($resolver));
+	}
+
+	public function testSetResolverClearsPathCache(): void
+	{
+		$resolverOne = new class(TestCase::DEFAULT_DIR . '/simple.php') implements
+			\Duon\Boiler\Contract\Resolver {
+			public int $calls = 0;
+
+			public function __construct(
+				private readonly string $resolved,
+			) {}
+
+			public function resolve(string $path): string
+			{
+				$this->calls++;
+
+				if ($path !== 'simple') {
+					throw new LookupException("Template `{$path}` not found");
+				}
+
+				return $this->resolved;
+			}
+		};
+
+		$resolverTwo = new class(TestCase::ROOT_DIR . '/additional/additional.php') implements
+			\Duon\Boiler\Contract\Resolver {
+			public int $calls = 0;
+
+			public function __construct(
+				private readonly string $resolved,
+			) {}
+
+			public function resolve(string $path): string
+			{
+				$this->calls++;
+
+				if ($path !== 'simple') {
+					throw new LookupException("Template `{$path}` not found");
+				}
+
+				return $this->resolved;
+			}
+		};
+
+		$engine = Engine::create($this->templates(), ['obj' => $this->obj()])
+			->setResolver($resolverOne);
+
+		$this->assertSame(
+			'<h1>boiler</h1><p>first</p>',
+			$this->fullTrim($engine->render('simple', ['text' => 'first'])),
+		);
+		$this->assertSame(1, $resolverOne->calls);
+
+		$engine->resolve('simple');
+		$this->assertSame(1, $resolverOne->calls);
+
+		$engine->setResolver($resolverTwo);
+
+		$this->assertSame(
+			'<span>second</span>',
+			$this->fullTrim($engine->render('simple', ['text' => 'second'])),
+		);
+		$this->assertSame(1, $resolverTwo->calls);
+	}
+
 	#[TestDox('Config error wrong template format I')]
 	public function testConfigErrorWrongTemplateFormatI(): void
 	{

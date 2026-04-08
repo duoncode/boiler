@@ -145,7 +145,7 @@ abstract class Context
 	 */
 	public function insert(string $path, array $context = []): void
 	{
-		$path = $this->template->engine->getFile($path);
+		$path = $this->template->engine->resolve($path);
 		$template = new Template(
 			$path,
 			sections: $this->template->sections,

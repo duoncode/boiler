@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
+use Duon\Boiler\Contract\Resolver;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
+use Duon\Boiler\Resolver\Filesystem;
 
 /**
  * @api
@@ -21,6 +23,7 @@ class Engine
 	protected array $pathCache = [];
 	private readonly Environment $environment;
 	protected Methods $methods;
+	private Resolver $resolver;
 
 	public private(set) bool $autoescape {
 		get => $this->autoescape;
@@ -39,6 +42,7 @@ class Engine
 	) {
 		$this->autoescape = $autoescape;
 		$this->dirs = $this->prepareDirs($dirs);
+		$this->resolver = new Filesystem($this->dirs);
 		$this->environment = new Environment();
 		$this->methods = new Methods();
 	}
@@ -101,6 +105,14 @@ class Engine
 		return $this;
 	}
 
+	public function setResolver(Resolver $resolver): static
+	{
+		$this->resolver = $resolver;
+		$this->pathCache = [];
+
+		return $this;
+	}
+
 	public function escape(string $name, Contract\Escaper $with): static
 	{
 		$escapers = $this->environment->escapers();
@@ -133,11 +145,7 @@ class Engine
 		$file = $this->pathCache[$path] ?? null;
 
 		if ($file === null) {
-			if (!preg_match('/^[\w\.\/:_-]+$/u', $path)) {
-				throw new UnexpectedValueException('The template path is invalid or empty');
-			}
-
-			$file = $this->getFile($path);
+			$file = $this->resolve($path);
 		}
 
 		$template = new Template($file, engine: $this);
@@ -193,56 +201,25 @@ class Engine
 	 *
 	 * @psalm-return non-empty-string
 	 */
-	public function getFile(string $path): string
+	public function resolve(string $path): string
 	{
 		if (isset($this->pathCache[$path])) {
 			return $this->pathCache[$path];
 		}
 
-		[$namespace, $file] = $this->getSegments($path);
-		$templatePath = $this->getTemplatePath($namespace, $file);
-
-		if (!$templatePath->isValid()) {
-			throw new LookupException($templatePath->error());
-		}
-
-		return $this->pathCache[$path] = $templatePath->path();
+		return $this->pathCache[$path] = $this->resolver->resolve($path);
 	}
 
 	/** @psalm-param non-empty-string $path */
 	public function exists(string $path): bool
 	{
 		try {
-			$this->getFile($path);
+			$this->resolve($path);
 
 			return true;
-		} catch (LookupException) {
+		} catch (LookupException|UnexpectedValueException) {
 			return false;
 		}
-	}
-
-	/** @psalm-param non-empty-string $file */
-	protected function getTemplatePath(?string $namespace, string $file): TemplatePath
-	{
-		if (!is_null($namespace)) {
-			if (array_key_exists($namespace, $this->dirs)) {
-				return new TemplatePath($this->dirs[$namespace], $file);
-			}
-
-			throw new LookupException("Template namespace `{$namespace}` does not exist");
-		}
-
-		assert(count($this->dirs) > 0, 'At least one template directory must be configured');
-
-		foreach ($this->dirs as $dir) {
-			$templatePath = new TemplatePath($dir, $file);
-
-			if ($templatePath->isValid()) {
-				return $templatePath;
-			}
-		}
-
-		return $templatePath;
 	}
 
 	/**
@@ -275,34 +252,6 @@ class Engine
 				return $preparePath($dir);
 			},
 			$dirs,
-		);
-	}
-
-	/** @return list{null|non-empty-string, non-empty-string} */
-	protected function getSegments(string $path): array
-	{
-		if (!str_contains($path, ':')) {
-			$path = trim($path);
-			assert($path !== '', 'Template path must not be empty after trimming');
-
-			return [null, $path];
-		}
-
-		$segments = array_map(static fn($seg) => trim($seg), explode(':', $path));
-
-		if (count($segments) === 2) {
-			if (($segments[0] ?? '') && ($segments[1] ?? '')) {
-				/** @var list{non-empty-string, non-empty-string} */
-				return [$segments[0], $segments[1]];
-			}
-
-			throw new LookupException(
-				"Invalid template format: '{$path}'. " . "Use 'namespace:template/path or template/path'.",
-			);
-		}
-
-		throw new LookupException(
-			"Invalid template format: '{$path}'. " . "Use 'namespace:template/path or template/path'.",
 		);
 	}
 }
