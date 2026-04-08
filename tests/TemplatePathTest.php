@@ -71,6 +71,30 @@ final class TemplatePathTest extends TestCase
 		$this->assertStringStartsWith('Template resides outside of root directory', $tplp->error());
 	}
 
+	public function testRejectsSiblingDirectoryWithSharedPrefix(): void
+	{
+		$base = sys_get_temp_dir() . '/boiler-template-path-' . uniqid();
+		$root = $base . '/templates';
+		$sibling = $base . '/templates_evil';
+		$file = $sibling . '/pwn.php';
+
+		mkdir($root, recursive: true);
+		mkdir($sibling, recursive: true);
+		file_put_contents($file, 'PWN');
+
+		try {
+			$tplp = new TemplatePath($root, '../templates_evil/pwn');
+
+			$this->assertSame(false, $tplp->isValid());
+			$this->assertStringStartsWith('Template resides outside of root directory', $tplp->error());
+		} finally {
+			unlink($file);
+			rmdir($sibling);
+			rmdir($root);
+			rmdir($base);
+		}
+	}
+
 	public function testErrorWhenAccessingInvalidPath(): void
 	{
 		$this->throws(LookupException::class, 'Error while accessing path');

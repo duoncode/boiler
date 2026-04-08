@@ -74,7 +74,7 @@ final class TemplatePath
 			}
 		}
 
-		if ($this->isValid && !str_starts_with($this->path, $this->dir)) {
+		if ($this->isValid && !$this->isWithinRoot($this->path)) {
 			$this->error = "Template resides outside of root directory ({$this->dir}): {$this->path}";
 			$this->isValid = false;
 		}
@@ -96,5 +96,21 @@ final class TemplatePath
 		$this->isValid = true;
 		$this->path = $realpath;
 		$this->error = '';
+	}
+
+	private function isWithinRoot(string $path): bool
+	{
+		$root = rtrim($this->dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
+		if (DIRECTORY_SEPARATOR === '\\') {
+			// Windows-only branch
+			// @codeCoverageIgnoreStart
+
+			return strncasecmp($path, $root, strlen($root)) === 0;
+
+			// @codeCoverageIgnoreEnd
+		}
+
+		return str_starts_with($path, $root);
 	}
 }

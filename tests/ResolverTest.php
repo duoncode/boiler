@@ -76,4 +76,28 @@ final class ResolverTest extends TestCase
 		$resolver = new Resolver($this->templates());
 		$resolver->resolve('../unreachable');
 	}
+
+	public function testPreventsTemplateTraversalToSiblingDirectoryWithSharedPrefix(): void
+	{
+		$base = sys_get_temp_dir() . '/boiler-resolver-' . uniqid();
+		$root = $base . '/templates';
+		$sibling = $base . '/templates_evil';
+		$file = $sibling . '/pwn.php';
+
+		mkdir($root, recursive: true);
+		mkdir($sibling, recursive: true);
+		file_put_contents($file, 'PWN');
+
+		$this->throws(LookupException::class, 'outside');
+
+		try {
+			$resolver = new Resolver($root);
+			$resolver->resolve('../templates_evil/pwn');
+		} finally {
+			unlink($file);
+			rmdir($sibling);
+			rmdir($root);
+			rmdir($base);
+		}
+	}
 }
