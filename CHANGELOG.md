@@ -4,6 +4,8 @@
 
 ### Breaking
 
+- `Engine`, `Template`, and `TemplateContext` are now final.
+- Renamed `Engine::getFile()` to `Engine::resolve()`.
 - Renamed `Context::esc()` to `Context::escape()`, so templates now call `$this->escape()` instead of `$this->esc()`.
 - Renamed `Context::context()` to `Context::get()`.
 - Replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escapers.
@@ -12,10 +14,12 @@
 ### Added
 
 - Added `Contract\Escaper`, `Contract\Escapers`, `Contract\RegistersEscapers`, `Contract\Filters`, `Contract\RegistersFilters`, `Contract\Wrapper`, and `Contract\Filter`.
+- Added `Contract\Resolver` and `Resolver\Filesystem` for template lookup.
 - Added `Context::wrap()` as an explicit way to opt into wrapper proxy behavior inside templates.
 - Added `Escapers` as the default escaper registry implementation.
 - Added lazy engine-owned wrapper composition with `setWrapper()`, `setFilters()`, and `setEscapers()`.
 - Added `Engine::escape()` and `Engine::filter()` for registering custom escapers and filters on engine-managed registries.
+- Added `Engine::setResolver()` to replace template path resolution behavior.
 - Added the built-in `strip` filter and the optional `sanitize` filter when `symfony/html-sanitizer` is installed.
 - Added a Composer suggestion for `symfony/html-sanitizer` to enable the built-in `sanitize` filter.
 
@@ -28,6 +32,7 @@
 
 - Removed `Context::clean()` and the `Sanitizer` class; use `wrap($value)->sanitize()` / filter pipelines instead.
 - Removed `Contract\Engine`, `Contract\Template`, and `Contract\MethodRegister`.
+- Removed support for subclassing `Engine`, `Template`, and `TemplateContext`.
 
 ## [0.2.0](https://github.com/duonrun/boiler/releases/tag/0.2.0) (2026-03-25)
 

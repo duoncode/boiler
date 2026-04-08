@@ -17,12 +17,10 @@ use Duon\Boiler\Resolver\Filesystem;
  */
 final class Engine
 {
-	/** @psalm-var Dirs */
-	protected readonly array $dirs;
 	/** @psalm-var array<string, non-empty-string> */
-	protected array $pathCache = [];
+	private array $pathCache = [];
 	private readonly Environment $environment;
-	protected Methods $methods;
+	private Methods $methods;
 	private Resolver $resolver;
 
 	public private(set) bool $autoescape {
@@ -41,8 +39,7 @@ final class Engine
 		protected readonly array $whitelist,
 	) {
 		$this->autoescape = $autoescape;
-		$this->dirs = $this->prepareDirs($dirs);
-		$this->resolver = new Filesystem($this->dirs);
+		$this->resolver = new Filesystem($this->prepareDirs($dirs));
 		$this->environment = new Environment();
 		$this->methods = new Methods();
 	}
@@ -179,7 +176,7 @@ final class Engine
 	}
 
 	/** @psalm-param non-empty-string $path */
-	protected function renderTemplate(
+	private function renderTemplate(
 		string $path,
 		array $context,
 		bool $autoescape,
@@ -227,7 +224,7 @@ final class Engine
 	 *
 	 * @psalm-return Dirs
 	 */
-	protected function prepareDirs(array|string $dirs): array
+	private function prepareDirs(array|string $dirs): array
 	{
 		$preparePath = static function (string $dir): string {
 			$realpath = realpath($dir);
