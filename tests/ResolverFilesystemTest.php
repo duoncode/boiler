@@ -20,6 +20,21 @@ final class ResolverFilesystemTest extends TestCase
 		);
 	}
 
+	public function testCachesResolvedTemplatePath(): void
+	{
+		$resolver = new Filesystem($this->templates());
+
+		$resolved = $resolver->resolve('simple');
+		$this->assertSame($resolved, $resolver->resolve('simple'));
+
+		$reflection = new \ReflectionClass($resolver);
+		$cache = $reflection->getProperty('pathCache');
+		$pathCache = $cache->getValue($resolver);
+
+		$this->assertCount(1, $pathCache);
+		$this->assertArrayHasKey('simple', $pathCache);
+	}
+
 	public function testResolvesNamespacedTemplate(): void
 	{
 		$resolver = new Filesystem($this->namespaced($this->additional()));

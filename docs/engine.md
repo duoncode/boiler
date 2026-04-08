@@ -78,7 +78,8 @@ $engine = Engine::create('/path/to/templates')
     });
 ```
 
-`setResolver()` clears Engine's path cache immediately so the new resolver is used for subsequent renders.
+`setResolver()` replaces the active resolver immediately, so subsequent renders use the newly configured lookup strategy.
+Lookup caching is resolver-specific. `Resolver\Filesystem` caches successful resolutions.
 
 ## Add default values
 

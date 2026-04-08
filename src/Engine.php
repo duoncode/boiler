@@ -17,8 +17,6 @@ use Duon\Boiler\Resolver\Filesystem;
  */
 final class Engine
 {
-	/** @psalm-var array<string, non-empty-string> */
-	private array $pathCache = [];
 	private readonly Environment $environment;
 	private Methods $methods;
 	private Resolver $resolver;
@@ -105,7 +103,6 @@ final class Engine
 	public function setResolver(Resolver $resolver): static
 	{
 		$this->resolver = $resolver;
-		$this->pathCache = [];
 
 		return $this;
 	}
@@ -139,12 +136,7 @@ final class Engine
 	/** @psalm-param non-empty-string $path */
 	public function template(string $path): Template
 	{
-		$file = $this->pathCache[$path] ?? null;
-
-		if ($file === null) {
-			$file = $this->resolve($path);
-		}
-
+		$file = $this->resolve($path);
 		$template = new Template($file, engine: $this);
 		$template->setMethods($this->methods);
 
@@ -200,11 +192,7 @@ final class Engine
 	 */
 	public function resolve(string $path): string
 	{
-		if (isset($this->pathCache[$path])) {
-			return $this->pathCache[$path];
-		}
-
-		return $this->pathCache[$path] = $this->resolver->resolve($path);
+		return $this->resolver->resolve($path);
 	}
 
 	/** @psalm-param non-empty-string $path */

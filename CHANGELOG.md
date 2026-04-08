@@ -27,6 +27,7 @@
 
 - Changed `Wrapper` from a static helper into an instance-based API that drives wrapping, unwrapping, escaping, and filter lookup.
 - Changed `StringProxy` to dispatch registered filters as virtual methods.
+- Moved template path lookup caching from `Engine` to resolver implementations (`Resolver\Filesystem` caches successful resolutions).
 
 ### Removed
 
