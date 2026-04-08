@@ -1,0 +1,12 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Duon\Boiler\Contract;
+
+/** @api */
+interface Resolver
+{
+	/** @psalm-return non-empty-string */
+	public function resolve(string $path): string;
+}
