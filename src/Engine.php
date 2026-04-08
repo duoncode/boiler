@@ -15,7 +15,7 @@ use Duon\Boiler\Resolver\Filesystem;
  * @psalm-type DirsInput = non-empty-string|list<non-empty-string>|array<non-empty-string, non-empty-string>
  * @psalm-type Dirs = list<non-empty-string>|array<non-empty-string, non-empty-string>
  */
-class Engine
+final class Engine
 {
 	/** @psalm-var Dirs */
 	protected readonly array $dirs;
