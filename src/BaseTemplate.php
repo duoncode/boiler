@@ -11,7 +11,7 @@ use Throwable;
 
 abstract class BaseTemplate
 {
-	protected ?LayoutValue $layout = null;
+	protected ?LayoutSpec $layout = null;
 	protected Methods $methods;
 	protected readonly bool $ownsSections;
 
@@ -78,7 +78,7 @@ abstract class BaseTemplate
 	 *
 	 * Typically it’s placed at the top of the file.
 	 */
-	public function setLayout(LayoutValue $layout): void
+	public function setLayout(LayoutSpec $layout): void
 	{
 		if ($this->layout === null) {
 			$this->layout = $layout;
@@ -89,7 +89,7 @@ abstract class BaseTemplate
 		throw new RuntimeException('Template error: layout already set');
 	}
 
-	public function layout(): ?LayoutValue
+	public function layout(): ?LayoutSpec
 	{
 		return $this->layout;
 	}
@@ -206,7 +206,7 @@ abstract class BaseTemplate
 		bool $autoescape,
 	): string {
 		while ($layout = $template->layout()) {
-			$file = $template->engine->resolve($layout->layout);
+			$file = $template->engine->resolve($layout->path);
 			$methods = $template->methods();
 			$template = new Layout(
 				$file,

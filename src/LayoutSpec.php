@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-/** @api */
-final class LayoutValue
+final class LayoutSpec
 {
 	/**
-	 * @psalm-param non-empty-string $layout
+	 * @psalm-param non-empty-string $path
 	 */
 	public function __construct(
-		public readonly string $layout,
+		public readonly string $path,
 		public readonly ?array $context = null,
 	) {}
 }
