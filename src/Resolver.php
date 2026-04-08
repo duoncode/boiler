@@ -2,19 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Resolver;
+namespace Duon\Boiler;
 
-use Duon\Boiler\Contract\Resolver;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\TemplatePath;
 use Override;
 
 /**
  * @psalm-type DirsInput = non-empty-string|list<non-empty-string>|array<non-empty-string, non-empty-string>
  * @psalm-type Dirs = list<non-empty-string>|array<non-empty-string, non-empty-string>
  */
-final class Filesystem implements Resolver
+final class Resolver implements Contract\Resolver
 {
 	/** @psalm-var Dirs */
 	private readonly array $dirs;

@@ -4,22 +4,20 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-use Duon\Boiler\Contract\Resolver;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Resolver\Filesystem;
 
 /**
  * @api
  * @psalm-type DirsInput = non-empty-string|list<non-empty-string>|array<non-empty-string, non-empty-string>
- * @psalm-type ResolverInput = Resolver|DirsInput
+ * @psalm-type ResolverInput = Contract\Resolver|DirsInput
  */
 final class Engine
 {
 	private readonly Environment $environment;
 	private Methods $methods;
-	private Resolver $resolver;
+	private Contract\Resolver $resolver;
 
 	public private(set) bool $autoescape {
 		get => $this->autoescape;
@@ -28,10 +26,10 @@ final class Engine
 
 	/**
 	 * @psalm-param list<class-string> $whitelist
-	 * @psalm-param Resolver $resolver
+	 * @psalm-param Contract\Resolver $resolver
 	 */
 	public function __construct(
-		Resolver $resolver,
+		Contract\Resolver $resolver,
 		bool $autoescape,
 		protected readonly array $defaults,
 		protected readonly array $whitelist,
@@ -47,7 +45,7 @@ final class Engine
 	 * @psalm-param list<class-string> $whitelist
 	 */
 	public static function create(
-		Resolver|array|string $resolver,
+		Contract\Resolver|array|string $resolver,
 		array $defaults = [],
 		array $whitelist = [],
 	): self {
@@ -59,7 +57,7 @@ final class Engine
 	 * @psalm-param list<class-string> $whitelist
 	 */
 	public static function unescaped(
-		Resolver|array|string $resolver,
+		Contract\Resolver|array|string $resolver,
 		array $defaults = [],
 		array $whitelist = [],
 	): self {
@@ -100,7 +98,7 @@ final class Engine
 		return $this;
 	}
 
-	public function setResolver(Resolver $resolver): static
+	public function setResolver(Contract\Resolver $resolver): static
 	{
 		$this->resolver = $resolver;
 
@@ -208,12 +206,12 @@ final class Engine
 	}
 
 	/** @psalm-param ResolverInput $resolver */
-	private static function prepareResolver(Resolver|array|string $resolver): Resolver
+	private static function prepareResolver(Contract\Resolver|array|string $resolver): Contract\Resolver
 	{
-		if ($resolver instanceof Resolver) {
+		if ($resolver instanceof Contract\Resolver) {
 			return $resolver;
 		}
 
-		return new Filesystem($resolver);
+		return new Resolver($resolver);
 	}
 }

@@ -56,7 +56,7 @@ Read [rendering templates](rendering.md) for the lookup rules.
 ## Customize template lookup
 
 Boiler resolves template names through `Duon\Boiler\Contract\Resolver`.
-`Engine::create()` uses `Duon\Boiler\Resolver\Filesystem` by default.
+`Engine::create()` uses `Duon\Boiler\Resolver` by default.
 
 Set a custom resolver when your application needs different lookup rules:
 
@@ -79,7 +79,7 @@ $engine = Engine::create('/path/to/templates')
 ```
 
 `setResolver()` replaces the active resolver immediately, so subsequent renders use the newly configured lookup strategy.
-Lookup caching is resolver-specific. `Resolver\Filesystem` caches successful resolutions.
+Lookup caching is resolver-specific. `Resolver` caches successful resolutions.
 
 ## Add default values
 

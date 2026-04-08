@@ -6,13 +6,13 @@ namespace Duon\Boiler\Tests;
 
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Resolver\Filesystem;
+use Duon\Boiler\Resolver;
 
-final class ResolverFilesystemTest extends TestCase
+final class ResolverTest extends TestCase
 {
 	public function testResolvesTemplateFromFirstMatchingDirectory(): void
 	{
-		$resolver = new Filesystem($this->templates($this->additional()));
+		$resolver = new Resolver($this->templates($this->additional()));
 
 		$this->assertStringEndsWith(
 			'tests/templates/default/simple.php',
@@ -22,7 +22,7 @@ final class ResolverFilesystemTest extends TestCase
 
 	public function testCachesResolvedTemplatePath(): void
 	{
-		$resolver = new Filesystem($this->templates());
+		$resolver = new Resolver($this->templates());
 
 		$resolved = $resolver->resolve('simple');
 		$this->assertSame($resolved, $resolver->resolve('simple'));
@@ -37,7 +37,7 @@ final class ResolverFilesystemTest extends TestCase
 
 	public function testResolvesNamespacedTemplate(): void
 	{
-		$resolver = new Filesystem($this->namespaced($this->additional()));
+		$resolver = new Resolver($this->namespaced($this->additional()));
 
 		$this->assertStringEndsWith(
 			'tests/templates/default/sub/home.php',
@@ -49,7 +49,7 @@ final class ResolverFilesystemTest extends TestCase
 	{
 		$this->throws(UnexpectedValueException::class, 'invalid or empty');
 
-		$resolver = new Filesystem($this->templates());
+		$resolver = new Resolver($this->templates());
 		$resolver->resolve("\0");
 	}
 
@@ -57,7 +57,7 @@ final class ResolverFilesystemTest extends TestCase
 	{
 		$this->throws(LookupException::class, 'Invalid template format');
 
-		$resolver = new Filesystem($this->templates());
+		$resolver = new Resolver($this->templates());
 		$resolver->resolve('default:sub:index');
 	}
 
@@ -65,7 +65,7 @@ final class ResolverFilesystemTest extends TestCase
 	{
 		$this->throws(LookupException::class, 'Template namespace');
 
-		$resolver = new Filesystem($this->namespaced());
+		$resolver = new Resolver($this->namespaced());
 		$resolver->resolve('missing:sub/home');
 	}
 
@@ -73,7 +73,7 @@ final class ResolverFilesystemTest extends TestCase
 	{
 		$this->throws(LookupException::class, 'outside');
 
-		$resolver = new Filesystem($this->templates());
+		$resolver = new Resolver($this->templates());
 		$resolver->resolve('../unreachable');
 	}
 }
