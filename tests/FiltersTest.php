@@ -118,10 +118,46 @@ final class FiltersTest extends TestCase
 
 	public function testRejectsEmptyFilterName(): void
 	{
-		$this->throws(UnexpectedValueException::class, 'Filter name must be a non-empty string');
+		$this->throws(UnexpectedValueException::class, 'not a valid PHP method name');
 
 		$filters = new Filters();
 		$filters->register('', new class implements Contract\Filter {
+			public function apply(string $value, mixed ...$args): string
+			{
+				return $value;
+			}
+
+			public function safe(): bool
+			{
+				return false;
+			}
+		});
+	}
+
+	public function testRejectsInvalidFilterName(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'not a valid PHP method name');
+
+		$filters = new Filters();
+		$filters->register('no-dashes', new class implements Contract\Filter {
+			public function apply(string $value, mixed ...$args): string
+			{
+				return $value;
+			}
+
+			public function safe(): bool
+			{
+				return false;
+			}
+		});
+	}
+
+	public function testRejectsNumericLeadingFilterName(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'not a valid PHP method name');
+
+		$filters = new Filters();
+		$filters->register('1abc', new class implements Contract\Filter {
 			public function apply(string $value, mixed ...$args): string
 			{
 				return $value;

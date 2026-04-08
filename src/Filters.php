@@ -50,8 +50,10 @@ final class Filters implements Contract\RegistersFilters
 	/** @psalm-assert non-empty-string $name */
 	private static function assertName(string $name): void
 	{
-		if ($name === '') {
-			throw new UnexpectedValueException('Filter name must be a non-empty string');
+		if (!preg_match('/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$/', $name)) {
+			throw new UnexpectedValueException(
+				"Filter name `{$name}` is not a valid PHP method name",
+			);
 		}
 	}
 
@@ -66,7 +68,7 @@ final class Filters implements Contract\RegistersFilters
 
 		foreach ($filters as $name => $filter) {
 			if (!is_string($name)) {
-				throw new UnexpectedValueException('Filter name must be a non-empty string');
+				throw new UnexpectedValueException('Filter name must be a string');
 			}
 
 			self::assertName($name);
