@@ -675,6 +675,21 @@ final class EngineTest extends TestCase
 		$this->assertSame(1, $resolverTwo->calls);
 	}
 
+	public function testEngineIsFinal(): void
+	{
+		$this->assertTrue(new \ReflectionClass(Engine::class)->isFinal());
+	}
+
+	public function testTemplateIsFinal(): void
+	{
+		$this->assertTrue(new \ReflectionClass(Template::class)->isFinal());
+	}
+
+	public function testTemplateContextIsFinal(): void
+	{
+		$this->assertTrue(new \ReflectionClass(TemplateContext::class)->isFinal());
+	}
+
 	#[TestDox('Config error wrong template format I')]
 	public function testConfigErrorWrongTemplateFormatI(): void
 	{

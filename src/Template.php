@@ -7,7 +7,7 @@ namespace Duon\Boiler;
 use Override;
 
 /** @api */
-class Template extends BaseTemplate
+final class Template extends BaseTemplate
 {
 	/** @psalm-param non-empty-string $name */
 	public function method(string $name, callable $callable): static
