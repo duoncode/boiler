@@ -1014,6 +1014,42 @@ final class EngineTest extends TestCase
 			->setFilters(new \Duon\Boiler\Filters());
 	}
 
+	public function testSetEscapersRejectsConfiguredWrapper(): void
+	{
+		$this->throws(RuntimeException::class, 'Cannot set escapers after wrapper is configured');
+
+		Engine::create($this->templates())
+			->setWrapper(new Wrapper())
+			->setEscapers(new Escapers());
+	}
+
+	public function testSetWrapperRejectsSecondConfiguration(): void
+	{
+		$this->throws(RuntimeException::class, 'Wrapper is already configured');
+
+		Engine::create($this->templates())
+			->setWrapper(new Wrapper())
+			->setWrapper(new Wrapper());
+	}
+
+	public function testSetFiltersRejectsSecondConfiguration(): void
+	{
+		$this->throws(RuntimeException::class, 'Filters are already configured');
+
+		Engine::create($this->templates())
+			->setFilters(new \Duon\Boiler\Filters())
+			->setFilters(new \Duon\Boiler\Filters());
+	}
+
+	public function testSetEscapersRejectsSecondConfiguration(): void
+	{
+		$this->throws(RuntimeException::class, 'Escapers are already configured');
+
+		Engine::create($this->templates())
+			->setEscapers(new Escapers())
+			->setEscapers(new Escapers());
+	}
+
 	public function testConfigurationIsSealedAfterWrapperIsMaterialized(): void
 	{
 		$this->throws(RuntimeException::class, 'Engine configuration is sealed');

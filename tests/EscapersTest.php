@@ -84,4 +84,40 @@ final class EscapersTest extends TestCase
 
 		new Escapers(default: 'xml');
 	}
+
+	public function testRejectsEmptyEscaperNameOnRegister(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'Escaper name must be a non-empty string');
+
+		$escapers = new Escapers();
+		$escapers->register('', new class implements Contract\Escaper {
+			public function escape(string $value): string
+			{
+				return $value;
+			}
+		});
+	}
+
+	public function testRejectsNonStringEscaperNameInConstructor(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'Escaper name must be a non-empty string');
+
+		new Escapers([
+			13 => new class implements Contract\Escaper {
+				public function escape(string $value): string
+				{
+					return $value;
+				}
+			},
+		]);
+	}
+
+	public function testRejectsEscaperWithoutContractInConstructor(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'must implement');
+
+		new Escapers([
+			'bad' => new class {},
+		]);
+	}
 }

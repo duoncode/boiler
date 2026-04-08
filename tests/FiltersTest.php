@@ -189,4 +189,32 @@ final class FiltersTest extends TestCase
 
 		$this->assertSame('Hel', $filters->get('truncate')->apply('Hello World', 3));
 	}
+
+	public function testRejectsNonStringFilterNameInConstructor(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'Filter name must be a string');
+
+		new Filters([
+			13 => new class implements Contract\Filter {
+				public function apply(string $value, mixed ...$args): string
+				{
+					return $value;
+				}
+
+				public function safe(): bool
+				{
+					return false;
+				}
+			},
+		]);
+	}
+
+	public function testRejectsFilterWithoutContractInConstructor(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'must implement');
+
+		new Filters([
+			'bad' => new class {},
+		]);
+	}
 }
