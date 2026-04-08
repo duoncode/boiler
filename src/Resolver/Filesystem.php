@@ -8,6 +8,7 @@ use Duon\Boiler\Contract\Resolver;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\TemplatePath;
+use Override;
 
 final class Filesystem implements Resolver
 {
@@ -17,6 +18,7 @@ final class Filesystem implements Resolver
 	) {}
 
 	/** @psalm-return non-empty-string */
+	#[Override]
 	public function resolve(string $path): string
 	{
 		if (!preg_match('/^[\w\.\/:_-]+$/u', $path)) {

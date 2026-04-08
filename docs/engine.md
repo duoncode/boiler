@@ -53,6 +53,33 @@ $engine->render('second:page');
 
 Read [rendering templates](rendering.md) for the lookup rules.
 
+## Customize template lookup
+
+Boiler resolves template names through `Duon\Boiler\Contract\Resolver`.
+`Engine::create()` uses `Duon\Boiler\Resolver\Filesystem` by default.
+
+Set a custom resolver when your application needs different lookup rules:
+
+```php
+use Duon\Boiler\Contract\Resolver;
+use Duon\Boiler\Engine;
+use Duon\Boiler\Exception\LookupException;
+
+$engine = Engine::create('/path/to/templates')
+    ->setResolver(new class implements Resolver {
+        public function resolve(string $path): string
+        {
+            if ($path === 'home') {
+                return '/srv/app/theme/home.php';
+            }
+
+            throw new LookupException("Template `{$path}` not found");
+        }
+    });
+```
+
+`setResolver()` clears Engine's path cache immediately so the new resolver is used for subsequent renders.
+
 ## Add default values
 
 Pass defaults as the second argument when values should be available in every render:
@@ -294,7 +321,7 @@ if ($engine->exists('template')) {
 ### Get the resolved file path for a template
 
 ```php
-$filePath = $engine->getFile('template');
+$filePath = $engine->resolve('template');
 ```
 
 ### Get a reusable `Template` instance

@@ -128,6 +128,24 @@ You can expect `LookupException` for invalid lookup-related input, including:
 
 You can expect `UnexpectedValueException` when the template path itself is empty or contains invalid characters.
 
+## Custom resolvers
+
+If you need custom lookup behavior (for example tenant-based themes or non-standard naming rules), set a custom resolver on the engine:
+
+```php
+use Duon\Boiler\Contract\Resolver;
+use Duon\Boiler\Exception\LookupException;
+
+$engine->setResolver(new class implements Resolver {
+    public function resolve(string $path): string
+    {
+        throw new LookupException("Template `{$path}` not found");
+    }
+});
+```
+
+Boiler still calls your templates the same way (`render()`, `layout()`, `insert()`), but path lookup is delegated to the configured resolver.
+
 ## Escape mode per render
 
 Use the engine default with `render()`:
