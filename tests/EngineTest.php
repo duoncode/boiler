@@ -623,7 +623,7 @@ final class EngineTest extends TestCase
 		$this->assertSame($engine, $engine->setResolver($resolver));
 	}
 
-	public function testSetResolverClearsPathCache(): void
+	public function testSetResolverReplacesResolver(): void
 	{
 		$resolverOne = new class(TestCase::DEFAULT_DIR . '/simple.php') implements
 			\Duon\Boiler\Contract\Resolver {
@@ -675,7 +675,7 @@ final class EngineTest extends TestCase
 		$this->assertSame(1, $resolverOne->calls);
 
 		$engine->resolve('simple');
-		$this->assertSame(1, $resolverOne->calls);
+		$this->assertSame(2, $resolverOne->calls);
 
 		$engine->setResolver($resolverTwo);
 
@@ -684,6 +684,9 @@ final class EngineTest extends TestCase
 			$this->fullTrim($engine->render('simple', ['text' => 'second'])),
 		);
 		$this->assertSame(1, $resolverTwo->calls);
+
+		$engine->resolve('simple');
+		$this->assertSame(2, $resolverTwo->calls);
 	}
 
 	public function testEngineIsFinal(): void

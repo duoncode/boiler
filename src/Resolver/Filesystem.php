@@ -18,6 +18,8 @@ final class Filesystem implements Resolver
 {
 	/** @psalm-var Dirs */
 	private readonly array $dirs;
+	/** @psalm-var array<string, non-empty-string> */
+	private array $pathCache = [];
 
 	/** @psalm-param DirsInput $dirs */
 	public function __construct(
@@ -30,6 +32,10 @@ final class Filesystem implements Resolver
 	#[Override]
 	public function resolve(string $path): string
 	{
+		if (isset($this->pathCache[$path])) {
+			return $this->pathCache[$path];
+		}
+
 		if (!preg_match('/^[\w\.\/:_-]+$/u', $path)) {
 			throw new UnexpectedValueException('The template path is invalid or empty');
 		}
@@ -41,7 +47,7 @@ final class Filesystem implements Resolver
 			throw new LookupException($templatePath->error());
 		}
 
-		return $templatePath->path();
+		return $this->pathCache[$path] = $templatePath->path();
 	}
 
 	/** @return list{null|non-empty-string, non-empty-string} */
