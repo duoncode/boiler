@@ -19,7 +19,6 @@
 - Added `Escapers` as the default escaper registry implementation.
 - Added lazy engine-owned wrapper composition with `setWrapper()`, `setFilters()`, and `setEscapers()`.
 - Added `Engine::escape()` and `Engine::filter()` for registering custom escapers and filters on engine-managed registries.
-- Added `Engine::setResolver()` to replace template path resolution behavior.
 - Added the built-in `strip` filter and the optional `sanitize` filter when `symfony/html-sanitizer` is installed.
 - Added a Composer suggestion for `symfony/html-sanitizer` to enable the built-in `sanitize` filter.
 

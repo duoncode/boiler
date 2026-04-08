@@ -58,27 +58,26 @@ Read [rendering templates](rendering.md) for the lookup rules.
 Boiler resolves template names through `Duon\Boiler\Contract\Resolver`.
 `Engine::create()` uses `Duon\Boiler\Resolver` by default.
 
-Set a custom resolver when your application needs different lookup rules:
+Pass a custom resolver to `Engine::create()` when your application needs different lookup rules:
 
 ```php
 use Duon\Boiler\Contract\Resolver;
 use Duon\Boiler\Engine;
 use Duon\Boiler\Exception\LookupException;
 
-$engine = Engine::create('/path/to/templates')
-    ->setResolver(new class implements Resolver {
-        public function resolve(string $path): string
-        {
-            if ($path === 'home') {
-                return '/srv/app/theme/home.php';
-            }
-
-            throw new LookupException("Template `{$path}` not found");
+$engine = Engine::create(new class implements Resolver {
+    public function resolve(string $path): string
+    {
+        if ($path === 'home') {
+            return '/srv/app/theme/home.php';
         }
-    });
+
+        throw new LookupException("Template `{$path}` not found");
+    }
+});
 ```
 
-`setResolver()` replaces the active resolver immediately, so subsequent renders use the newly configured lookup strategy.
+Resolver selection happens at engine construction time.
 Lookup caching is resolver-specific. `Resolver` caches successful resolutions.
 
 ## Add default values

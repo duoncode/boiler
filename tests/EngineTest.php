@@ -609,23 +609,9 @@ final class EngineTest extends TestCase
 		);
 	}
 
-	public function testSetResolverIsFluent(): void
+	public function testCreateAcceptsCustomResolver(): void
 	{
-		$resolver = new class implements \Duon\Boiler\Contract\Resolver {
-			public function resolve(string $path): string
-			{
-				throw new LookupException('No templates configured');
-			}
-		};
-
-		$engine = Engine::create($this->templates());
-
-		$this->assertSame($engine, $engine->setResolver($resolver));
-	}
-
-	public function testSetResolverReplacesResolver(): void
-	{
-		$resolverOne = new class(TestCase::DEFAULT_DIR . '/simple.php') implements
+		$resolver = new class(TestCase::DEFAULT_DIR . '/simple.php') implements
 			\Duon\Boiler\Contract\Resolver {
 			public int $calls = 0;
 
@@ -645,48 +631,16 @@ final class EngineTest extends TestCase
 			}
 		};
 
-		$resolverTwo = new class(TestCase::ROOT_DIR . '/additional/additional.php') implements
-			\Duon\Boiler\Contract\Resolver {
-			public int $calls = 0;
-
-			public function __construct(
-				private readonly string $resolved,
-			) {}
-
-			public function resolve(string $path): string
-			{
-				$this->calls++;
-
-				if ($path !== 'simple') {
-					throw new LookupException("Template `{$path}` not found");
-				}
-
-				return $this->resolved;
-			}
-		};
-
-		$engine = Engine::create($this->templates(), ['obj' => $this->obj()])
-			->setResolver($resolverOne);
+		$engine = Engine::create($resolver, ['obj' => $this->obj()]);
 
 		$this->assertSame(
 			'<h1>boiler</h1><p>first</p>',
 			$this->fullTrim($engine->render('simple', ['text' => 'first'])),
 		);
-		$this->assertSame(1, $resolverOne->calls);
+		$this->assertSame(1, $resolver->calls);
 
 		$engine->resolve('simple');
-		$this->assertSame(2, $resolverOne->calls);
-
-		$engine->setResolver($resolverTwo);
-
-		$this->assertSame(
-			'<span>second</span>',
-			$this->fullTrim($engine->render('simple', ['text' => 'second'])),
-		);
-		$this->assertSame(1, $resolverTwo->calls);
-
-		$engine->resolve('simple');
-		$this->assertSame(2, $resolverTwo->calls);
+		$this->assertSame(2, $resolver->calls);
 	}
 
 	public function testEngineIsFinal(): void

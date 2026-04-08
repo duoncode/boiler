@@ -17,7 +17,7 @@ final class Engine
 {
 	private readonly Environment $environment;
 	private Methods $methods;
-	private Contract\Resolver $resolver;
+	private readonly Contract\Resolver $resolver;
 
 	public private(set) bool $autoescape {
 		get => $this->autoescape;
@@ -94,13 +94,6 @@ final class Engine
 	public function setEscapers(Contract\Escapers $escapers): static
 	{
 		$this->environment->setEscapers($escapers);
-
-		return $this;
-	}
-
-	public function setResolver(Contract\Resolver $resolver): static
-	{
-		$this->resolver = $resolver;
 
 		return $this;
 	}
