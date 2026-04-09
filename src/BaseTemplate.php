@@ -40,7 +40,7 @@ abstract class BaseTemplate
 				throw new LookupException('No directory given or empty path');
 			}
 
-			$this->engine = new Engine(new Resolver($dir), true);
+			$this->engine = new Engine(new Resolver($dir), new Environment(), true);
 
 			if (!is_file($path)) {
 				throw new LookupException('Template not found: ' . $path);

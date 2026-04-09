@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\LookupException;
-use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 
 /**
@@ -15,9 +14,9 @@ use Duon\Boiler\Exception\UnexpectedValueException;
  */
 final class Engine
 {
-	private readonly Environment $environment;
-	private Methods $methods;
+	private readonly Contract\Environment $environment;
 	private readonly Contract\Resolver $resolver;
+	private Methods $methods;
 
 	/**
 	 * @psalm-param list<class-string> $trusted
@@ -25,12 +24,13 @@ final class Engine
 	 */
 	public function __construct(
 		Contract\Resolver $resolver,
+		Contract\Environment $environment,
 		public readonly bool $autoescape,
 		private readonly array $defaults = [],
 		private readonly array $trusted = [],
 	) {
 		$this->resolver = $resolver;
-		$this->environment = new Environment();
+		$this->environment = $environment;
 		$this->methods = new Methods();
 	}
 
@@ -43,7 +43,7 @@ final class Engine
 		array $defaults = [],
 		array $trusted = [],
 	): self {
-		return new self(self::prepareResolver($resolver), true, $defaults, $trusted);
+		return new self(self::prepareResolver($resolver), new Environment(), true, $defaults, $trusted);
 	}
 
 	/**
@@ -55,7 +55,7 @@ final class Engine
 		array $defaults = [],
 		array $trusted = [],
 	): self {
-		return new self(self::prepareResolver($resolver), false, $defaults, $trusted);
+		return new self(self::prepareResolver($resolver), new Environment(), false, $defaults, $trusted);
 	}
 
 	/** @psalm-param non-empty-string $name */
@@ -71,49 +71,16 @@ final class Engine
 		return $this->environment->wrapper();
 	}
 
-	public function setWrapper(Contract\Wrapper $wrapper): static
-	{
-		$this->environment->setWrapper($wrapper);
-
-		return $this;
-	}
-
-	public function setFilters(Contract\Filters $filters): static
-	{
-		$this->environment->setFilters($filters);
-
-		return $this;
-	}
-
-	public function setEscapers(Contract\Escapers $escapers): static
-	{
-		$this->environment->setEscapers($escapers);
-
-		return $this;
-	}
-
 	public function escape(string $name, Contract\Escaper $with): static
 	{
-		$escapers = $this->environment->escapers();
-
-		if (!$escapers instanceof Contract\RegistersEscapers) {
-			throw new RuntimeException('Configured escapers registry does not support escaper registration');
-		}
-
-		$escapers->register($name, $with);
+		$this->environment->registerEscaper($name, $with);
 
 		return $this;
 	}
 
 	public function filter(string $name, Contract\Filter $with): static
 	{
-		$filters = $this->environment->filters();
-
-		if (!$filters instanceof Contract\RegistersFilters) {
-			throw new RuntimeException('Configured filters registry does not support filter registration');
-		}
-
-		$filters->register($name, $with);
+		$this->environment->registerFilter($name, $with);
 
 		return $this;
 	}
