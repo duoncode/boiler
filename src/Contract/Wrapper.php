@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Contract;
 
+use Stringable;
+
 /** @api */
 interface Wrapper
 {
@@ -12,7 +14,7 @@ interface Wrapper
 	public function unwrap(mixed $value): mixed;
 
 	public function escape(
-		mixed $value,
+		string|Stringable $value,
 		?string $escaper = null,
 	): string;
 

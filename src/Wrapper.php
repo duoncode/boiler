@@ -18,14 +18,18 @@ use Traversable;
 /** @api */
 final class Wrapper implements Contract\Wrapper
 {
-	private ?Contract\Escapers $escapers;
+	private readonly Contract\Escapers $escapers;
 	private ?Contract\Filters $filters;
+	private readonly Contract\Escaper $defaultEscaper;
+	private readonly bool $isBuiltinEscaper;
 
 	public function __construct(
 		?Contract\Escapers $escapers = null,
 		?Contract\Filters $filters = null,
 	) {
-		$this->escapers = $escapers;
+		$this->escapers = $escapers ?? new Escapers();
+		$this->defaultEscaper = $this->escapers->get($this->escapers->default);
+		$this->isBuiltinEscaper = $escapers === null;
 		$this->filters = $filters;
 	}
 
@@ -81,41 +85,32 @@ final class Wrapper implements Contract\Wrapper
 
 	#[Override]
 	public function escape(
-		mixed $value,
+		string|Stringable $value,
 		?string $escaper = null,
 	): string {
-		if ($value instanceof Proxy) {
-			/** @psalm-suppress MixedAssignment unwrap returns mixed by design */
-			$value = $value->unwrap();
+		$input = $value instanceof Proxy
+			? $value->unwrap()
+			: $value;
+
+		if (!is_string($input) && !$input instanceof Stringable) {
+			throw new RuntimeException('Value cannot be escaped as string');
 		}
 
-		if (is_string($value)) {
-			return $this->escapeString($value, $escaper);
+		$text = (string) $input;
+
+		if ($escaper === null) {
+			return $this->isBuiltinEscaper
+				? htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+				: $this->defaultEscaper->escape($text);
 		}
 
-		if ($value instanceof Stringable) {
-			return $this->escapeString((string) $value, $escaper);
-		}
-
-		throw new RuntimeException('Value cannot be escaped as string');
+		return $this->escapers->get($escaper)->escape($text);
 	}
 
 	#[Override]
 	public function filter(string $name): Contract\Filter
 	{
 		return $this->filters()->get($name);
-	}
-
-	private function escapeString(string $value, ?string $escaper = null): string
-	{
-		$escapers = $this->escapers();
-
-		return $escapers->get($escaper ?? $escapers->default)->escape($value);
-	}
-
-	private function escapers(): Contract\Escapers
-	{
-		return $this->escapers ??= new Escapers();
 	}
 
 	private function filters(): Contract\Filters
