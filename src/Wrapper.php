@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
+use Duon\Boiler\Escaper\Html;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
@@ -19,6 +20,7 @@ final class Wrapper implements Contract\Wrapper
 	private readonly Contract\Escapers $escapers;
 	private ?Contract\Filters $filters;
 	private readonly Contract\Escaper $defaultEscaper;
+	private readonly bool $isBuiltinEscaper;
 
 	public function __construct(
 		?Contract\Escapers $escapers = null,
@@ -26,6 +28,7 @@ final class Wrapper implements Contract\Wrapper
 	) {
 		$this->escapers = $escapers ?? new Escapers();
 		$this->defaultEscaper = $this->escapers->get($this->escapers->default);
+		$this->isBuiltinEscaper = $this->defaultEscaper instanceof Html;
 		$this->filters = $filters;
 	}
 
@@ -85,7 +88,9 @@ final class Wrapper implements Contract\Wrapper
 		?string $escaper = null,
 	): string {
 		if ($escaper === null) {
-			return $this->defaultEscaper->escape($value);
+			return $this->isBuiltinEscaper
+				? htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+				: $this->defaultEscaper->escape($value);
 		}
 
 		return $this->escapers->get($escaper)->escape($value);
