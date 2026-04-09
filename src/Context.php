@@ -16,6 +16,7 @@ abstract class Context
 	/** @var array<array-key, mixed>|null */
 	private ?array $wrappedContext = null;
 	protected readonly Wrapper $wrapper;
+	private readonly bool $hasTrusted;
 
 	/**
 	 * @psalm-param list<class-string> $trusted
@@ -27,6 +28,7 @@ abstract class Context
 		public readonly bool $autoescape,
 	) {
 		$this->wrapper = $template->engine->wrapper();
+		$this->hasTrusted = $trusted !== [];
 	}
 
 	public function __call(string $name, array $args): mixed
@@ -71,7 +73,7 @@ abstract class Context
 				continue;
 			}
 
-			if (is_object($value)) {
+			if ($this->hasTrusted && is_object($value)) {
 				foreach ($this->trusted as $trustedClass) {
 					if (!$value instanceof $trustedClass) {
 						continue;

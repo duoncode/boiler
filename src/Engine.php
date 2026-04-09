@@ -17,6 +17,7 @@ final class Engine
 	private readonly Contract\Environment $environment;
 	private readonly Contract\Resolver $resolver;
 	private Methods $methods;
+	private ?Contract\Wrapper $wrapper = null;
 
 	/**
 	 * @psalm-param list<class-string> $trusted
@@ -68,7 +69,7 @@ final class Engine
 
 	public function wrapper(): Contract\Wrapper
 	{
-		return $this->environment->wrapper();
+		return $this->wrapper ??= $this->environment->wrapper();
 	}
 
 	public function escape(string $name, Contract\Escaper $with): static
@@ -125,8 +126,6 @@ final class Engine
 		array $context,
 		bool $autoescape,
 	): string {
-		$this->environment->wrapper();
-
 		$template = $this->template($path);
 		$context = $this->defaults === []
 			? $context
