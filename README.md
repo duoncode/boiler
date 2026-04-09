@@ -174,6 +174,8 @@ Boiler includes a canonical benchmark in [`bench/`](bench/) that renders a featu
 
 The benchmark is meant to resemble a realistic steady-state page render and is used mainly to catch performance regressions during development.
 
+Run the benchmark with Xdebug disabled. Xdebug adds substantial runtime overhead, especially for Boiler's proxy-based auto escaping, so results with Xdebug enabled are not useful for fair engine comparisons. `composer benchmark` already runs it with `xdebug.mode=off`.
+
 Results depend on PHP version, OPcache settings, hardware, and workload shape. They do not represent every rendering scenario and should not be treated as universal rankings. If you want to evaluate Boiler for your environment, run the benchmark locally and compare it with your own templates.
 
 ## Run the tests

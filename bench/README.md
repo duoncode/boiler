@@ -52,6 +52,11 @@ Keep these limits in mind:
 
 You can run the benchmark from the repository root or from inside `bench/`.
 
+Run the benchmark with Xdebug disabled. Xdebug adds substantial runtime
+overhead, especially for Boiler's proxy-based auto escaping, so results with
+Xdebug enabled are not useful for fair engine comparisons. `composer
+benchmark` already runs it with `xdebug.mode=off`.
+
 ### From the repository root
 
 ```bash
@@ -75,23 +80,23 @@ composer benchmark
 3. Run the benchmark with the default settings:
 
    ```bash
-   php run.php
+   php -d xdebug.mode=off run.php
    ```
 
 4. Override the default run count and iteration count when you want a slower or
    deeper run:
 
    ```bash
-   php run.php --runs=10000 --iterations=5
+   php -d xdebug.mode=off run.php --runs=10000 --iterations=5
    ```
 
 5. Choose a lifecycle mode when you want to compare a reused engine with a
    freshly created engine per render:
 
    ```bash
-   php run.php --lifecycle=worker
-   php run.php --lifecycle=request
-   php run.php --lifecycle=both
+   php -d xdebug.mode=off run.php --lifecycle=worker
+   php -d xdebug.mode=off run.php --lifecycle=request
+   php -d xdebug.mode=off run.php --lifecycle=both
    ```
 
 ## Defaults
