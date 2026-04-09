@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\RuntimeException;
+use Override;
 
-final class Environment
+/** @api */
+final class Environment implements Contract\Environment
 {
 	private ?Contract\Wrapper $wrapper = null;
 	private ?Contract\Filters $filters = null;
@@ -58,6 +60,7 @@ final class Environment
 		$this->escapers = $escapers;
 	}
 
+	#[Override]
 	public function wrapper(): Contract\Wrapper
 	{
 		$this->sealed = true;
@@ -65,12 +68,48 @@ final class Environment
 		return $this->wrapper ??= new Wrapper($this->escapers(), $this->filters());
 	}
 
-	public function filters(): Contract\Filters
+	#[Override]
+	public function registerFilter(string $name, Contract\Filter $filter): void
+	{
+		$this->assertNotSealed();
+
+		if ($this->wrapper !== null) {
+			throw new RuntimeException('Cannot register filter after wrapper is configured');
+		}
+
+		$filters = $this->filters();
+
+		if (!$filters instanceof Contract\RegistersFilters) {
+			throw new RuntimeException('Configured filters registry does not support filter registration');
+		}
+
+		$filters->register($name, $filter);
+	}
+
+	#[Override]
+	public function registerEscaper(string $name, Contract\Escaper $escaper): void
+	{
+		$this->assertNotSealed();
+
+		if ($this->wrapper !== null) {
+			throw new RuntimeException('Cannot register escaper after wrapper is configured');
+		}
+
+		$escapers = $this->escapers();
+
+		if (!$escapers instanceof Contract\RegistersEscapers) {
+			throw new RuntimeException('Configured escapers registry does not support escaper registration');
+		}
+
+		$escapers->register($name, $escaper);
+	}
+
+	private function filters(): Contract\Filters
 	{
 		return $this->filters ??= new Filters();
 	}
 
-	public function escapers(): Contract\Escapers
+	private function escapers(): Contract\Escapers
 	{
 		return $this->escapers ??= new Escapers();
 	}
