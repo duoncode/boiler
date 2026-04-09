@@ -33,7 +33,7 @@ final class ObjectProxy implements Proxy
 			throw new RuntimeException('Wrapped object is not stringable');
 		}
 
-		return $this->wrapper->escape($this->value);
+		return $this->wrapper->escape((string) $this->value);
 	}
 
 	public function __get(string $name): mixed

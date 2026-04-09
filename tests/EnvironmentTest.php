@@ -162,9 +162,9 @@ final class EnvironmentTest extends TestCase
 				return $value;
 			}
 
-			public function escape(mixed $value, ?string $escaper = null): string
+			public function escape(string $value, ?string $escaper = null): string
 			{
-				return (string) $value;
+				return $value;
 			}
 
 			public function filter(string $name): Filter

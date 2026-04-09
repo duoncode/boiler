@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Duon\Boiler;
 
 use Duon\Boiler\Contract\Wrapper;
+use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\Proxy;
 use Duon\Boiler\Proxy\StringProxy;
@@ -109,7 +110,19 @@ abstract class Context
 		StringProxy|ObjectProxy|string|Stringable $value,
 		?string $escaper = null,
 	): string {
-		return $this->wrapper->escape($value, $escaper);
+		if ($value instanceof StringProxy) {
+			return $this->wrapper->escape($value->unwrap(), $escaper);
+		}
+
+		if ($value instanceof ObjectProxy) {
+			$value = $value->unwrap();
+
+			if (!$value instanceof Stringable) {
+				throw new RuntimeException('Value cannot be escaped as string');
+			}
+		}
+
+		return $this->wrapper->escape((string) $value, $escaper);
 	}
 
 	public function wrap(mixed $value): mixed

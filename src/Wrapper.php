@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Proxy\ArrayProxy;
 use Duon\Boiler\Proxy\IteratorProxy;
@@ -12,7 +11,6 @@ use Duon\Boiler\Proxy\ObjectProxy;
 use Duon\Boiler\Proxy\Proxy;
 use Duon\Boiler\Proxy\StringProxy;
 use Override;
-use Stringable;
 use Traversable;
 
 /** @api */
@@ -21,7 +19,6 @@ final class Wrapper implements Contract\Wrapper
 	private readonly Contract\Escapers $escapers;
 	private ?Contract\Filters $filters;
 	private readonly Contract\Escaper $defaultEscaper;
-	private readonly bool $isBuiltinEscaper;
 
 	public function __construct(
 		?Contract\Escapers $escapers = null,
@@ -29,7 +26,6 @@ final class Wrapper implements Contract\Wrapper
 	) {
 		$this->escapers = $escapers ?? new Escapers();
 		$this->defaultEscaper = $this->escapers->get($this->escapers->default);
-		$this->isBuiltinEscaper = $escapers === null;
 		$this->filters = $filters;
 	}
 
@@ -85,26 +81,14 @@ final class Wrapper implements Contract\Wrapper
 
 	#[Override]
 	public function escape(
-		string|Stringable $value,
+		string $value,
 		?string $escaper = null,
 	): string {
-		$input = $value instanceof Proxy
-			? $value->unwrap()
-			: $value;
-
-		if (!is_string($input) && !$input instanceof Stringable) {
-			throw new RuntimeException('Value cannot be escaped as string');
-		}
-
-		$text = (string) $input;
-
 		if ($escaper === null) {
-			return $this->isBuiltinEscaper
-				? htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
-				: $this->defaultEscaper->escape($text);
+			return $this->defaultEscaper->escape($value);
 		}
 
-		return $this->escapers->get($escaper)->escape($text);
+		return $this->escapers->get($escaper)->escape($value);
 	}
 
 	#[Override]

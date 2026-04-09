@@ -48,7 +48,7 @@ final class StringProxy implements Proxy
 
 	public function escape(?string $escaper = null): string
 	{
-		return $this->wrapper->escape($this, $escaper);
+		return $this->wrapper->escape($this->value, $escaper);
 	}
 
 	#[Override]
