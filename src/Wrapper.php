@@ -18,15 +18,15 @@ use Traversable;
 /** @api */
 final class Wrapper implements Contract\Wrapper
 {
-	private readonly Contract\Escapers $escapers;
-	private readonly Contract\Filters $filters;
+	private ?Contract\Escapers $escapers;
+	private ?Contract\Filters $filters;
 
 	public function __construct(
 		?Contract\Escapers $escapers = null,
 		?Contract\Filters $filters = null,
 	) {
-		$this->escapers = $escapers ?? new Escapers();
-		$this->filters = $filters ?? new Filters();
+		$this->escapers = $escapers;
+		$this->filters = $filters;
 	}
 
 	#[Override]
@@ -103,11 +103,23 @@ final class Wrapper implements Contract\Wrapper
 	#[Override]
 	public function filter(string $name): Contract\Filter
 	{
-		return $this->filters->get($name);
+		return $this->filters()->get($name);
 	}
 
 	private function escapeString(string $value, ?string $escaper = null): string
 	{
-		return $this->escapers->get($escaper ?? $this->escapers->default)->escape($value);
+		$escapers = $this->escapers();
+
+		return $escapers->get($escaper ?? $escapers->default)->escape($value);
+	}
+
+	private function escapers(): Contract\Escapers
+	{
+		return $this->escapers ??= new Escapers();
+	}
+
+	private function filters(): Contract\Filters
+	{
+		return $this->filters ??= new Filters();
 	}
 }

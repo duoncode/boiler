@@ -65,7 +65,7 @@ final class Environment implements Contract\Environment
 	{
 		$this->sealed = true;
 
-		return $this->wrapper ??= new Wrapper($this->escapers(), $this->filters());
+		return $this->wrapper ??= new Wrapper($this->escapers, $this->filters);
 	}
 
 	#[Override]
