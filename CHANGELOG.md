@@ -5,35 +5,34 @@
 ### Breaking
 
 - Renamed the `Engine` and standalone `Template` API's `whitelist` argument to `trusted`. This breaks named argument calls such as `whitelist: [...]`, which must now use `trusted: [...]`.
-- `Engine`, `Template`, and `TemplateContext` are now final.
+- Renamed `Engine::registerMethod()` and standalone `Template::registerMethod()` to `method()`.
+- Changed `Engine::__construct()` to accept a `Contract\Resolver` instead of template directories. Use `Engine::create()` or `Engine::unescaped()` when you want to pass directory paths directly.
 - Renamed `Engine::getFile()` to `Engine::resolve()`.
-- Renamed `Context::esc()` to `Context::escape()`, so templates now call `$this->escape()` instead of `$this->esc()`.
-- Renamed `Context::context()` to `Context::get()`.
-- Replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escapers.
-- Renamed the `BaseTemplate` extension hook from `templateContext()` to `context()`.
+- Renamed `Context::esc()` to `Context::escape()` and `Context::context()` to `Context::get()`.
+- Changed `Wrapper` from a static helper into an instance-based API and replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escapers.
+- `symfony/html-sanitizer` is now optional. Install it explicitly when you want the built-in `sanitize` filter.
 
 ### Added
 
-- Added `Contract\Escaper`, `Contract\Escapers`, `Contract\RegistersEscapers`, `Contract\Filters`, `Contract\RegistersFilters`, `Contract\Wrapper`, and `Contract\Filter`.
-- Added `Contract\Resolver` and `Resolver` for template lookup.
-- Added `Context::wrap()` as an explicit way to opt into wrapper proxy behavior inside templates.
-- Added `Escapers` as the default escaper registry implementation.
-- Added lazy engine-owned wrapper composition with `setWrapper()`, `setFilters()`, and `setEscapers()`.
-- Added `Engine::escape()` and `Engine::filter()` for registering custom escapers and filters on engine-managed registries.
+- Added `Contract\Resolver` and `Resolver` for template lookup, and let the engine factories accept a custom resolver.
+- Added `Contract\Wrapper`, `Contract\Escaper`, `Contract\Escapers`, `Contract\Filter`, `Contract\Filters`, `Contract\RegistersEscapers`, and `Contract\RegistersFilters`, plus the default `Wrapper`, `Escapers`, and `Filters` implementations.
+- Added engine-managed wrapper configuration with `setWrapper()`, `setFilters()`, and `setEscapers()`.
+- Added `Engine::filter()` and `Engine::escape()` for registering custom filters and escapers. Wrapped strings can call registered filters as virtual methods.
+- Added `Context::wrap()` so templates can opt into wrapper proxy behavior for raw values.
 - Added the built-in `strip` filter and the optional `sanitize` filter when `symfony/html-sanitizer` is installed.
-- Added a Composer suggestion for `symfony/html-sanitizer` to enable the built-in `sanitize` filter.
 
-### Changed
+### Fixed
 
-- Changed `Engine::__construct()` to make `defaults` and `trusted` optional, matching `Engine::create()` and `Engine::unescaped()`.
-- Changed `Wrapper` from a static helper into an instance-based API that drives wrapping, unwrapping, escaping, and filter lookup.
-- Changed `StringProxy` to dispatch registered filters as virtual methods.
+- Made engine-registered custom methods available in inserted templates and layouts.
+- Hardened template path resolution to reject traversal outside configured roots, including sibling directories with shared prefixes.
+- Throw a render error for unclosed section capture blocks.
+- Unwrap wrapped proxy arguments before invoking object methods, setters, or `__invoke()`.
 
 ### Removed
 
-- Removed `Context::clean()` and the `Sanitizer` class; use `wrap($value)->sanitize()` / filter pipelines instead.
+- Removed `Context::clean()` and the `Sanitizer` class; use `wrap($value)->sanitize()` or other filter pipelines instead.
 - Removed `Contract\Engine`, `Contract\Template`, and `Contract\MethodRegister`.
-- Removed support for subclassing `Engine`, `Template`, and `TemplateContext`.
+- Removed support for subclassing `Engine`, `Template`, and `TemplateContext`; these classes are now final.
 
 ## [0.2.0](https://github.com/duonrun/boiler/releases/tag/0.2.0) (2026-03-25)
 

@@ -7,6 +7,7 @@ namespace Duon\Boiler\Tests;
 use Duon\Boiler\Contract\Escaper;
 use Duon\Boiler\Contract\Filter;
 use Duon\Boiler\Engine;
+use Duon\Boiler\Environment;
 use Duon\Boiler\Escapers;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
@@ -46,9 +47,9 @@ final class EngineTest extends TestCase
 		);
 	}
 
-	public function testConstructorAcceptsResolverWithoutDefaultsAndTrusted(): void
+	public function testConstructorAcceptsResolverAndEnvironmentWithoutDefaultsAndTrusted(): void
 	{
-		$engine = new Engine(new Resolver(TestCase::DEFAULT_DIR), true);
+		$engine = new Engine(new Resolver(TestCase::DEFAULT_DIR), new Environment(), true);
 
 		$this->assertSame(
 			'<h1>boiler</h1><p>rocks</p>',
@@ -59,17 +60,23 @@ final class EngineTest extends TestCase
 		);
 	}
 
-	public function testCustomWrapperEscaperIsUsedDuringRendering(): void
+	public function testCustomEnvironmentWrapperIsUsedDuringRendering(): void
 	{
-		$engine = Engine::create(TestCase::DEFAULT_DIR, ['obj' => $this->obj()])
-			->setWrapper(new Wrapper(new Escapers([
-				'html' => new class implements Escaper {
-					public function escape(string $value): string
-					{
-						return strtoupper(htmlspecialchars($value));
-					}
-				},
-			])));
+		$environment = new Environment();
+		$environment->setWrapper(new Wrapper(new Escapers([
+			'html' => new class implements Escaper {
+				public function escape(string $value): string
+				{
+					return strtoupper(htmlspecialchars($value));
+				}
+			},
+		])));
+		$engine = new Engine(
+			new Resolver(TestCase::DEFAULT_DIR),
+			$environment,
+			true,
+			['obj' => $this->obj()],
+		);
 
 		$this->assertSame(
 			'<h1>BOILER</h1><p>&LT;B&GT;ROCKS&LT;/B&GT;</p>',
@@ -907,165 +914,6 @@ final class EngineTest extends TestCase
 		});
 
 		$this->assertSame($engine, $result);
-	}
-
-	public function testRegisterEscaperRequiresEscapersRegistryWithRegistration(): void
-	{
-		$this->throws(
-			RuntimeException::class,
-			'Configured escapers registry does not support escaper registration',
-		);
-
-		$engine = Engine::create($this->templates())
-			->setEscapers(new class implements \Duon\Boiler\Contract\Escapers {
-				public string $default {
-					get => 'html';
-				}
-
-				public function get(string $name): Escaper
-				{
-					throw new UnexpectedValueException("Unknown escaper `{$name}`");
-				}
-			});
-
-		$engine->escape('caps', new class implements Escaper {
-			public function escape(string $value): string
-			{
-				return strtoupper(htmlspecialchars($value));
-			}
-		});
-	}
-
-	public function testRegisterFilterRequiresFiltersRegistryWithRegistration(): void
-	{
-		$this->throws(
-			RuntimeException::class,
-			'Configured filters registry does not support filter registration',
-		);
-
-		$engine = Engine::create($this->templates())
-			->setFilters(new class implements \Duon\Boiler\Contract\Filters {
-				public function get(string $name): Filter
-				{
-					throw new UnexpectedValueException("Unknown filter `{$name}`");
-				}
-			});
-
-		$engine->filter('upper', new class implements Filter {
-			public function apply(string $value, mixed ...$args): string
-			{
-				return strtoupper($value);
-			}
-
-			public function safe(): bool
-			{
-				return false;
-			}
-		});
-	}
-
-	public function testSetWrapperAcceptsCustomWrapper(): void
-	{
-		$engine = Engine::create($this->templates())
-			->setWrapper(new class implements \Duon\Boiler\Contract\Wrapper {
-				public function wrap(mixed $value): mixed
-				{
-					return $value;
-				}
-
-				public function unwrap(mixed $value): mixed
-				{
-					return $value;
-				}
-
-				public function escape(mixed $value, ?string $escaper = null): string
-				{
-					return (string) $value;
-				}
-
-				public function filter(string $name): Filter
-				{
-					throw new UnexpectedValueException("Unknown filter `{$name}`");
-				}
-			});
-
-		$this->assertInstanceOf(\Duon\Boiler\Contract\Wrapper::class, $engine->wrapper());
-	}
-
-	public function testSetWrapperRejectsEngineManagedFilters(): void
-	{
-		$this->throws(
-			RuntimeException::class,
-			'Cannot set wrapper after filters or escapers are configured',
-		);
-
-		Engine::create($this->templates())
-			->filter('upper', new class implements Filter {
-				public function apply(string $value, mixed ...$args): string
-				{
-					return strtoupper($value);
-				}
-
-				public function safe(): bool
-				{
-					return false;
-				}
-			})
-			->setWrapper(new Wrapper());
-	}
-
-	public function testSetFiltersRejectsConfiguredWrapper(): void
-	{
-		$this->throws(RuntimeException::class, 'Cannot set filters after wrapper is configured');
-
-		Engine::create($this->templates())
-			->setWrapper(new Wrapper())
-			->setFilters(new \Duon\Boiler\Filters());
-	}
-
-	public function testSetEscapersRejectsConfiguredWrapper(): void
-	{
-		$this->throws(RuntimeException::class, 'Cannot set escapers after wrapper is configured');
-
-		Engine::create($this->templates())
-			->setWrapper(new Wrapper())
-			->setEscapers(new Escapers());
-	}
-
-	public function testSetWrapperRejectsSecondConfiguration(): void
-	{
-		$this->throws(RuntimeException::class, 'Wrapper is already configured');
-
-		Engine::create($this->templates())
-			->setWrapper(new Wrapper())
-			->setWrapper(new Wrapper());
-	}
-
-	public function testSetFiltersRejectsSecondConfiguration(): void
-	{
-		$this->throws(RuntimeException::class, 'Filters are already configured');
-
-		Engine::create($this->templates())
-			->setFilters(new \Duon\Boiler\Filters())
-			->setFilters(new \Duon\Boiler\Filters());
-	}
-
-	public function testSetEscapersRejectsSecondConfiguration(): void
-	{
-		$this->throws(RuntimeException::class, 'Escapers are already configured');
-
-		Engine::create($this->templates())
-			->setEscapers(new Escapers())
-			->setEscapers(new Escapers());
-	}
-
-	public function testConfigurationIsSealedAfterWrapperIsMaterialized(): void
-	{
-		$this->throws(RuntimeException::class, 'Engine configuration is sealed');
-
-		$engine = Engine::create($this->templates());
-		$engine->wrapper();
-		$engine->setEscapers(new Escapers());
 	}
 
 	public function testUnknownCustomMethod(): void

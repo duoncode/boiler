@@ -65,12 +65,6 @@ final class FiltersTest extends TestCase
 		$this->assertTrue($filters->get('sanitize')->safe());
 	}
 
-	public function testFiltersImplementsContract(): void
-	{
-		$this->assertInstanceOf(Contract\Filters::class, new Filters());
-		$this->assertInstanceOf(Contract\RegistersFilters::class, new Filters());
-	}
-
 	public function testCanRegisterCustomFilter(): void
 	{
 		$filters = new Filters();

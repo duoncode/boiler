@@ -6,7 +6,6 @@ namespace Duon\Boiler\Tests;
 
 use Duon\Boiler\Contract\Escaper;
 use Duon\Boiler\Engine;
-use Duon\Boiler\Escapers;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Proxy\StringProxy;
 use Duon\Boiler\Template;
@@ -136,14 +135,12 @@ final class TemplateContextTest extends TestCase
 		$template = new Template(
 			$this->templates . 'simple.php',
 			engine: Engine::create($this->templates)
-				->setEscapers(new Escapers([
-					'caps' => new class implements Escaper {
-						public function escape(string $value): string
-						{
-							return strtoupper(htmlspecialchars($value));
-						}
-					},
-				], default: 'caps')),
+				->escape('caps', new class implements Escaper {
+					public function escape(string $value): string
+					{
+						return strtoupper(htmlspecialchars($value));
+					}
+				}),
 		);
 		$tmplContext = new TemplateContext($template, [], [], true);
 		$value = $tmplContext->wrap('<b>tag</b>');

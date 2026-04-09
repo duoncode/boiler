@@ -7,7 +7,7 @@ namespace Duon\Boiler;
 use Duon\Boiler\Exception\UnexpectedValueException;
 
 /** @api */
-final class Escapers implements Contract\RegistersEscapers
+final class Escapers implements Contract\Escapers
 {
 	private const string HTML = 'html';
 
@@ -37,7 +37,6 @@ final class Escapers implements Contract\RegistersEscapers
 		return $this->registry[$name] ?? throw self::unknown($name);
 	}
 
-	#[\Override]
 	public function register(string $name, Contract\Escaper $escaper): void
 	{
 		self::assertName($name);

@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\RuntimeException;
+use Duon\Boiler\Exception\UnexpectedValueException;
+use Override;
 
-final class Environment
+/** @api */
+final class Environment implements Contract\Environment
 {
 	private ?Contract\Wrapper $wrapper = null;
-	private ?Contract\Filters $filters = null;
-	private ?Contract\Escapers $escapers = null;
+	private ?ConfiguredFilters $filters = null;
+	private ?ConfiguredEscapers $escapers = null;
 	private bool $sealed = false;
 
 	public function setWrapper(Contract\Wrapper $wrapper): void
@@ -40,7 +43,7 @@ final class Environment
 			throw new RuntimeException('Filters are already configured');
 		}
 
-		$this->filters = $filters;
+		$this->filters = new ConfiguredFilters($filters);
 	}
 
 	public function setEscapers(Contract\Escapers $escapers): void
@@ -55,9 +58,10 @@ final class Environment
 			throw new RuntimeException('Escapers are already configured');
 		}
 
-		$this->escapers = $escapers;
+		$this->escapers = new ConfiguredEscapers($escapers);
 	}
 
+	#[Override]
 	public function wrapper(): Contract\Wrapper
 	{
 		$this->sealed = true;
@@ -65,20 +69,64 @@ final class Environment
 		return $this->wrapper ??= new Wrapper($this->escapers(), $this->filters());
 	}
 
-	public function filters(): Contract\Filters
+	#[Override]
+	public function registerFilter(string $name, Contract\Filter $filter): void
 	{
-		return $this->filters ??= new Filters();
+		$this->assertNotSealed();
+		self::assertFilterName($name);
+
+		if ($this->wrapper !== null) {
+			throw new RuntimeException('Cannot register filter after wrapper is configured');
+		}
+
+		$this->filters()->register($name, $filter);
 	}
 
-	public function escapers(): Contract\Escapers
+	#[Override]
+	public function registerEscaper(string $name, Contract\Escaper $escaper): void
 	{
-		return $this->escapers ??= new Escapers();
+		$this->assertNotSealed();
+		self::assertEscaperName($name);
+
+		if ($this->wrapper !== null) {
+			throw new RuntimeException('Cannot register escaper after wrapper is configured');
+		}
+
+		$this->escapers()->register($name, $escaper);
+	}
+
+	private function filters(): ConfiguredFilters
+	{
+		return $this->filters ??= new ConfiguredFilters();
+	}
+
+	private function escapers(): ConfiguredEscapers
+	{
+		return $this->escapers ??= new ConfiguredEscapers();
 	}
 
 	private function assertNotSealed(): void
 	{
 		if ($this->sealed) {
 			throw new RuntimeException('Engine configuration is sealed');
+		}
+	}
+
+	/** @psalm-assert non-empty-string $name */
+	private static function assertFilterName(string $name): void
+	{
+		if (!preg_match('/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$/', $name)) {
+			throw new UnexpectedValueException(
+				"Filter name `{$name}` is not a valid PHP method name",
+			);
+		}
+	}
+
+	/** @psalm-assert non-empty-string $name */
+	private static function assertEscaperName(string $name): void
+	{
+		if ($name === '') {
+			throw new UnexpectedValueException('Escaper name must be a non-empty string');
 		}
 	}
 }

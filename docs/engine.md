@@ -80,6 +80,26 @@ $engine = Engine::create(new class implements Resolver {
 Resolver selection happens at engine construction time.
 Lookup caching is resolver-specific. `Resolver` caches successful resolutions.
 
+## Use a custom environment
+
+Use `Engine::create()` or `Engine::unescaped()` for the common case. Use the constructor when you need to provide a custom `Contract\Environment`, for example to swap the wrapper or plug in custom filter or escaper registries.
+
+```php
+use Duon\Boiler\Engine;
+use Duon\Boiler\Environment;
+use Duon\Boiler\Resolver;
+
+$environment = new Environment();
+
+$engine = new Engine(
+    new Resolver('/path/to/templates'),
+    $environment,
+    true,
+);
+```
+
+The constructor expects a resolver instance. The factory methods remain the simplest way to build an engine from directory paths.
+
 ## Add default values
 
 Pass defaults as the second argument when values should be available in every render:
@@ -111,36 +131,47 @@ Read [displaying values](values.md) for the escaping model.
 
 ## Customize the wrapper
 
-Set a custom `Wrapper` when you want to replace Boiler's runtime wrapping, escaping, and filter lookup entirely:
+Set a custom `Wrapper` on `Environment` when you want to replace Boiler's runtime wrapping, escaping, and filter lookup entirely:
 
 ```php
 use Duon\Boiler\Contract\Escaper;
+use Duon\Boiler\Engine;
+use Duon\Boiler\Environment;
 use Duon\Boiler\Escapers;
+use Duon\Boiler\Resolver;
 use Duon\Boiler\Wrapper;
 
-$engine = \Duon\Boiler\Engine::create(
-    '/path/to/templates',
-)->setWrapper(new Wrapper(new Escapers([
-        'html' => new class implements Escaper {
-            public function escape(string $value): string
-            {
-                return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-            }
-        },
-    ])));
+$environment = new Environment();
+$environment->setWrapper(new Wrapper(new Escapers([
+    'html' => new class implements Escaper {
+        public function escape(string $value): string
+        {
+            return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        }
+    },
+])));
+
+$engine = new Engine(
+    new Resolver('/path/to/templates'),
+    $environment,
+    true,
+);
 ```
 
-`Contract\Wrapper` covers wrapping, unwrapping, escaping, and filter lookup. Configure wrapper behavior through `setWrapper()`, `setEscapers()`, and `setFilters()`.
+`Contract\Wrapper` covers wrapping, unwrapping, escaping, and filter lookup. Configure advanced wrapper behavior on `Environment` through `setWrapper()`, `setEscapers()`, and `setFilters()`.
 
 `Wrapper` accepts an optional escaper registry and optional pre-registered filters. Boiler's built-in `Escapers` registry includes the `html` escaper, exposes its constructor-configured default via `default`, and supports constructor-seeded entries plus incremental `->register()` calls when you only need extra named escapers instead of a full wrapper replacement.
 
-When you only want to customize escapers, set them on the engine and let Boiler build the wrapper lazily:
+When you only want to customize escapers, set them on the environment and let Boiler build the wrapper lazily.
 
 Provide an escaper under the `html` name when you want to replace Boiler's built-in HTML escaper:
 
 ```php
 use Duon\Boiler\Contract\Escaper;
+use Duon\Boiler\Engine;
+use Duon\Boiler\Environment;
 use Duon\Boiler\Escapers;
+use Duon\Boiler\Resolver;
 
 $escapers = new Escapers([
     'caps' => new class implements Escaper {
@@ -153,14 +184,25 @@ $escapers = new Escapers([
     },
 ], default: 'caps');
 
-$engine = \Duon\Boiler\Engine::create(
-    '/path/to/templates',
-)->setEscapers($escapers);
+$environment = new Environment();
+$environment->setEscapers($escapers);
+
+$engine = new Engine(
+    new Resolver('/path/to/templates'),
+    $environment,
+    true,
+);
 ```
 
-You can also register another named escaper after construction:
+You can also register another named escaper on the registry before you pass it to the environment:
 
 ```php
+use Duon\Boiler\Contract\Escaper;
+use Duon\Boiler\Engine;
+use Duon\Boiler\Environment;
+use Duon\Boiler\Escapers;
+use Duon\Boiler\Resolver;
+
 $escapers = new Escapers();
 
 $escapers->register('caps', new class implements Escaper {
@@ -172,12 +214,17 @@ $escapers->register('caps', new class implements Escaper {
     }
 });
 
-$engine = \Duon\Boiler\Engine::create(
-    '/path/to/templates',
-)->setEscapers($escapers);
+$environment = new Environment();
+$environment->setEscapers($escapers);
+
+$engine = new Engine(
+    new Resolver('/path/to/templates'),
+    $environment,
+    true,
+);
 ```
 
-You can also register escapers directly on the engine when it is managing the escaper registry:
+You can also register escapers directly on the engine when the environment is managing escapers:
 
 ```php
 use Duon\Boiler\Contract\Escaper;
@@ -193,7 +240,7 @@ $engine = \Duon\Boiler\Engine::create('/path/to/templates')
     });
 ```
 
-`setWrapper()` is mutually exclusive with `setFilters()`, `setEscapers()`, and engine-managed registration methods such as `filter()` and `escape()`. Once the wrapper is materialized through `wrapper()` or rendering, the engine configuration is sealed.
+`Environment::setWrapper()` is mutually exclusive with `Environment::setFilters()`, `Environment::setEscapers()`, and engine-managed registration methods such as `Engine::filter()` and `Engine::escape()`. Once the wrapper is materialized through `wrapper()` or rendering, the environment is sealed.
 
 ## Register filters
 
@@ -216,12 +263,10 @@ $engine = \Duon\Boiler\Engine::create('/path/to/templates')
     });
 ```
 
-`Engine::filter()` registers filters on the engine-managed filters registry. If you configure the engine with `setWrapper()`, filter registration must be handled by that wrapper setup instead.
+`Engine::filter()` delegates filter registration to the injected environment. If you configure a custom wrapper through `Environment::setWrapper()`, filter registration must be handled by that wrapper setup instead.
 
 Lookups go through `Contract\Filters`, which only needs a `get(string $name): Contract\Filter` method.
-Registration is an optional capability exposed through `Contract\RegistersFilters`.
-
-Escaper registration follows the same pattern through `Engine::escape()` and `Contract\RegistersEscapers`.
+Escaper lookups go through `Contract\Escapers`, which expose `default` and `get(string $name): Contract\Escaper`.
 
 A filter implements `Duon\Boiler\Contract\Filter` with two methods:
 
