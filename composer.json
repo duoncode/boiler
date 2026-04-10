@@ -51,6 +51,6 @@
 			"composer types",
 			"composer mdlint"
 		],
-		"benchmark": "@php -d xdebug.mode=off bench/run.php"
+		"benchmark": "@php -d xdebug.mode=off -d pcov.enabled=0 bench/run.php"
 	}
 }

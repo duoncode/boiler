@@ -265,6 +265,81 @@ function stringOption(array $options, string $name, string $default, array $allo
 	return $value;
 }
 
+function benchmarkWarning(): void
+{
+	$detected = benchmarkProfilers();
+
+	if ($detected === []) {
+		return;
+	}
+
+	echo str_repeat('!', LINE_LEN) . "\n";
+	echo "WARNING: benchmarking with Xdebug or PCOV enabled skews results.\n";
+	echo 'Detected: ' . implode(', ', $detected) . "\n";
+	echo 'Run with: php -d xdebug.mode=off -d pcov.enabled=0 ' . benchmarkScript() . "\n";
+	echo "          [--runs=N] [--iterations=N] [--lifecycle=(request|worker|both)]\n";
+	echo "Tip: use composer benchmark -- [options]\n";
+	echo str_repeat('!', LINE_LEN) . "\n\n";
+}
+
+/** @return list<string> */
+function benchmarkProfilers(): array
+{
+	$profilers = [];
+	$xdebug = xdebugMode();
+
+	if ($xdebug !== null) {
+		$profilers[] = "xdebug.mode={$xdebug}";
+	}
+
+	if (extension_loaded('pcov') && iniEnabled('pcov.enabled')) {
+		$profilers[] = 'pcov.enabled=1';
+	}
+
+	return $profilers;
+}
+
+function xdebugMode(): ?string
+{
+	if (!extension_loaded('xdebug')) {
+		return null;
+	}
+
+	$mode = getenv('XDEBUG_MODE');
+
+	if (!is_string($mode) || trim($mode) === '') {
+		$mode = (string) ini_get('xdebug.mode');
+	}
+
+	$mode = strtolower(trim($mode));
+
+	if ($mode === '' || $mode === 'off') {
+		return null;
+	}
+
+	return $mode;
+}
+
+function benchmarkScript(): string
+{
+	$argv = $_SERVER['argv'] ?? null;
+
+	if (!is_array($argv)) {
+		return 'bench/run.php';
+	}
+
+	$script = $argv[0] ?? null;
+
+	return is_string($script) && $script !== '' ? $script : 'bench/run.php';
+}
+
+function iniEnabled(string $name): bool
+{
+	$value = strtolower(trim((string) ini_get($name)));
+
+	return !in_array($value, ['', '0', 'false', 'off', 'no'], true);
+}
+
 function runs(): int
 {
 	return benchmarkConfig()['runs'];
@@ -474,7 +549,7 @@ function runScenario(string $lifecycle): void
 	resetBenchmarkCaches();
 
 	echo 'LIFECYCLE: ' . lifecycleLabel($lifecycle) . "\n";
-	if (count(lifecycles()) == 1) {
+	if (count(lifecycles()) === 1) {
 		echo "           use --lifecycle=(request|worker) to change mode\n";
 	}
 	echo str_repeat('-', LINE_LEN) . "\n";
@@ -523,8 +598,13 @@ function main(): int
 		return 1;
 	}
 
+	benchmarkWarning();
+
 	echo "\n" . str_repeat('=', LINE_LEN);
-	echo "\nBenchmark: " . number_format($runs) . ' renders × ' . $iterations . " iterations\n";
+	echo "\nBenchmark: " . number_format($runs) . ' renders × ' . $iterations . ' iterations';
+	echo
+		"\n           $ composer benchmark -- --runs=" . $runs . ' --iterations=' . $iterations . "\n"
+	;
 	echo str_repeat('=', LINE_LEN) . "\n\n\n";
 
 	foreach (lifecycles() as $index => $lifecycle) {
