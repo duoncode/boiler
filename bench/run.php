@@ -5,8 +5,9 @@ declare(strict_types=1);
 require __DIR__ . '/vendor/autoload.php';
 
 const DEFAULT_RUNS = 1000;
+const LINE_LEN = 69;
 const DEFAULT_ITERATIONS = 3;
-const DEFAULT_LIFECYCLE = 'request';
+const DEFAULT_LIFECYCLE = 'both';
 const LIFECYCLE_WORKER = 'worker';
 const LIFECYCLE_REQUEST = 'request';
 const LIFECYCLE_BOTH = 'both';
@@ -284,7 +285,7 @@ function lifecycles(): array
 {
 	return (
 		lifecycle() === LIFECYCLE_BOTH
-			? [LIFECYCLE_WORKER, LIFECYCLE_REQUEST]
+			? [LIFECYCLE_REQUEST, LIFECYCLE_WORKER]
 			: [lifecycle()]
 	);
 }
@@ -439,7 +440,7 @@ function fulltrim(string $text): string
 /** @param list<BenchResult> $results */
 function verifyOutputs(array $results): void
 {
-	echo "\n" . str_repeat('=', 70) . "\n";
+	echo str_repeat('-', LINE_LEN) . "\n";
 	echo 'Output verification: ';
 
 	$expected = fulltrim($results[array_key_first($results)]->output);
@@ -472,12 +473,14 @@ function runScenario(string $lifecycle): void
 {
 	resetBenchmarkCaches();
 
-	echo 'Lifecycle: ' . lifecycleLabel($lifecycle) . "\n";
-	echo "           use --lifecycle=(request|worker) to change mode\n";
-	echo str_repeat('-', 70) . "\n\n";
+	echo 'LIFECYCLE: ' . lifecycleLabel($lifecycle) . "\n";
+	if (count(lifecycles()) == 1) {
+		echo "           use --lifecycle=(request|worker) to change mode\n";
+	}
+	echo str_repeat('-', LINE_LEN) . "\n";
 
-	echo "AUTOMATIC ESCAPING\n";
-	echo str_repeat('-', 70) . "\n";
+	echo "Automatic Escaping:\n";
+	echo str_repeat('-', LINE_LEN) . "\n";
 
 	$twigAutoEscaping = benchTwigAutoEscaping($lifecycle);
 	$bladeOneAutoEscaping = benchBladeOneAutoEscaping($lifecycle);
@@ -486,17 +489,19 @@ function runScenario(string $lifecycle): void
 	$twigAutoEscaping->print();
 	$bladeOneAutoEscaping->print();
 	$boilerAutoEscaping->print();
-	echo str_repeat('-', 70) . "\n";
-	printf("%s\n", autoEscapingMemoryNote($lifecycle));
 
-	echo "\n\nMANUAL ESCAPING\n";
-	echo str_repeat('-', 70) . "\n";
+	echo str_repeat('-', LINE_LEN) . "\n";
+	echo "Manual Escaping:\n";
+	echo str_repeat('-', LINE_LEN) . "\n";
 
 	$platesManualEscaping = benchPlatesManualEscaping($lifecycle);
 	$boilerManualEscaping = benchBoilerManualEscaping($lifecycle);
 
 	$platesManualEscaping->print();
 	$boilerManualEscaping->print();
+
+	echo str_repeat('-', LINE_LEN) . "\n";
+	printf("%s\n", autoEscapingMemoryNote($lifecycle));
 
 	verifyOutputs([
 		$platesManualEscaping,
@@ -518,12 +523,13 @@ function main(): int
 		return 1;
 	}
 
+	echo "\n" . str_repeat('=', LINE_LEN);
 	echo "\nBenchmark: " . number_format($runs) . ' renders × ' . $iterations . " iterations\n";
-	echo str_repeat('=', 70) . "\n\n";
+	echo str_repeat('=', LINE_LEN) . "\n\n\n";
 
 	foreach (lifecycles() as $index => $lifecycle) {
 		if ($index > 0) {
-			echo "\n";
+			echo "\n\n" . str_repeat(' ~ ', (int) LINE_LEN / 3) . "\n\n\n";
 		}
 
 		runScenario($lifecycle);
