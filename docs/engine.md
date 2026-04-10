@@ -56,25 +56,30 @@ Read [rendering templates](rendering.md) for the lookup rules.
 ## Customize template lookup
 
 Boiler resolves template names through `Duon\Boiler\Contract\Resolver`.
-`Engine::create()` uses `Duon\Boiler\Resolver` by default.
+`Engine::create()` and `Engine::unescaped()` always use `Duon\Boiler\Resolver`.
 
-Pass a custom resolver to `Engine::create()` when your application needs different lookup rules:
+Instantiate `Engine` directly when your application needs different lookup rules:
 
 ```php
 use Duon\Boiler\Contract\Resolver;
 use Duon\Boiler\Engine;
+use Duon\Boiler\Environment;
 use Duon\Boiler\Exception\LookupException;
 
-$engine = Engine::create(new class implements Resolver {
-    public function resolve(string $path): string
-    {
-        if ($path === 'home') {
-            return '/srv/app/theme/home.php';
-        }
+$engine = new Engine(
+    new class implements Resolver {
+        public function resolve(string $path): string
+        {
+            if ($path === 'home') {
+                return '/srv/app/theme/home.php';
+            }
 
-        throw new LookupException("Template `{$path}` not found");
-    }
-});
+            throw new LookupException("Template `{$path}` not found");
+        }
+    },
+    new Environment(),
+    true,
+);
 ```
 
 Resolver selection happens at engine construction time.
@@ -82,7 +87,7 @@ Lookup caching is resolver-specific. `Resolver` caches successful resolutions.
 
 ## Use a custom environment
 
-Use `Engine::create()` or `Engine::unescaped()` for the common case. Use the constructor when you need to provide a custom `Contract\Environment`, for example to swap the wrapper or plug in custom filter or escaper registries.
+Use `Engine::create()` or `Engine::unescaped()` for the common case. Use the constructor when you need to provide your own resolver or `Contract\Environment`, for example to swap the wrapper or plug in custom filter or escaper registries.
 
 ```php
 use Duon\Boiler\Engine;
@@ -98,7 +103,7 @@ $engine = new Engine(
 );
 ```
 
-The constructor expects a resolver instance. The factory methods remain the simplest way to build an engine from directory paths.
+The constructor expects a resolver instance. The factory methods remain the simplest way to build an engine from directory paths with Boiler's built-in resolver.
 
 ## Add default values
 

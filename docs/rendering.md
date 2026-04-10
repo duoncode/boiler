@@ -130,19 +130,24 @@ You can expect `UnexpectedValueException` when the template path itself is empty
 
 ## Custom resolvers
 
-If you need custom lookup behavior (for example tenant-based themes or non-standard naming rules), create the engine with a custom resolver:
+If you need custom lookup behavior (for example tenant-based themes or non-standard naming rules), instantiate the engine with a custom resolver:
 
 ```php
 use Duon\Boiler\Contract\Resolver;
 use Duon\Boiler\Engine;
+use Duon\Boiler\Environment;
 use Duon\Boiler\Exception\LookupException;
 
-$engine = Engine::create(new class implements Resolver {
-    public function resolve(string $path): string
-    {
-        throw new LookupException("Template `{$path}` not found");
-    }
-});
+$engine = new Engine(
+    new class implements Resolver {
+        public function resolve(string $path): string
+        {
+            throw new LookupException("Template `{$path}` not found");
+        }
+    },
+    new Environment(),
+    true,
+);
 ```
 
 Boiler still calls your templates the same way (`render()`, `layout()`, `insert()`), but path lookup is delegated to the configured resolver.

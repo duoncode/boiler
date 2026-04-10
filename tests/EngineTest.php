@@ -628,7 +628,7 @@ final class EngineTest extends TestCase
 		);
 	}
 
-	public function testCreateAcceptsCustomResolver(): void
+	public function testConstructorAcceptsCustomResolver(): void
 	{
 		$resolver = new class(TestCase::DEFAULT_DIR . '/simple.php') implements
 			\Duon\Boiler\Contract\Resolver {
@@ -650,7 +650,7 @@ final class EngineTest extends TestCase
 			}
 		};
 
-		$engine = Engine::create($resolver, ['obj' => $this->obj()]);
+		$engine = new Engine($resolver, new Environment(), true, ['obj' => $this->obj()]);
 
 		$this->assertSame(
 			'<h1>boiler</h1><p>first</p>',

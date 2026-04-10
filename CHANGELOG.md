@@ -6,7 +6,8 @@
 
 - Renamed the `Engine` and standalone `Template` API's `whitelist` argument to `trusted`. This breaks named argument calls such as `whitelist: [...]`, which must now use `trusted: [...]`.
 - Renamed `Engine::registerMethod()` and standalone `Template::registerMethod()` to `method()`.
-- Changed `Engine::__construct()` to accept a `Contract\Resolver` and `Contract\Environment` instead of template directories. Use `Engine::create()` or `Engine::unescaped()` when you want to pass directory paths directly.
+- Changed `Engine::__construct()` to accept a `Contract\Resolver` and `Contract\Environment` instead of template directories. Use `Engine::create()` or `Engine::unescaped()` when you want Boiler's built-in resolver.
+- Changed `Engine::create()` and `Engine::unescaped()` to accept only directory input. Use the constructor when you need a custom resolver.
 - Renamed `Engine::getFile()` to `Engine::resolve()`.
 - Renamed `Context::esc()` to `Context::escape()` and `Context::context()` to `Context::get()`.
 - Changed `Wrapper` from a static helper into an instance-based API and replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escapers.
@@ -14,7 +15,7 @@
 
 ### Added
 
-- Added `Contract\Resolver` and `Resolver` for template lookup, and let the engine factories accept a custom resolver.
+- Added `Contract\Resolver` and `Resolver` for template lookup.
 - Added `Contract\Environment` and `Environment` for advanced wrapper, filter, and escaper configuration.
 - Added `Contract\Wrapper`, `Contract\Escaper`, `Contract\Escapers`, `Contract\Filter`, `Contract\Filters`, `Contract\RegistersEscapers`, and `Contract\RegistersFilters`, plus the default `Wrapper`, `Escapers`, and `Filters` implementations.
 - Added advanced wrapper configuration through `Environment::setWrapper()`, `Environment::setFilters()`, and `Environment::setEscapers()`.

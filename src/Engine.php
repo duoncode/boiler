@@ -10,7 +10,6 @@ use Duon\Boiler\Exception\UnexpectedValueException;
 /**
  * @api
  * @psalm-type DirsInput = non-empty-string|list<non-empty-string>|array<non-empty-string, non-empty-string>
- * @psalm-type ResolverInput = Contract\Resolver|DirsInput
  */
 final class Engine
 {
@@ -36,27 +35,27 @@ final class Engine
 	}
 
 	/**
-	 * @psalm-param ResolverInput $resolver
+	 * @psalm-param DirsInput $dirs
 	 * @psalm-param list<class-string> $trusted
 	 */
 	public static function create(
-		Contract\Resolver|array|string $resolver,
+		array|string $dirs,
 		array $defaults = [],
 		array $trusted = [],
 	): self {
-		return new self(self::prepareResolver($resolver), new Environment(), true, $defaults, $trusted);
+		return new self(new Resolver($dirs), new Environment(), true, $defaults, $trusted);
 	}
 
 	/**
-	 * @psalm-param ResolverInput $resolver
+	 * @psalm-param DirsInput $dirs
 	 * @psalm-param list<class-string> $trusted
 	 */
 	public static function unescaped(
-		Contract\Resolver|array|string $resolver,
+		array|string $dirs,
 		array $defaults = [],
 		array $trusted = [],
 	): self {
-		return new self(self::prepareResolver($resolver), new Environment(), false, $defaults, $trusted);
+		return new self(new Resolver($dirs), new Environment(), false, $defaults, $trusted);
 	}
 
 	/** @psalm-param non-empty-string $name */
@@ -156,15 +155,5 @@ final class Engine
 		} catch (LookupException|UnexpectedValueException) {
 			return false;
 		}
-	}
-
-	/** @psalm-param ResolverInput $resolver */
-	private static function prepareResolver(Contract\Resolver|array|string $resolver): Contract\Resolver
-	{
-		if ($resolver instanceof Contract\Resolver) {
-			return $resolver;
-		}
-
-		return new Resolver($resolver);
 	}
 }
