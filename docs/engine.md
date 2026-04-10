@@ -290,7 +290,7 @@ Filters are available as virtual methods on wrapped string values in templates:
 ```php
 <?= $title->upper() ?>
 <?= $html->sanitize() ?>
-<?= $body->strip('<b>') ?>
+<?= $body->stripTags('<b>') ?>
 ```
 
 In escaped renders, Boiler wraps string values for you. When you need filters on a raw value or in an unescaped render, call `$this->wrap($value)` first:
@@ -302,13 +302,13 @@ In escaped renders, Boiler wraps string values for you. When you need filters on
 Filters can be chained. Once a safe filter is applied, the chain stays safe:
 
 ```php
-<?= $html->sanitize()->strip('<b>') ?>
+<?= $html->sanitize()->stripTags('<b>') ?>
 ```
 
-Boiler ships with two built-in filters:
+Boiler ships with built-in filters:
 
 - `sanitize` removes unsafe HTML (requires `symfony/html-sanitizer`). This filter is safe.
-- `strip` removes HTML tags via `strip_tags()`. This filter is not safe.
+- `stripTags` removes HTML tags via `strip_tags()`. This filter is not safe.
 
 Read [displaying values](values.md) for more on filters and escaping.
 

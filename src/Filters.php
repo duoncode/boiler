@@ -37,7 +37,7 @@ final class Filters implements Contract\RegistersFilters
 	private function builtins(): array
 	{
 		$builtins = [
-			'strip' => new Strip(),
+			'stripTags' => new Strip(),
 		];
 
 		if (class_exists(\Symfony\Component\HtmlSanitizer\HtmlSanitizer::class)) {

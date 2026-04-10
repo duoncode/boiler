@@ -59,7 +59,7 @@ This is most useful when you want string filter methods on a literal or raw stri
 
 ```php
 <?= $this->wrap($html)->sanitize() ?>
-<?= $this->wrap('<b>Boiler</b>')->strip('<b>') ?>
+<?= $this->wrap('<b>Boiler</b>')->stripTags('<b>') ?>
 ```
 
 `$this->wrap()` always uses the wrapper directly, so it still returns proxies even when the engine is rendering unescaped output.
@@ -70,7 +70,7 @@ Filters are value transformations applied as virtual methods on wrapped string v
 
 ```php
 <?= $html->sanitize() ?>
-<?= $title->strip('<b>') ?>
+<?= $title->stripTags('<b>') ?>
 ```
 
 In escaped renders, string values from template context are already wrapped. In unescaped renders, or when you start from a literal string in the template, call `$this->wrap()` first.
@@ -78,13 +78,13 @@ In escaped renders, string values from template context are already wrapped. In 
 Filters can be chained. Once a safe filter is applied in a chain, the result stays safe and skips auto-escaping:
 
 ```php
-<?= $html->sanitize()->strip('<b>') ?>
+<?= $html->sanitize()->stripTags('<b>') ?>
 ```
 
-Boiler ships with two built-in filters:
+Boiler ships with built-in filters:
 
 - `sanitize` removes unsafe HTML while allowing safe elements. This filter is safe, meaning its output skips auto-escaping. Requires `symfony/html-sanitizer`.
-- `strip` removes HTML tags via `strip_tags()`. This filter is not safe, so its output is still auto-escaped.
+- `stripTags` removes HTML tags via `strip_tags()`. This filter is not safe, so its output is still auto-escaped.
 
 Register custom filters on the engine with the fluent `filter()` method. Read [the engine](engine.md) for details.
 

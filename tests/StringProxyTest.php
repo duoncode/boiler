@@ -22,25 +22,25 @@ final class StringProxyTest extends TestCase
 		$this->assertSame('&lt;b onclick=&quot;func()&quot;&gt;boiler&lt;/b&gt;', (string) $value);
 	}
 
-	public function testStripFilter(): void
+	public function testStripTagsFilter(): void
 	{
 		$proxy = $this->stringProxy('<b>boiler<br>plate</b>');
 
-		$this->assertSame('boilerplate', (string) $proxy->strip());
+		$this->assertSame('boilerplate', (string) $proxy->stripTags());
 	}
 
-	public function testStripFilterWithAllowedTags(): void
+	public function testStripTagsFilterWithAllowedTags(): void
 	{
 		$proxy = $this->stringProxy('<b>boiler<br>plate</b>');
 
-		$this->assertSame('boiler&lt;br&gt;plate', (string) $proxy->strip('<br>'));
+		$this->assertSame('boiler&lt;br&gt;plate', (string) $proxy->stripTags('<br>'));
 	}
 
-	public function testStripReturnsStringProxy(): void
+	public function testStripTagsReturnsStringProxy(): void
 	{
 		$proxy = $this->stringProxy('<b>boiler</b>');
 
-		$this->assertInstanceOf($proxy::class, $proxy->strip());
+		$this->assertInstanceOf($proxy::class, $proxy->stripTags());
 	}
 
 	public function testSanitizeFilter(): void
@@ -59,12 +59,12 @@ final class StringProxyTest extends TestCase
 		$this->assertSame('<b>boiler</b>', (string) $sanitized);
 	}
 
-	public function testStripIsNotSafe(): void
+	public function testStripTagsIsNotSafe(): void
 	{
 		$proxy = $this->stringProxy('<b>boiler</b>');
-		$stripped = $proxy->strip();
+		$stripped = $proxy->stripTags();
 
-		// strip is not safe, so output is auto-escaped
+		// stripTags is not safe, so output is auto-escaped
 		$this->assertSame('boiler', (string) $stripped);
 	}
 
@@ -72,8 +72,8 @@ final class StringProxyTest extends TestCase
 	{
 		$proxy = $this->stringProxy('<script></script><b>boiler</b>');
 
-		// sanitize (safe) then strip (unsafe) — once safe, stays safe
-		$result = $proxy->sanitize()->strip();
+		// sanitize (safe) then stripTags (unsafe) — once safe, stays safe
+		$result = $proxy->sanitize()->stripTags();
 		$this->assertSame('boiler', (string) $result);
 	}
 
@@ -81,8 +81,8 @@ final class StringProxyTest extends TestCase
 	{
 		$proxy = $this->stringProxy('<b>boiler</b>');
 
-		// sanitize marks as safe, subsequent strip keeps it safe
-		$result = $proxy->sanitize()->strip();
+		// sanitize marks as safe, subsequent stripTags keeps it safe
+		$result = $proxy->sanitize()->stripTags();
 		$this->assertSame('boiler', (string) $result);
 	}
 
@@ -132,8 +132,8 @@ final class StringProxyTest extends TestCase
 	{
 		$proxy = $this->stringProxy('<b>boiler</b>');
 
-		// strip is unsafe, chain remains unsafe, output gets escaped
-		$stripped = $proxy->strip();
+		// stripTags is unsafe, chain remains unsafe, output gets escaped
+		$stripped = $proxy->stripTags();
 		$this->assertSame('boiler', (string) $stripped);
 	}
 

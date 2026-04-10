@@ -10,11 +10,11 @@ use Duon\Boiler\Filters;
 
 final class FiltersTest extends TestCase
 {
-	public function testHasBuiltinStripFilter(): void
+	public function testHasBuiltinStripTagsFilter(): void
 	{
 		$filters = new Filters();
 
-		$this->assertInstanceOf(Contract\Filter::class, $filters->get('strip'));
+		$this->assertInstanceOf(Contract\Filter::class, $filters->get('stripTags'));
 	}
 
 	public function testHasBuiltinSanitizeFilter(): void
@@ -24,28 +24,28 @@ final class FiltersTest extends TestCase
 		$this->assertInstanceOf(Contract\Filter::class, $filters->get('sanitize'));
 	}
 
-	public function testStripRemovesTags(): void
+	public function testStripTagsRemovesTags(): void
 	{
 		$filters = new Filters();
 
-		$this->assertSame('Boiler', $filters->get('strip')->apply('<b>Boiler</b>'));
+		$this->assertSame('Boiler', $filters->get('stripTags')->apply('<b>Boiler</b>'));
 	}
 
-	public function testStripAllowsSpecificTags(): void
+	public function testStripTagsAllowsSpecificTags(): void
 	{
 		$filters = new Filters();
 
-		$this->assertSame('<b>Boiler</b>', $filters->get('strip')->apply(
+		$this->assertSame('<b>Boiler</b>', $filters->get('stripTags')->apply(
 			'<b>Boiler</b><script></script>',
 			'<b>',
 		));
 	}
 
-	public function testStripIsNotSafe(): void
+	public function testStripTagsIsNotSafe(): void
 	{
 		$filters = new Filters();
 
-		$this->assertFalse($filters->get('strip')->safe());
+		$this->assertFalse($filters->get('stripTags')->safe());
 	}
 
 	public function testSanitizeRemovesScripts(): void
@@ -92,7 +92,7 @@ final class FiltersTest extends TestCase
 	public function testCanOverrideBuiltinFilter(): void
 	{
 		$filters = new Filters([
-			'strip' => new class implements Contract\Filter {
+			'stripTags' => new class implements Contract\Filter {
 				public function apply(string $value, mixed ...$args): string
 				{
 					return 'custom';
@@ -105,8 +105,8 @@ final class FiltersTest extends TestCase
 			},
 		]);
 
-		$this->assertSame('custom', $filters->get('strip')->apply('<b>Boiler</b>'));
-		$this->assertTrue($filters->get('strip')->safe());
+		$this->assertSame('custom', $filters->get('stripTags')->apply('<b>Boiler</b>'));
+		$this->assertTrue($filters->get('stripTags')->safe());
 	}
 
 	public function testRejectsUnknownFilter(): void
@@ -114,6 +114,13 @@ final class FiltersTest extends TestCase
 		$this->throws(UnexpectedValueException::class, 'Unknown filter `nope`');
 
 		new Filters()->get('nope');
+	}
+
+	public function testStripIsNoLongerBuiltinFilter(): void
+	{
+		$this->throws(UnexpectedValueException::class, 'Unknown filter `strip`');
+
+		new Filters()->get('strip');
 	}
 
 	public function testRejectsEmptyFilterName(): void

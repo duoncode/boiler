@@ -157,14 +157,14 @@ final class WrapperTest extends TestCase
 	{
 		$wrapper = new Wrapper();
 
-		$this->assertInstanceOf(Contract\Filter::class, $wrapper->filter('strip'));
+		$this->assertInstanceOf(Contract\Filter::class, $wrapper->filter('stripTags'));
 	}
 
 	public function testFilterApplySupportsArgs(): void
 	{
 		$wrapper = new Wrapper();
 
-		$this->assertSame('<b>boiler</b>', $wrapper->filter('strip')->apply(
+		$this->assertSame('<b>boiler</b>', $wrapper->filter('stripTags')->apply(
 			'<b>boiler</b><script></script>',
 			'<b>',
 		));
@@ -175,7 +175,7 @@ final class WrapperTest extends TestCase
 		$wrapper = new Wrapper();
 
 		$this->assertTrue($wrapper->filter('sanitize')->safe());
-		$this->assertFalse($wrapper->filter('strip')->safe());
+		$this->assertFalse($wrapper->filter('stripTags')->safe());
 	}
 
 	public function testFilterRejectsUnknownFilter(): void

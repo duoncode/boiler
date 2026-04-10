@@ -23,7 +23,7 @@ final class StringProxy implements Proxy
 	) {}
 
 	/**
-	 * Dispatch filters as virtual methods: $title->sanitize(), $title->strip('<b>'), etc.
+	 * Dispatch filters as virtual methods: $title->sanitize(), $title->stripTags('<b>'), etc.
 	 *
 	 * @param array<array-key, mixed> $args
 	 */
