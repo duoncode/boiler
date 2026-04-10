@@ -84,6 +84,8 @@ Filters can be chained. Once a safe filter is applied in a chain, the result sta
 Boiler ships with built-in filters:
 
 - `sanitize` removes unsafe HTML while allowing safe elements. This filter is safe, meaning its output skips auto-escaping. Requires `symfony/html-sanitizer`.
+- `lower` lowercases text via `mb_strtolower()`. This filter is not safe, so its output is still auto-escaped.
+- `upper` uppercases text via `mb_strtoupper()`. This filter is not safe, so its output is still auto-escaped.
 - `stripTags` removes HTML tags via `strip_tags()`. This filter is not safe, so its output is still auto-escaped.
 - `trim` trims leading and trailing characters via `trim()`. This filter is not safe, so its output is still auto-escaped.
 

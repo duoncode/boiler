@@ -308,6 +308,8 @@ Filters can be chained. Once a safe filter is applied, the chain stays safe:
 Boiler ships with built-in filters:
 
 - `sanitize` removes unsafe HTML (requires `symfony/html-sanitizer`). This filter is safe.
+- `lower` lowercases text via `mb_strtolower()`. This filter is not safe.
+- `upper` uppercases text via `mb_strtoupper()`. This filter is not safe.
 - `stripTags` removes HTML tags via `strip_tags()`. This filter is not safe.
 - `trim` trims leading and trailing characters via `trim()`. This filter is not safe.
 

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\UnexpectedValueException;
+use Duon\Boiler\Filter\Lower;
 use Duon\Boiler\Filter\Sanitize;
 use Duon\Boiler\Filter\StripTags;
 use Duon\Boiler\Filter\Trim;
+use Duon\Boiler\Filter\Upper;
 
 /** @api */
 final class Filters implements Contract\RegistersFilters
@@ -38,8 +40,10 @@ final class Filters implements Contract\RegistersFilters
 	private function builtins(): array
 	{
 		$builtins = [
+			'lower' => new Lower(),
 			'stripTags' => new StripTags(),
 			'trim' => new Trim(),
+			'upper' => new Upper(),
 		];
 
 		if (class_exists(\Symfony\Component\HtmlSanitizer\HtmlSanitizer::class)) {

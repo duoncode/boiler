@@ -24,6 +24,20 @@ final class FiltersTest extends TestCase
 		$this->assertInstanceOf(Contract\Filter::class, $filters->get('trim'));
 	}
 
+	public function testHasBuiltinUpperFilter(): void
+	{
+		$filters = new Filters();
+
+		$this->assertInstanceOf(Contract\Filter::class, $filters->get('upper'));
+	}
+
+	public function testHasBuiltinLowerFilter(): void
+	{
+		$filters = new Filters();
+
+		$this->assertInstanceOf(Contract\Filter::class, $filters->get('lower'));
+	}
+
 	public function testHasBuiltinSanitizeFilter(): void
 	{
 		$filters = new Filters();
@@ -74,6 +88,28 @@ final class FiltersTest extends TestCase
 		$filters = new Filters();
 
 		$this->assertFalse($filters->get('trim')->safe());
+	}
+
+	public function testUpperConvertsToUppercase(): void
+	{
+		$filters = new Filters();
+
+		$this->assertSame('BOILER', $filters->get('upper')->apply('boiler'));
+	}
+
+	public function testLowerConvertsToLowercase(): void
+	{
+		$filters = new Filters();
+
+		$this->assertSame('boiler', $filters->get('lower')->apply('BOILER'));
+	}
+
+	public function testUpperAndLowerAreNotSafe(): void
+	{
+		$filters = new Filters();
+
+		$this->assertFalse($filters->get('upper')->safe());
+		$this->assertFalse($filters->get('lower')->safe());
 	}
 
 	public function testSanitizeRemovesScripts(): void
