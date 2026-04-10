@@ -6,7 +6,8 @@
 		"duon/boiler": "@dev",
 		"league/plates": "^3",
 		"twig/twig": "^3",
-		"eftec/bladeone": "^4"
+		"eftec/bladeone": "^4",
+		"tempest/blade": "^0.1"
 	},
 	"repositories": [
 		{

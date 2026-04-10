@@ -39,6 +39,7 @@ function resetCacheDir(string $path): void
 function resetBenchmarkCaches(): void
 {
 	resetCacheDir(__DIR__ . '/cache/twig');
+	resetCacheDir(__DIR__ . '/cache/blade');
 	resetCacheDir(__DIR__ . '/cache/bladeone');
 }
 
@@ -454,6 +455,19 @@ function benchTwigAutoEscaping(string $lifecycle): BenchResult
 	);
 }
 
+function benchBladeAutoEscaping(string $lifecycle): BenchResult
+{
+	return benchEngine(
+		'Blade',
+		static fn() => new \Tempest\Blade\Blade(__DIR__ . '/blade', __DIR__ . '/cache/blade'),
+		static fn(\Tempest\Blade\Blade $engine, array $context): string => $engine->render(
+			'page',
+			$context,
+		),
+		$lifecycle,
+	);
+}
+
 function benchBladeOneAutoEscaping(string $lifecycle): BenchResult
 {
 	return benchEngine(
@@ -558,10 +572,12 @@ function runScenario(string $lifecycle): void
 	echo str_repeat('-', LINE_LEN) . "\n";
 
 	$twigAutoEscaping = benchTwigAutoEscaping($lifecycle);
+	$bladeAutoEscaping = benchBladeAutoEscaping($lifecycle);
 	$bladeOneAutoEscaping = benchBladeOneAutoEscaping($lifecycle);
 	$boilerAutoEscaping = benchBoilerAutoEscaping($lifecycle);
 
 	$twigAutoEscaping->print();
+	$bladeAutoEscaping->print();
 	$bladeOneAutoEscaping->print();
 	$boilerAutoEscaping->print();
 
@@ -582,6 +598,7 @@ function runScenario(string $lifecycle): void
 		$platesManualEscaping,
 		$twigAutoEscaping,
 		$bladeOneAutoEscaping,
+		$bladeAutoEscaping,
 		$boilerAutoEscaping,
 		$boilerManualEscaping,
 	]);
