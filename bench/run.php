@@ -45,17 +45,17 @@ function resetBenchmarkCaches(): void
 function benchmarkContext(): array
 {
 	return [
-		'title' => 'Product Catalog',
+		'title' => 'Product Catalog & Deals <Spring>',
 		'isLoggedIn' => true,
 		'isAdmin' => false,
 		'user' => [
 			'id' => 42,
-			'name' => 'John Doe',
+			'name' => 'John & Jane <Doe>',
 			'email' => 'john@example.com',
 			'profile' => [
 				'bio' => '<script>alert("xss")</script>Web developer & designer',
-				'avatar' => '/img/avatars/john.jpg',
-				'location' => 'New York, NY',
+				'avatar' => '/img/avatars/john.jpg?size=large&crop=1',
+				'location' => 'New York & Berlin <HQ>',
 			],
 		],
 		'products' => [
@@ -136,7 +136,7 @@ function benchmarkContext(): array
 			'revenue' => 98432.50,
 		],
 		'store' => (object) [
-			'name' => 'Duon Store',
+			'name' => 'Duon & Partners <Store>',
 			'support' => (object) [
 				'email' => 'support@duon.run',
 				'timezone' => 'Europe/Berlin',
@@ -144,9 +144,9 @@ function benchmarkContext(): array
 		],
 		'announcement' => '<p class="alert"><strong>Holiday Sale:</strong> 20% off all items!</p>',
 		'breadcrumbs' => new ArrayIterator([
-			['label' => 'Home', 'url' => '/'],
-			['label' => 'Products', 'url' => '/products'],
-			['label' => 'Electronics', 'url' => '/products/electronics'],
+			['label' => 'Home & Garden', 'url' => '/?from=home&promo=spring'],
+			['label' => 'Products & Services', 'url' => '/products?view=grid&sort=name'],
+			['label' => 'Electronics <Featured>', 'url' => '/products/electronics?filter=audio&sale=1'],
 		]),
 	];
 }
