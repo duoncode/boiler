@@ -6,7 +6,7 @@ namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Filter\Sanitize;
-use Duon\Boiler\Filter\Strip;
+use Duon\Boiler\Filter\StripTags;
 use Duon\Boiler\Filter\Trim;
 
 /** @api */
@@ -38,7 +38,7 @@ final class Filters implements Contract\RegistersFilters
 	private function builtins(): array
 	{
 		$builtins = [
-			'stripTags' => new Strip(),
+			'stripTags' => new StripTags(),
 			'trim' => new Trim(),
 		];
 

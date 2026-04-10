@@ -8,7 +8,7 @@ use Duon\Boiler\Contract;
 use Override;
 
 /** @api */
-final class Strip implements Contract\Filter
+final class StripTags implements Contract\Filter
 {
 	#[Override]
 	public function apply(string $value, mixed ...$args): string
