@@ -28,7 +28,7 @@
         </thead>
         <tbody>
             <?php foreach ($products as $product): ?>
-                <?php $this->insert('product-row-noescape', ['product' => $product]) ?>
+                <?php $this->insert('product-row', ['product' => $product]) ?>
             <?php endforeach ?>
         </tbody>
     </table>

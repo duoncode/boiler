@@ -497,9 +497,9 @@ function benchBoilerManualEscaping(string $lifecycle): BenchResult
 {
 	return benchEngine(
 		'Boiler',
-		static fn() => Duon\Boiler\Engine::unescaped(__DIR__ . '/boiler'),
+		static fn() => Duon\Boiler\Engine::unescaped(__DIR__ . '/boiler-manual'),
 		static fn(Duon\Boiler\Engine $engine, array $context): string => $engine->render(
-			'pagemanualescaping',
+			'page',
 			$context,
 		),
 		$lifecycle,
