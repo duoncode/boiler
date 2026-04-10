@@ -85,6 +85,7 @@ Boiler ships with built-in filters:
 
 - `sanitize` removes unsafe HTML while allowing safe elements. This filter is safe, meaning its output skips auto-escaping. Requires `symfony/html-sanitizer`.
 - `stripTags` removes HTML tags via `strip_tags()`. This filter is not safe, so its output is still auto-escaped.
+- `trim` trims leading and trailing characters via `trim()`. This filter is not safe, so its output is still auto-escaped.
 
 Register custom filters on the engine with the fluent `filter()` method. Read [the engine](engine.md) for details.
 

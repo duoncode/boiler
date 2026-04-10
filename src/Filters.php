@@ -7,6 +7,7 @@ namespace Duon\Boiler;
 use Duon\Boiler\Exception\UnexpectedValueException;
 use Duon\Boiler\Filter\Sanitize;
 use Duon\Boiler\Filter\Strip;
+use Duon\Boiler\Filter\Trim;
 
 /** @api */
 final class Filters implements Contract\RegistersFilters
@@ -38,6 +39,7 @@ final class Filters implements Contract\RegistersFilters
 	{
 		$builtins = [
 			'stripTags' => new Strip(),
+			'trim' => new Trim(),
 		];
 
 		if (class_exists(\Symfony\Component\HtmlSanitizer\HtmlSanitizer::class)) {

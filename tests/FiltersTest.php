@@ -17,6 +17,13 @@ final class FiltersTest extends TestCase
 		$this->assertInstanceOf(Contract\Filter::class, $filters->get('stripTags'));
 	}
 
+	public function testHasBuiltinTrimFilter(): void
+	{
+		$filters = new Filters();
+
+		$this->assertInstanceOf(Contract\Filter::class, $filters->get('trim'));
+	}
+
 	public function testHasBuiltinSanitizeFilter(): void
 	{
 		$filters = new Filters();
@@ -46,6 +53,27 @@ final class FiltersTest extends TestCase
 		$filters = new Filters();
 
 		$this->assertFalse($filters->get('stripTags')->safe());
+	}
+
+	public function testTrimRemovesWhitespace(): void
+	{
+		$filters = new Filters();
+
+		$this->assertSame('Boiler', $filters->get('trim')->apply(" \t Boiler \n"));
+	}
+
+	public function testTrimSupportsCharactersMask(): void
+	{
+		$filters = new Filters();
+
+		$this->assertSame('Boiler', $filters->get('trim')->apply('---Boiler---', '-'));
+	}
+
+	public function testTrimIsNotSafe(): void
+	{
+		$filters = new Filters();
+
+		$this->assertFalse($filters->get('trim')->safe());
 	}
 
 	public function testSanitizeRemovesScripts(): void

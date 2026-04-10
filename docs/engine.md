@@ -309,6 +309,7 @@ Boiler ships with built-in filters:
 
 - `sanitize` removes unsafe HTML (requires `symfony/html-sanitizer`). This filter is safe.
 - `stripTags` removes HTML tags via `strip_tags()`. This filter is not safe.
+- `trim` trims leading and trailing characters via `trim()`. This filter is not safe.
 
 Read [displaying values](values.md) for more on filters and escaping.
 
