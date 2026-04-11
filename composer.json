@@ -10,7 +10,11 @@
 		}
 	],
 	"homepage": "https://duon.run/boiler",
-	"keywords": ["duon", "templating", "templates"],
+	"keywords": [
+		"duon",
+		"templating",
+		"templates"
+	],
 	"autoload": {
 		"psr-4": {
 			"Duon\\Boiler\\": "src/"
@@ -37,7 +41,7 @@
 			"./vendor/bin/phpunit --testdox --no-coverage --colors=always"
 		],
 		"types": "./vendor/bin/psalm --no-cache",
-		"mdlint": "markdownlint-cli2 README.md CHANGELOG.md LICENSE.md docs/",
+		"mdlint": "markdownlint-cli2 README.md CHANGELOG.md LICENSE.md bench/README.md docs/",
 		"lint": [
 			"./vendor/bin/mago fmt --check",
 			"./vendor/bin/mago lint"
