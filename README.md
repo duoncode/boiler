@@ -13,7 +13,7 @@ Boiler is a small template engine for PHP 8.5+, inspired by Plates. Like Plates,
 Key differences from Plates:
 
 - Automatic escaping of strings and [Stringable](https://www.php.net/manual/en/class.stringable.php) values for enhanced security
-- Global template context, making all variables accessible throughout the template
+- Inherited render context across layouts, inserts, and section captures; custom insert or layout context merges on top and overrides duplicate keys
 
 Other highlights:
 
