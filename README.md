@@ -140,10 +140,7 @@ When you need custom lookup, wrapper, filter, or escaper infrastructure, instant
 
 When Boiler manages filters or escapers internally, you can register additional named entries with `Engine::filter()` and `Engine::escape()`.
 
-Filter lookups use `Duon\Boiler\Contract\Filters`, which only needs a `get(string $name): Duon\Boiler\Contract\Filter` method.
-Filter registration is exposed separately through `Duon\Boiler\Contract\RegistersFilters`.
-Escaper lookups use `Duon\Boiler\Contract\Escapers`, which expose `default` and `get(string $name): Duon\Boiler\Contract\Escaper`.
-Escaper registration is exposed separately through `Duon\Boiler\Contract\RegistersEscapers`.
+Filter lookups use `Duon\Boiler\Contract\Filters`, which only needs a `get(string $name): Duon\Boiler\Contract\Filter` method. Filter registration is exposed separately through `Duon\Boiler\Contract\RegistersFilters`. Escaper lookups use `Duon\Boiler\Contract\Escapers`, which expose `default` and `get(string $name): Duon\Boiler\Contract\Escaper`. Escaper registration is exposed separately through `Duon\Boiler\Contract\RegistersEscapers`.
 
 Template helpers available via `$this` inside templates:
 

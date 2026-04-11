@@ -55,8 +55,7 @@ Read [rendering templates](rendering.md) for the lookup rules.
 
 ## Customize template lookup
 
-Boiler resolves template names through `Duon\Boiler\Contract\Resolver`.
-`Engine::create()` and `Engine::unescaped()` always use `Duon\Boiler\Resolver`.
+Boiler resolves template names through `Duon\Boiler\Contract\Resolver`. `Engine::create()` and `Engine::unescaped()` always use `Duon\Boiler\Resolver`.
 
 Instantiate `Engine` directly when your application needs different lookup rules:
 
@@ -82,8 +81,7 @@ $engine = new Engine(
 );
 ```
 
-Resolver selection happens at engine construction time.
-Lookup caching is resolver-specific. `Resolver` caches successful resolutions.
+Resolver selection happens at engine construction time. Lookup caching is resolver-specific. `Resolver` caches successful resolutions.
 
 ## Use a custom environment
 
@@ -272,11 +270,9 @@ $engine = \Duon\Boiler\Engine::create('/path/to/templates')
 
 `Engine::filter()` delegates filter registration to the injected environment. If you configure a custom wrapper through `Environment::setWrapper()`, filter registration must be handled by that wrapper setup instead.
 
-Lookups go through `Contract\Filters`, which only needs a `get(string $name): Contract\Filter` method.
-Registration is an optional capability exposed through `Contract\RegistersFilters`.
+Lookups go through `Contract\Filters`, which only needs a `get(string $name): Contract\Filter` method. Registration is an optional capability exposed through `Contract\RegistersFilters`.
 
-Escaper lookups go through `Contract\Escapers`, which expose `default` and `get(string $name): Contract\Escaper`.
-Escaper registration is exposed separately through `Contract\RegistersEscapers`.
+Escaper lookups go through `Contract\Escapers`, which expose `default` and `get(string $name): Contract\Escaper`. Escaper registration is exposed separately through `Contract\RegistersEscapers`.
 
 A filter implements `Duon\Boiler\Contract\Filter` with two methods:
 
