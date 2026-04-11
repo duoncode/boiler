@@ -1,9 +1,16 @@
 @extends('layout')
 
+@section('head')
+<meta name="description" content="{{ strtoupper(trim($campaign['title'])) }}">
+<link rel="canonical" href="/products?campaign={{ trim($campaign['code']) }}">
+@endsection
+
 @section('body')
-<h1>{{ $title }}</h1>
+<h1>{{ strtoupper(trim($title)) }}</h1>
 
 {!! $announcement !!}
+
+@include('promo-banner', ['campaign' => $campaign])
 
 <section class="user-profile">
     <img src="{{ $user['profile']['avatar'] }}" alt="{{ $user['name'] }}">
@@ -21,10 +28,14 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>SKU</th>
                 <th>Name</th>
+                <th>Vendor</th>
                 <th>Price</th>
                 <th>Status</th>
+                <th>Rating</th>
                 <th>Tags</th>
+                <th>Badges</th>
             </tr>
         </thead>
         <tbody>
@@ -35,7 +46,45 @@
     </table>
 </section>
 
-@include('insert')
+@include('insert', [
+    'title' => $title,
+    'user' => $user,
+    'stats' => $stats,
+    'activeFilters' => $activeFilters,
+    'facets' => $facets,
+])
+
+<section class="recommendations">
+    <h2>Recommended for you</h2>
+    @foreach ($recommendations as $group)
+        <article>
+            <h3>{{ trim($group['title']) }}</h3>
+            <ul>
+                @foreach ($group['items'] as $item)
+                    <li>
+                        <span class="name">{{ trim($item['name']) }}</span>
+                        @if ($item['price'] > 100)
+                            <strong>${{ number_format($item['price'], 2) }}</strong>
+                        @else
+                            <span>${{ number_format($item['price'], 2) }}</span>
+                        @endif
+                    </li>
+                @endforeach
+            </ul>
+        </article>
+    @endforeach
+</section>
+
+<section class="cart-summary">
+    <h2>Mini Cart</h2>
+    <p>Items: {{ $cart['items'] }}</p>
+    <p>Subtotal: ${{ number_format($cart['subtotal'], 2) }}</p>
+    @if ($cart['discount'] > 0)
+        <p>Discount: -${{ number_format($cart['discount'], 2) }}</p>
+    @endif
+    <p>Shipping: ${{ number_format($cart['shipping'], 2) }}</p>
+    <p>Total: ${{ number_format($cart['total'], 2) }}</p>
+</section>
 
 <section class="stats">
     <div>Orders: {{ $stats['totalOrders'] }}</div>
@@ -47,5 +96,6 @@
 <script>
     console.log('Product page loaded');
     const userId = {{ $user['id'] }};
+    const cartItems = {{ $cart['items'] }};
 </script>
 @endsection

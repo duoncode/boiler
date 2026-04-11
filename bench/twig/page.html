@@ -1,9 +1,16 @@
 {% extends "layout.html" %}
 
+{% block head %}
+<meta name="description" content="{{ campaign.title|trim|upper }}">
+<link rel="canonical" href="/products?campaign={{ campaign.code|trim }}">
+{% endblock %}
+
 {% block body %}
-<h1>{{ title }}</h1>
+<h1>{{ title|trim|upper }}</h1>
 
 {{ announcement|raw }}
+
+{{ include('promo-banner.html', { campaign: campaign }) }}
 
 <section class="user-profile">
     <img src="{{ user.profile.avatar }}" alt="{{ user.name }}">
@@ -21,10 +28,14 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>SKU</th>
                 <th>Name</th>
+                <th>Vendor</th>
                 <th>Price</th>
                 <th>Status</th>
+                <th>Rating</th>
                 <th>Tags</th>
+                <th>Badges</th>
             </tr>
         </thead>
         <tbody>
@@ -35,7 +46,45 @@
     </table>
 </section>
 
-{{ include('insert.html') }}
+{{ include('insert.html', {
+    title: title,
+    user: user,
+    stats: stats,
+    activeFilters: activeFilters,
+    facets: facets,
+}) }}
+
+<section class="recommendations">
+    <h2>Recommended for you</h2>
+    {% for group in recommendations %}
+        <article>
+            <h3>{{ group.title|trim }}</h3>
+            <ul>
+                {% for item in group.items %}
+                    <li>
+                        <span class="name">{{ item.name|trim }}</span>
+                        {% if item.price > 100 %}
+                            <strong>${{ item.price|number_format(2) }}</strong>
+                        {% else %}
+                            <span>${{ item.price|number_format(2) }}</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </article>
+    {% endfor %}
+</section>
+
+<section class="cart-summary">
+    <h2>Mini Cart</h2>
+    <p>Items: {{ cart.items }}</p>
+    <p>Subtotal: ${{ cart.subtotal|number_format(2) }}</p>
+    {% if cart.discount > 0 %}
+        <p>Discount: -${{ cart.discount|number_format(2) }}</p>
+    {% endif %}
+    <p>Shipping: ${{ cart.shipping|number_format(2) }}</p>
+    <p>Total: ${{ cart.total|number_format(2) }}</p>
+</section>
 
 <section class="stats">
     <div>Orders: {{ stats.totalOrders }}</div>
@@ -47,5 +96,6 @@
 <script>
     console.log('Product page loaded');
     const userId = {{ user.id }};
+    const cartItems = {{ cart.items }};
 </script>
 {% endblock %}
