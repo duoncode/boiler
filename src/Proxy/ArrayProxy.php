@@ -106,9 +106,9 @@ final class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
 	public function offsetSet(mixed $offset, mixed $value): void
 	{
 		if ($offset === null) {
-			$this->array[] = $value;
+			$this->array[] = $this->wrapper->unwrap($value);
 		} else {
-			$this->array[$offset] = $value;
+			$this->array[$offset] = $this->wrapper->unwrap($value);
 		}
 
 		$this->keys = array_keys($this->array);

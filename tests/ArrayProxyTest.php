@@ -233,6 +233,24 @@ final class ArrayProxyTest extends TestCase
 		$this->assertSame('after', $arrval[0]->unwrap());
 	}
 
+	public function testSetValueUnwrapsWrappedValue(): void
+	{
+		$arrval = $this->arrayProxy([]);
+		$arrval['html'] = $this->stringProxy('<b>boiler</b>');
+
+		$this->assertSame(['html' => '<b>boiler</b>'], $arrval->unwrap());
+		$this->assertSame('<b>boiler</b>', $arrval['html']->unwrap());
+	}
+
+	public function testAppendValueUnwrapsNestedWrappedValues(): void
+	{
+		$arrval = $this->arrayProxy([]);
+		$arrval[] = ['html' => $this->stringProxy('<b>boiler</b>')];
+
+		$this->assertSame([['html' => '<b>boiler</b>']], $arrval->unwrap());
+		$this->assertSame('<b>boiler</b>', $arrval[0]['html']->unwrap());
+	}
+
 	public function testUnsetValue(): void
 	{
 		$arrval = $this->arrayProxy([1, 2, 3]);
