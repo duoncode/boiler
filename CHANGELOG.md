@@ -4,37 +4,36 @@
 
 ### Breaking
 
-- Renamed the `Engine` and standalone `Template` API's `whitelist` argument to `trusted`. This breaks named argument calls such as `whitelist: [...]`, which must now use `trusted: [...]`.
+- Renamed `whitelist` to `trusted` across the `Engine` and standalone `Template` APIs. Named argument calls must now use `trusted: [...]`.
 - Renamed `Engine::registerMethod()` and standalone `Template::registerMethod()` to `method()`.
-- Changed `Engine::__construct()` to accept a `Contract\Resolver` and `Contract\Environment` instead of template directories. Use `Engine::create()` or `Engine::unescaped()` when you want Boiler's built-in resolver.
-- Changed `Engine::create()` and `Engine::unescaped()` to accept only directory input. Use the constructor when you need a custom resolver.
+- Changed `Engine::__construct()` to accept a `Contract\Resolver` and `Contract\Environment` instead of template directories. Use `Engine::create()` or `Engine::unescaped()` when you want Boiler's built-in setup.
 - Renamed `Engine::getFile()` to `Engine::resolve()`.
 - Renamed `Context::esc()` to `Context::escape()` and `Context::context()` to `Context::get()`.
-- Changed `Wrapper` from a static helper into an instance-based API and replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escapers.
+- Changed `Wrapper` from a static helper into an instance-based API and replaced the template escape API's `htmlspecialchars()` flags and encoding arguments with named escapers.
 - `symfony/html-sanitizer` is now optional. Install it explicitly when you want the built-in `sanitize` filter.
-- Changed chained filter safety semantics. Safe output no longer stays safe through arbitrary later filters. Custom filters must implement `Contract\PreservesSafety` when they preserve already-safe HTML and should keep it unescaped.
+- Boiler now requires the `ext-mbstring` extension.
 
 ### Added
 
 - Added `Contract\Resolver` and `Resolver` for template lookup.
 - Added `Contract\Environment` and `Environment` for advanced wrapper, filter, and escaper configuration.
-- Added `Contract\Wrapper`, `Contract\Escaper`, `Contract\Escapers`, `Contract\Filter`, `Contract\Filters`, `Contract\RegistersEscapers`, and `Contract\RegistersFilters`, plus the default `Wrapper`, `Escapers`, and `Filters` implementations.
+- Added `Contract\Wrapper`, `Contract\Escaper`, `Contract\Escapers`, `Contract\Filter`, `Contract\Filters`, `Contract\RegistersEscapers`, and `Contract\RegistersFilters`, plus the default `Escapers` and `Filters` registries.
 - Added `Contract\PreservesSafety` for filters that preserve already-safe HTML without claiming to sanitize arbitrary input.
 - Added advanced wrapper configuration through `Environment::setWrapper()`, `Environment::setFilters()`, and `Environment::setEscapers()`.
 - Added `Engine::filter()` and `Engine::escape()` for registering custom filters and escapers. Wrapped strings can call registered filters as virtual methods.
 - Added `Context::wrap()` so templates can opt into wrapper proxy behavior for raw values.
-- Added the built-in `strip` filter and the optional `sanitize` filter when `symfony/html-sanitizer` is installed.
+- Added built-in `lower`, `upper`, `stripTags`, and `trim` filters, plus the optional `sanitize` filter when `symfony/html-sanitizer` is installed.
 
 ### Fixed
 
-- Made engine-registered custom methods available in inserted templates and layouts.
+- Made registered template methods available in inserted templates and layouts.
 - Hardened template path resolution to reject traversal outside configured roots, including sibling directories with shared prefixes.
-- Throw a render error for unclosed section capture blocks.
-- Unwrap wrapped proxy arguments before invoking object methods, setters, or `__invoke()`.
+- Raised a render error for unclosed section capture blocks.
+- Unwrapped wrapped proxy values before array assignments and before invoking object methods, setters, or `__invoke()`.
 
 ### Removed
 
-- Removed `Context::clean()` and the `Sanitizer` class; use `wrap($value)->sanitize()` or other filter pipelines instead.
+- Removed `Context::clean()` and the `Sanitizer` class; use `$this->wrap($value)->sanitize()` or other filter pipelines instead.
 - Removed `Contract\Engine`, `Contract\Template`, and `Contract\MethodRegister`.
 - Removed support for subclassing `Engine`, `Template`, and `TemplateContext`; these classes are now final.
 
