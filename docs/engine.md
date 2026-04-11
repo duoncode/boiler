@@ -114,7 +114,7 @@ $engine = \Duon\Boiler\Engine::create(
 );
 ```
 
-Per-render context overrides defaults with the same key.
+Per-render context overrides defaults with the same key. These values become part of the render context, so layouts, inserts, and section captures inherit them unless more specific context overrides a key.
 
 ## Configure trusted classes
 

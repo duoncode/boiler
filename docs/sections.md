@@ -35,7 +35,7 @@ Create `layout.php`:
 </body>
 ```
 
-Rendering `page` inserts the captured section content into the layout.
+Rendering `page` inserts the captured section content into the layout. Section capture runs while the page template executes, so the captured block can access the same variables as that template. When a layout later calls `$this->section()`, Boiler outputs the captured string rather than rendering a separate template with its own context.
 
 ## Default content
 
