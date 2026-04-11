@@ -37,6 +37,13 @@ final class EngineTest extends TestCase
 		Engine::create([TestCase::DEFAULT_DIR, './doesnotexist']);
 	}
 
+	public function testRejectsEmptyDirectoryList(): void
+	{
+		$this->throws(LookupException::class, 'At least one template directory must be configured');
+
+		Engine::create([]);
+	}
+
 	public function testSimpleRendering(): void
 	{
 		$engine = Engine::create(TestCase::DEFAULT_DIR, ['obj' => $this->obj()]);

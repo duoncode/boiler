@@ -45,6 +45,13 @@ final class ResolverTest extends TestCase
 		);
 	}
 
+	public function testRejectsEmptyDirectoryList(): void
+	{
+		$this->throws(LookupException::class, 'At least one template directory must be configured');
+
+		new Resolver([]);
+	}
+
 	public function testRejectsInvalidTemplatePathCharacters(): void
 	{
 		$this->throws(UnexpectedValueException::class, 'invalid or empty');

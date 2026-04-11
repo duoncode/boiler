@@ -10,7 +10,7 @@ use Override;
 
 /**
  * @psalm-type DirsInput = non-empty-string|list<non-empty-string>|array<non-empty-string, non-empty-string>
- * @psalm-type Dirs = list<non-empty-string>|array<non-empty-string, non-empty-string>
+ * @psalm-type Dirs = non-empty-list<non-empty-string>|non-empty-array<non-empty-string, non-empty-string>
  */
 final class Resolver implements Contract\Resolver
 {
@@ -87,8 +87,6 @@ final class Resolver implements Contract\Resolver
 			throw new LookupException("Template namespace `{$namespace}` does not exist");
 		}
 
-		assert(count($this->dirs) > 0, 'At least one template directory must be configured');
-
 		foreach ($this->dirs as $dir) {
 			$templatePath = new TemplatePath($dir, $file);
 
@@ -123,6 +121,10 @@ final class Resolver implements Contract\Resolver
 
 		if (is_string($dirs)) {
 			return [$preparePath($dirs)];
+		}
+
+		if ($dirs === []) {
+			throw new LookupException('At least one template directory must be configured');
 		}
 
 		return array_map(
