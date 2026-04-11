@@ -12,12 +12,14 @@
 - Renamed `Context::esc()` to `Context::escape()` and `Context::context()` to `Context::get()`.
 - Changed `Wrapper` from a static helper into an instance-based API and replaced the public escaping API's `htmlspecialchars()` flags and encoding arguments with named escapers.
 - `symfony/html-sanitizer` is now optional. Install it explicitly when you want the built-in `sanitize` filter.
+- Changed chained filter safety semantics. Safe output no longer stays safe through arbitrary later filters. Custom filters must implement `Contract\PreservesSafety` when they preserve already-safe HTML and should keep it unescaped.
 
 ### Added
 
 - Added `Contract\Resolver` and `Resolver` for template lookup.
 - Added `Contract\Environment` and `Environment` for advanced wrapper, filter, and escaper configuration.
 - Added `Contract\Wrapper`, `Contract\Escaper`, `Contract\Escapers`, `Contract\Filter`, `Contract\Filters`, `Contract\RegistersEscapers`, and `Contract\RegistersFilters`, plus the default `Wrapper`, `Escapers`, and `Filters` implementations.
+- Added `Contract\PreservesSafety` for filters that preserve already-safe HTML without claiming to sanitize arbitrary input.
 - Added advanced wrapper configuration through `Environment::setWrapper()`, `Environment::setFilters()`, and `Environment::setEscapers()`.
 - Added `Engine::filter()` and `Engine::escape()` for registering custom filters and escapers. Wrapped strings can call registered filters as virtual methods.
 - Added `Context::wrap()` so templates can opt into wrapper proxy behavior for raw values.

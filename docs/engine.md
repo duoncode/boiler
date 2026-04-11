@@ -277,7 +277,9 @@ Escaper lookups go through `Contract\Escapers`, which expose `default` and `get(
 A filter implements `Duon\Boiler\Contract\Filter` with two methods:
 
 - `apply(string $value, mixed ...$args): string` transforms the value.
-- `safe(): bool` returns `true` when the filter output is safe HTML and should skip auto-escaping.
+- `safe(): bool` returns `true` when the filter output is safe HTML from arbitrary input and should skip auto-escaping.
+
+When a filter should keep already-safe HTML safe without claiming to sanitize arbitrary input, implement `Duon\Boiler\Contract\PreservesSafety` as well.
 
 Use filters for transformations. When you need a different escaping context, register a named escaper instead.
 
@@ -295,19 +297,20 @@ In escaped renders, Boiler wraps string values for you. When you need filters on
 <?= $this->wrap($html)->sanitize() ?>
 ```
 
-Filters can be chained. Once a safe filter is applied, the chain stays safe:
+Filters can be chained. Safe output only stays safe through filters that explicitly preserve safety:
 
 ```php
+<?= $html->sanitize()->upper() ?>
 <?= $html->sanitize()->stripTags('<b>') ?>
 ```
 
 Boiler ships with built-in filters:
 
 - `sanitize` removes unsafe HTML (requires `symfony/html-sanitizer`). This filter is safe.
-- `lower` lowercases text via `mb_strtolower()`. This filter is not safe.
-- `upper` uppercases text via `mb_strtoupper()`. This filter is not safe.
-- `stripTags` removes HTML tags via `strip_tags()`. This filter is not safe.
-- `trim` trims leading and trailing characters via `trim()`. This filter is not safe.
+- `lower` lowercases text via `mb_strtolower()`. This filter is not safe on arbitrary input, but it preserves already-safe output.
+- `upper` uppercases text via `mb_strtoupper()`. This filter is not safe on arbitrary input, but it preserves already-safe output.
+- `stripTags` removes HTML tags via `strip_tags()`. This filter is not safe on arbitrary input, but it preserves already-safe output.
+- `trim` trims leading and trailing characters via `trim()`. This filter is not safe on arbitrary input, but it preserves already-safe output.
 
 Read [displaying values](values.md) for more on filters and escaping.
 

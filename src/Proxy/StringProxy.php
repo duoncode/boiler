@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler\Proxy;
 
+use Duon\Boiler\Contract\PreservesSafety;
 use Duon\Boiler\Contract\Wrapper;
 use Override;
 
@@ -32,7 +33,7 @@ final class StringProxy implements Proxy
 		$filter = $this->wrapper->filter($name);
 		$filtered = $filter->apply($this->value, ...$args);
 		$proxy = new self($filtered, $this->wrapper);
-		$proxy->safe = $this->safe || $filter->safe();
+		$proxy->safe = $filter->safe() || $this->safe && $filter instanceof PreservesSafety;
 
 		return $proxy;
 	}

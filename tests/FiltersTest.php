@@ -112,6 +112,16 @@ final class FiltersTest extends TestCase
 		$this->assertFalse($filters->get('lower')->safe());
 	}
 
+	public function testBuiltinUnsafeFiltersCanPreserveSafeOutput(): void
+	{
+		$filters = new Filters();
+
+		$this->assertInstanceOf(Contract\PreservesSafety::class, $filters->get('lower'));
+		$this->assertInstanceOf(Contract\PreservesSafety::class, $filters->get('stripTags'));
+		$this->assertInstanceOf(Contract\PreservesSafety::class, $filters->get('trim'));
+		$this->assertInstanceOf(Contract\PreservesSafety::class, $filters->get('upper'));
+	}
+
 	public function testSanitizeRemovesScripts(): void
 	{
 		$filters = new Filters();

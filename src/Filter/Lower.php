@@ -8,7 +8,7 @@ use Duon\Boiler\Contract;
 use Override;
 
 /** @api */
-final class Lower implements Contract\Filter
+final class Lower implements Contract\Filter, Contract\PreservesSafety
 {
 	#[Override]
 	public function apply(string $value, mixed ...$args): string

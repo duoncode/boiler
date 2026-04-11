@@ -75,19 +75,22 @@ Filters are value transformations applied as virtual methods on wrapped string v
 
 In escaped renders, string values from template context are already wrapped. In unescaped renders, or when you start from a literal string in the template, call `$this->wrap()` first.
 
-Filters can be chained. Once a safe filter is applied in a chain, the result stays safe and skips auto-escaping:
+Filters can be chained. Safe output only stays safe through filters that explicitly preserve safety. Boiler's built-in `lower`, `upper`, `stripTags`, and `trim` filters preserve already-safe HTML without claiming to sanitize arbitrary input:
 
 ```php
+<?= $html->sanitize()->upper() ?>
 <?= $html->sanitize()->stripTags('<b>') ?>
 ```
 
 Boiler ships with built-in filters:
 
 - `sanitize` removes unsafe HTML while allowing safe elements. This filter is safe, meaning its output skips auto-escaping. Requires `symfony/html-sanitizer`.
-- `lower` lowercases text via `mb_strtolower()`. This filter is not safe, so its output is still auto-escaped.
-- `upper` uppercases text via `mb_strtoupper()`. This filter is not safe, so its output is still auto-escaped.
-- `stripTags` removes HTML tags via `strip_tags()`. This filter is not safe, so its output is still auto-escaped.
-- `trim` trims leading and trailing characters via `trim()`. This filter is not safe, so its output is still auto-escaped.
+- `lower` lowercases text via `mb_strtolower()`. This filter is not safe on arbitrary input, but it preserves already-safe output from earlier safe filters.
+- `upper` uppercases text via `mb_strtoupper()`. This filter is not safe on arbitrary input, but it preserves already-safe output from earlier safe filters.
+- `stripTags` removes HTML tags via `strip_tags()`. This filter is not safe on arbitrary input, but it preserves already-safe output from earlier safe filters.
+- `trim` trims leading and trailing characters via `trim()`. This filter is not safe on arbitrary input, but it preserves already-safe output from earlier safe filters.
+
+When you write a custom filter, return `true` from `safe()` only when the filter output is safe HTML from arbitrary input. When it should keep already-safe HTML safe, implement `Duon\Boiler\Contract\PreservesSafety` instead.
 
 Register custom filters on the engine with the fluent `filter()` method. Read [the engine](engine.md) for details.
 
