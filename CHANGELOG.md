@@ -1,6 +1,10 @@
 # Changelog
 
-## [Unreleased](https://github.com/duonrun/boiler/compare/0.2.0...HEAD)
+## [Unreleased](https://github.com/duonrun/boiler/compare/0.3.0...HEAD)
+
+No significant changes have been made.
+
+## [0.3.0](https://github.com/duonrun/boiler/releases/tag/0.3.0) (2026-04-11)
 
 ### Breaking
 
