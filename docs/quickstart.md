@@ -20,7 +20,6 @@ Create `/path/to/templates/page.php`:
 
 ```php
 <?php $this->layout('layout') ?>
-
 <p>ID <?= $id ?></p>
 ```
 
@@ -43,7 +42,14 @@ use Duon\Boiler\Engine;
 $engine = Engine::create('/path/to/templates');
 $html = $engine->render('page', ['id' => 13]);
 
-assert($html === '<!doctype html><html lang="en"><body><p>ID 13</p></body></html>');
+assert(trim($html) === <<<'HTML'
+<!doctype html>
+<html lang="en">
+    <body>
+        <p>ID 13</p>
+    </body>
+</html>
+HTML);
 ```
 
 Boiler escapes strings automatically. If `id` were `'<b>13</b>'`, the output would contain `&lt;b&gt;13&lt;/b&gt;`.
