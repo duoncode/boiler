@@ -8,7 +8,7 @@
 [![Psalm coverage](https://shepherd.dev/github/duonrun/boiler/coverage.svg?)](https://shepherd.dev/github/duonrun/boiler)
 <!-- prettier-ignore-end -->
 
-Boiler is a small template engine for PHP 8.5+, inspired by Plates. Like Plates, it uses native PHP as its templating language rather than introducing a custom syntax.
+Boiler is a small template engine for PHP 8.5+, inspired by [Plates](https://platesphp.com/). Like Plates, it uses native PHP as its templating language rather than introducing a custom syntax.
 
 Key differences from Plates:
 
@@ -134,15 +134,9 @@ $engine = Engine::create('/path/to/templates')
     });
 ```
 
-Filters are available as virtual methods on wrapped string values in templates. In escaped renders, Boiler wraps string values for you. When you need filters on a raw value inside a template, call `$this->wrap($value)` first. Boiler ships with built-in `lower`, `upper`, `stripTags`, and `trim` filters. If `symfony/html-sanitizer` is installed, the `sanitize` filter is registered automatically.
+Filters are available as virtual methods on wrapped string values in templates. In escaped renders, Boiler wraps string values for you. When you need filters on a raw value inside a template, call `$this->wrap($value)` first. Boiler ships with built-in `lower`, `upper`, `stripTags`, and `trim` filters, and registers `sanitize` automatically when `symfony/html-sanitizer` is installed.
 
-Return `true` from `safe()` only when a filter produces safe HTML from arbitrary input. When a filter should keep already-safe HTML safe without claiming to sanitize arbitrary input, implement `Duon\Boiler\Contract\PreservesSafety`. Boiler's built-in `lower`, `upper`, `stripTags`, and `trim` filters use this behavior, so chains such as `$html->sanitize()->upper()` stay unescaped while arbitrary later filters do not.
-
-When you need custom lookup, wrapper, filter, or escaper infrastructure, instantiate `Engine` directly with your own resolver and `Duon\Boiler\Environment`. Use `Environment::setWrapper()` when you want to replace Boiler's runtime wrapper entirely. Use `Environment::setFilters()` and `Environment::setEscapers()` when you want Boiler to keep building the wrapper internally. These modes are mutually exclusive, and the environment is sealed on first `wrapper()` or render.
-
-When Boiler manages filters or escapers internally, you can register additional named entries with `Engine::filter()` and `Engine::escape()`.
-
-Filter lookups use `Duon\Boiler\Contract\Filters`, which only needs a `get(string $name): Duon\Boiler\Contract\Filter` method. Filter registration is exposed separately through `Duon\Boiler\Contract\RegistersFilters`. Escaper lookups use `Duon\Boiler\Contract\Escapers`, which expose `default` and `get(string $name): Duon\Boiler\Contract\Escaper`. Escaper registration is exposed separately through `Duon\Boiler\Contract\RegistersEscapers`.
+For filter safety rules and advanced wrapper, filter, and escaper customization, see [displaying values](docs/values.md), [engine](docs/engine.md), and [template](docs/template.md).
 
 Template helpers available via `$this` inside templates:
 
@@ -155,27 +149,13 @@ Template helpers available via `$this` inside templates:
 
 ## Error handling
 
-Boiler fails fast when template lookup or render state is invalid. Common cases include:
-
-- missing template directories
-- missing templates or unknown namespaces
-- invalid template names such as malformed `namespace:template` paths
-- path traversal outside configured template roots
-- assigning more than one layout in the same template
-- nested or unclosed section capture blocks
-- calling an unknown filter or custom template method
-
-See [rendering templates](docs/rendering.md), [layouts](docs/layouts.md), [sections](docs/sections.md), and [template](docs/template.md) for the relevant rules.
+Boiler fails fast on invalid lookups and render state, such as missing templates, invalid template names, duplicate layouts, unclosed sections, or unknown methods and filters. See [rendering templates](docs/rendering.md), [layouts](docs/layouts.md), [sections](docs/sections.md), and [template](docs/template.md) for the exact rules.
 
 ## Benchmark
 
-Boiler includes a canonical benchmark in [`bench/`](bench/) that renders a feature-rich catalog page with layouts, repeated partials, sections or blocks, mixed array, object, and iterator view data, loops, and escaping.
+Boiler includes a canonical benchmark in [`bench/`](bench/) that renders a feature-rich catalog page and is used mainly to catch performance regressions during development.
 
-The benchmark is meant to resemble a realistic steady-state page render and is used mainly to catch performance regressions during development.
-
-Run the benchmark with Xdebug and PCOV disabled. Both add substantial runtime overhead, especially for Boiler's proxy-based auto escaping, so results with either extension enabled are not useful for fair engine comparisons. The benchmark script warns when it detects either of them. `composer benchmark` already runs it with `xdebug.mode=off` and `pcov.enabled=0`.
-
-Results depend on PHP version, OPcache settings, hardware, and workload shape. They do not represent every rendering scenario and should not be treated as universal rankings. If you want to evaluate Boiler for your environment, run the benchmark locally and compare it with your own templates.
+Run it with `composer benchmark`. For benchmark scope, caveats, and detailed usage, see [`bench/README.md`](bench/README.md).
 
 ## Run the tests
 
