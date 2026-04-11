@@ -22,6 +22,26 @@ $html = $template->renderEscaped(['id' => 13]);
 $html = $template->renderUnescaped(['id' => 13]);
 ```
 
+## Register custom template methods
+
+Register helpers on a standalone template with `method()`. They are available as `$this->methodName()` inside the template, its inserts, and its layouts.
+
+```php
+$template = new \Duon\Boiler\Template('/path/to/templates/page.php');
+
+$template->method('upper', static fn(string $value): string => strtoupper($value));
+
+$html = $template->render(['text' => 'Boiler']);
+```
+
+If `page.php` contains:
+
+```php
+<h2><?= $this->upper($text) ?></h2>
+```
+
+Boiler unwraps proxy arguments before it calls your method, so the callable receives normal PHP values. In escaped renders, Boiler wraps the return value again before exposing it to the template. In unescaped renders, it returns the unwrapped value.
+
 ## Layouts and inserts
 
 Standalone templates can use the same composition helpers as engine-backed renders:
