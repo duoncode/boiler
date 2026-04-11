@@ -79,7 +79,7 @@ final class Resolver implements Contract\Resolver
 	/** @psalm-param non-empty-string $file */
 	private function templatePath(?string $namespace, string $file): TemplatePath
 	{
-		if (!is_null($namespace)) {
+		if ($namespace !== null) {
 			if (array_key_exists($namespace, $this->dirs)) {
 				return new TemplatePath($this->dirs[$namespace], $file);
 			}

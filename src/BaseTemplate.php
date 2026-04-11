@@ -217,7 +217,7 @@ abstract class BaseTemplate
 			);
 			$template->setMethods($methods);
 
-			$layoutContext = is_null($layout->context)
+			$layoutContext = $layout->context === null
 				? $context->get()
 				: $context->get($layout->context);
 

@@ -55,7 +55,7 @@ final class Sections
 	{
 		$section = $this->sections[$name] ?? null;
 
-		if (is_null($section)) {
+		if ($section === null) {
 			return $default;
 		}
 
