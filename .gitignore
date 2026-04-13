@@ -1,6 +1,6 @@
+.coverage/
 cache/
 vendor/
-.coverage
 data/
 tmp/
 *.log
