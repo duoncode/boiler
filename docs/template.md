@@ -42,6 +42,25 @@ If `page.php` contains:
 
 Boiler unwraps proxy arguments before it calls your method, so the callable receives normal PHP values. In escaped renders, Boiler wraps the return value again before exposing it to the template. In unescaped renders, it returns the unwrapped value.
 
+Pass `safe: true` when a helper returns safe HTML:
+
+```php
+use function App\Template\icon;
+
+$template = new \Duon\Boiler\Template('/path/to/templates/page.php');
+$template->method('icon', icon(...), safe: true);
+```
+
+That lets you render the helper directly in an escaped template:
+
+```php
+<?= $this->icon('check') ?>
+```
+
+In escaped renders, safe methods must return `string` or `Stringable`. Boiler exposes that return value as a safe wrapped string, so direct output skips auto-escaping and safety-preserving string filters can still be chained. In unescaped renders, Boiler still returns the unwrapped value.
+
+Use `safe: true` only when the helper itself guarantees safe HTML for the values it accepts.
+
 ## Layouts and inserts
 
 Standalone templates can use the same composition helpers as engine-backed renders:

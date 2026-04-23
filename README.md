@@ -19,7 +19,7 @@ Other highlights:
 
 - Layouts, inserts/partials, and sections, including append and prepend support
 - Wrapper-driven escaping and a pluggable filter system for value transformations
-- Custom template methods and optional trusted classes
+- Custom template methods, including safe HTML helpers, and optional trusted classes
 
 ## Installation
 
@@ -114,6 +114,17 @@ $engine = Engine::create(
     trusted: [TrustedHtml::class],
 );
 ```
+
+Register custom template methods with `method()`. Pass `safe: true` when a helper returns safe HTML:
+
+```php
+use function App\Template\icon;
+
+$engine = Engine::create('/path/to/templates')
+    ->method('icon', icon(...), safe: true);
+```
+
+Methods are available as `$this->icon()` inside templates, inserts, and layouts.
 
 Register custom filters with the fluent `filter()` method:
 

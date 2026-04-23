@@ -64,6 +64,24 @@ This is most useful when you want string filter methods on a literal or raw stri
 
 `$this->wrap()` always uses the wrapper directly, so it still returns proxies even when the engine is rendering unescaped output.
 
+## Return safe HTML from a method
+
+When a registered template method generates safe HTML, mark it with `safe: true`:
+
+```php
+use function App\Template\icon;
+
+$engine->method('icon', icon(...), safe: true);
+```
+
+In escaped renders, `<?= $this->icon('check') ?>` then skips auto-escaping. Boiler still exposes the result as a wrapped string, so safety-preserving filters continue to work:
+
+```php
+<?= $this->icon('check')->trim() ?>
+```
+
+Use this only when the helper itself guarantees safe HTML. In escaped renders, safe methods must return `string` or `Stringable`.
+
 ## Filters
 
 Filters are value transformations applied as virtual methods on wrapped string values inside templates:
