@@ -13,6 +13,7 @@ use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Exception\RuntimeException;
 use Duon\Boiler\Exception\UnexpectedValueException;
+use Duon\Boiler\Proxy\StringProxy;
 use Duon\Boiler\Resolver;
 use Duon\Boiler\Template;
 use Duon\Boiler\TemplateContext;
@@ -801,6 +802,23 @@ final class EngineTest extends TestCase
 		$engine->method(
 			'upper',
 			static fn(string $value): string => '<b>' . strtoupper($value) . '</b>',
+			safe: true,
+		);
+
+		$this->assertSame(
+			'<h2><b>BOILER</b></h2>',
+			$this->fullTrim($engine->render('method', ['text' => 'Boiler'])),
+		);
+	}
+
+	public function testSafeCustomTemplateMethodAcceptsStringProxyReturn(): void
+	{
+		$engine = Engine::create($this->templates());
+		$engine->method(
+			'upper',
+			fn(string $value): StringProxy => $this->stringProxy(
+				'<b>' . strtoupper($value) . '</b>',
+			),
 			safe: true,
 		);
 
