@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/duonrun/boiler/compare/0.3.1...HEAD)
+## [Unreleased](https://github.com/duonrun/boiler/compare/0.3.2...HEAD)
 
 No significant changes have been made.
+
+## [0.3.2](https://github.com/duonrun/boiler/releases/tag/0.3.2) (2026-04-23)
+
+### Added
+
+- Added `safe: true` support to `Engine::method()` and `Template::method()` so helpers can return safe HTML in escaped renders without manual unwrapping while still allowing safety-preserving string filter chains.
 
 ## [0.3.1](https://github.com/duonrun/boiler/releases/tag/0.3.1) (2026-04-15)
 
