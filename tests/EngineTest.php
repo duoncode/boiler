@@ -795,6 +795,21 @@ final class EngineTest extends TestCase
 		);
 	}
 
+	public function testSafeCustomTemplateMethod(): void
+	{
+		$engine = Engine::create($this->templates());
+		$engine->method(
+			'upper',
+			static fn(string $value): string => '<b>' . strtoupper($value) . '</b>',
+			safe: true,
+		);
+
+		$this->assertSame(
+			'<h2><b>BOILER</b></h2>',
+			$this->fullTrim($engine->render('method', ['text' => 'Boiler'])),
+		);
+	}
+
 	public function testCustomTemplateMethodRespectsUnescapedRendering(): void
 	{
 		$engine = Engine::unescaped($this->templates());
@@ -820,6 +835,21 @@ final class EngineTest extends TestCase
 		);
 	}
 
+	public function testSafeCustomTemplateMethodIsAvailableInInsertedTemplates(): void
+	{
+		$engine = Engine::create($this->templates())
+			->method(
+				'upper',
+				static fn(string $value): string => '<b>' . strtoupper($value) . '</b>',
+				safe: true,
+			);
+
+		$this->assertSame(
+			'<p><b>BOILER</b></p><p>13</p>',
+			$this->fullTrim($engine->render('insertmethod', ['text' => 'Boiler'])),
+		);
+	}
+
 	public function testCustomTemplateMethodIsAvailableInLayouts(): void
 	{
 		$engine = Engine::create($this->templates())
@@ -829,6 +859,38 @@ final class EngineTest extends TestCase
 			'<body><p>BOILER</p></body>',
 			$this->fullTrim($engine->render('uselayoutmethod', ['text' => 'Boiler'])),
 		);
+	}
+
+	public function testSafeCustomTemplateMethodPreservesSafeOutputThroughFilters(): void
+	{
+		$engine = Engine::create($this->templates())
+			->method(
+				'upper',
+				static fn(string $value): string => ' <b>' . strtoupper($value) . '</b> ',
+				safe: true,
+			);
+
+		$this->assertSame(
+			'<h2><b>BOILER</b></h2>',
+			$this->fullTrim($engine->render('methodfilter', ['text' => 'Boiler'])),
+		);
+	}
+
+	public function testSafeCustomTemplateMethodRejectsNonStringReturn(): void
+	{
+		$this->throws(
+			RenderException::class,
+			'Safe template methods must return string or Stringable values',
+		);
+
+		$engine = Engine::create($this->templates())
+			->method(
+				'upper',
+				static fn(string $value): int => 13,
+				safe: true,
+			);
+
+		$engine->render('method', ['text' => 'Boiler']);
 	}
 
 	public function testRegisterFilter(): void

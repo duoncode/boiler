@@ -23,6 +23,14 @@ final class StringProxy implements Proxy
 		private readonly Wrapper $wrapper,
 	) {}
 
+	public static function safe(string $value, Wrapper $wrapper): self
+	{
+		$proxy = new self($value, $wrapper);
+		$proxy->safe = true;
+
+		return $proxy;
+	}
+
 	/**
 	 * Dispatch filters as virtual methods: $title->sanitize(), $title->stripTags('<b>'), etc.
 	 *

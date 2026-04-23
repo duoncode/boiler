@@ -59,9 +59,9 @@ final class Engine
 	}
 
 	/** @psalm-param non-empty-string $name */
-	public function method(string $name, callable $callable): static
+	public function method(string $name, callable $callable, bool $safe = false): static
 	{
-		$this->methods->add($name, $callable);
+		$this->methods->add($name, $callable, $safe);
 
 		return $this;
 	}

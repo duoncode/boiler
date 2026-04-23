@@ -156,6 +156,21 @@ final class TemplateTest extends TestCase
 		);
 	}
 
+	public function testSafeCustomTemplateMethod(): void
+	{
+		$template = new Template($this->templates . 'method.php');
+		$template->method(
+			'upper',
+			static fn(string $value): string => '<b>' . strtoupper($value) . '</b>',
+			safe: true,
+		);
+
+		$this->assertSame(
+			'<h2><b>BOILER</b></h2>',
+			$this->fullTrim($template->render(['text' => 'Boiler'])),
+		);
+	}
+
 	public function testNonExistentTemplateWithoutExtension(): void
 	{
 		$this->throws(LookupException::class, 'Template not found');

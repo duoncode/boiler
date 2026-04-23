@@ -34,12 +34,12 @@ abstract class Context
 
 	public function __call(string $name, array $args): mixed
 	{
-		$callable = $this->template->methods()->get($name);
+		$method = $this->template->methods()->get($name);
 
 		/** @var array<array-key, mixed> $args */
 		$args = $this->unwrap($args);
 
-		return $this->templateValue($callable(...$args));
+		return $this->templateValue(($method->callable)(...$args), safe: $method->safe);
 	}
 
 	public function get(array $values = []): array
@@ -136,11 +136,25 @@ abstract class Context
 		return $this->wrappedContext ??= $this->wrapAll($this->context);
 	}
 
-	private function templateValue(mixed $value): mixed
+	private function templateValue(mixed $value, bool $safe = false): mixed
 	{
-		return $this->autoescape
-			? $this->wrapper->wrap($value)
-			: $this->wrapper->unwrap($value);
+		if (!$this->autoescape) {
+			return $this->wrapper->unwrap($value);
+		}
+
+		if (!$safe) {
+			return $this->wrapper->wrap($value);
+		}
+
+		if ($value instanceof StringProxy) {
+			return StringProxy::safe($value->unwrap(), $this->wrapper);
+		}
+
+		if (is_string($value) || $value instanceof Stringable) {
+			return StringProxy::safe((string) $value, $this->wrapper);
+		}
+
+		throw new RuntimeException('Safe template methods must return string or Stringable values');
 	}
 
 	/**
