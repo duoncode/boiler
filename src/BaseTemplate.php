@@ -223,9 +223,7 @@ abstract class BaseTemplate
 			);
 			$template->setMethods($methods);
 
-			$layoutContext = $layout->context === null
-				? $context->get()
-				: $context->get($layout->context);
+			$layoutContext = $context->get($layout->context);
 
 			$content = $template->renderTemplate($layoutContext, $trusted, $autoescape);
 		}

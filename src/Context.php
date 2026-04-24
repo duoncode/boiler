@@ -160,7 +160,7 @@ abstract class Context
 	/**
 	 * @psalm-param non-empty-string $path
 	 */
-	public function layout(string $path, ?array $context = null): void
+	public function layout(string $path, array $context = []): void
 	{
 		$this->template->setLayout(new LayoutSpec($path, $this->location(), $context));
 	}

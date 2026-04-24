@@ -12,6 +12,6 @@ final class LayoutSpec
 	public function __construct(
 		public readonly string $path,
 		public readonly Location $location,
-		public readonly ?array $context = null,
+		public readonly array $context = [],
 	) {}
 }
