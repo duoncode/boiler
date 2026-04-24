@@ -162,7 +162,7 @@ abstract class Context
 	 */
 	public function layout(string $path, ?array $context = null): void
 	{
-		$this->template->setLayout(new LayoutSpec($path, $context, $this->location()));
+		$this->template->setLayout(new LayoutSpec($path, $this->location(), $context));
 	}
 
 	/**

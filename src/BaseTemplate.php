@@ -238,9 +238,7 @@ abstract class BaseTemplate
 		LookupException|UnexpectedValueException $exception,
 	): never {
 		$location = $layout->location;
-		$message = $location === null
-			? $exception->getMessage()
-			: $exception->getMessage() . " (referenced at {$location})";
+		$message = $exception->getMessage() . " (referenced at {$location})";
 
 		if ($exception instanceof LookupException) {
 			throw new LookupException($message, $exception->getCode(), $exception, $location);
