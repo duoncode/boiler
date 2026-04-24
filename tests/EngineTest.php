@@ -801,6 +801,69 @@ final class EngineTest extends TestCase
 		$engine->render('failing');
 	}
 
+	public function testRenderExceptionReportsLocation(): void
+	{
+		$path = self::DEFAULT_DIR . '/unknownmethod.php';
+
+		try {
+			Engine::create($this->templates())->render('unknownmethod');
+			$this->fail('RenderException was not thrown');
+		} catch (RenderException $e) {
+			$this->assertSame($path, $e->getFile());
+			$this->assertSame(1, $e->getLine());
+			$this->assertSame($path, $e->location()?->path);
+			$this->assertSame(1, $e->location()?->line);
+			$this->assertStringContainsString($path . ':1', $e->getMessage());
+			$this->assertNotNull($e->getPrevious());
+		}
+	}
+
+	public function testRenderExceptionReportsInsertedLocation(): void
+	{
+		$path = self::DEFAULT_DIR . '/closesection.php';
+
+		try {
+			Engine::create($this->templates())->render('closesectionfrominsert');
+			$this->fail('RenderException was not thrown');
+		} catch (RenderException $e) {
+			$this->assertSame($path, $e->getFile());
+			$this->assertSame(1, $e->getLine());
+			$this->assertSame($path, $e->location()?->path);
+			$this->assertSame(1, $e->location()?->line);
+		}
+	}
+
+	public function testRenderExceptionReportsUnclosedSectionLocation(): void
+	{
+		$path = self::DEFAULT_DIR . '/unclosedsection.php';
+
+		try {
+			Engine::create($this->templates())->render('unclosedsection');
+			$this->fail('RenderException was not thrown');
+		} catch (RenderException $e) {
+			$this->assertSame($path, $e->getFile());
+			$this->assertSame(1, $e->getLine());
+			$this->assertStringContainsString('Unclosed section capture block `scripts`', $e->getMessage());
+			$this->assertStringContainsString($path . ':1', $e->getMessage());
+		}
+	}
+
+	public function testLayoutLookupReportsDeclarationLocation(): void
+	{
+		$path = self::DEFAULT_DIR . '/nonexistentlayout.php';
+
+		try {
+			Engine::create($this->templates())->render('nonexistentlayout');
+			$this->fail('LookupException was not thrown');
+		} catch (LookupException $e) {
+			$this->assertSame($path, $e->getFile());
+			$this->assertSame(5, $e->getLine());
+			$this->assertSame($path, $e->location()?->path);
+			$this->assertSame(5, $e->location()?->line);
+			$this->assertStringContainsString($path . ':5', $e->getMessage());
+		}
+	}
+
 	public function testCustomTemplateMethod(): void
 	{
 		$engine = Engine::create($this->templates());

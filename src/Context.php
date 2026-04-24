@@ -162,7 +162,7 @@ abstract class Context
 	 */
 	public function layout(string $path, ?array $context = null): void
 	{
-		$this->template->setLayout(new LayoutSpec($path, $context));
+		$this->template->setLayout(new LayoutSpec($path, $context, $this->location()));
 	}
 
 	/**
@@ -192,17 +192,17 @@ abstract class Context
 
 	public function begin(string $name): void
 	{
-		$this->template->sections->begin($name);
+		$this->template->sections->begin($name, $this->location());
 	}
 
 	public function append(string $name): void
 	{
-		$this->template->sections->append($name);
+		$this->template->sections->append($name, $this->location());
 	}
 
 	public function prepend(string $name): void
 	{
-		$this->template->sections->prepend($name);
+		$this->template->sections->prepend($name, $this->location());
 	}
 
 	public function end(): void
@@ -222,5 +222,10 @@ abstract class Context
 	public function has(string $name): bool
 	{
 		return $this->template->sections->has($name);
+	}
+
+	private function location(): Location
+	{
+		return Location::fromBacktrace($this->template->path);
 	}
 }

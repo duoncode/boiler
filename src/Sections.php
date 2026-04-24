@@ -14,20 +14,21 @@ final class Sections
 	private array $capture = [];
 	private SectionMode $sectionMode = SectionMode::Closed;
 	private ?int $captureLevel = null;
+	private ?Location $captureLocation = null;
 
-	public function begin(string $name): void
+	public function begin(string $name, ?Location $location = null): void
 	{
-		$this->open($name, SectionMode::Assign);
+		$this->open($name, SectionMode::Assign, $location);
 	}
 
-	public function append(string $name): void
+	public function append(string $name, ?Location $location = null): void
 	{
-		$this->open($name, SectionMode::Append);
+		$this->open($name, SectionMode::Append, $location);
 	}
 
-	public function prepend(string $name): void
+	public function prepend(string $name, ?Location $location = null): void
 	{
-		$this->open($name, SectionMode::Prepend);
+		$this->open($name, SectionMode::Prepend, $location);
 	}
 
 	public function end(): void
@@ -53,6 +54,7 @@ final class Sections
 
 		$this->sectionMode = SectionMode::Closed;
 		$this->captureLevel = null;
+		$this->captureLocation = null;
 	}
 
 	public function get(string $name): string
@@ -80,17 +82,18 @@ final class Sections
 		return isset($this->sections[$name]);
 	}
 
-	/** @return array{mode: SectionMode, name: string|null, level: int|null} */
+	/** @return array{mode: SectionMode, name: string|null, level: int|null, location: Location|null} */
 	public function checkpoint(): array
 	{
 		return [
 			'mode' => $this->sectionMode,
 			'name' => $this->sectionMode === SectionMode::Closed ? null : $this->name(),
 			'level' => $this->captureLevel,
+			'location' => $this->captureLocation,
 		];
 	}
 
-	/** @param array{mode: SectionMode, name: string|null, level: int|null}|null $checkpoint */
+	/** @param array{mode: SectionMode, name: string|null, level: int|null, location: Location|null}|null $checkpoint */
 	public function assertClosed(?array $checkpoint = null): void
 	{
 		if ($checkpoint !== null && $this->checkpoint() === $checkpoint) {
@@ -103,14 +106,21 @@ final class Sections
 			}
 
 			$name = $checkpoint['name'] ?? 'unknown';
+			$location = $checkpoint['location'] ?? null;
 
-			throw new LogicException("Section capture block `{$name}` was closed unexpectedly");
+			throw new LogicException(
+				"Section capture block `{$name}` was closed unexpectedly" . $this->at($location),
+				location: $location,
+			);
 		}
 
-		throw new LogicException("Unclosed section capture block `{$this->name()}`");
+		throw new LogicException(
+			"Unclosed section capture block `{$this->name()}`" . $this->at($this->captureLocation),
+			location: $this->captureLocation,
+		);
 	}
 
-	private function open(string $name, SectionMode $mode): void
+	private function open(string $name, SectionMode $mode, ?Location $location): void
 	{
 		if ($this->sectionMode !== SectionMode::Closed) {
 			throw new LogicException('Nested sections are not allowed');
@@ -118,8 +128,14 @@ final class Sections
 
 		$this->sectionMode = $mode;
 		$this->capture[] = $name;
+		$this->captureLocation = $location;
 		ob_start();
 		$this->captureLevel = ob_get_level();
+	}
+
+	private function at(?Location $location): string
+	{
+		return $location === null ? '' : " at {$location}";
 	}
 
 	private function name(): string

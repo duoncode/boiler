@@ -7,6 +7,7 @@ namespace Duon\Boiler;
 use Duon\Boiler\Exception\LookupException;
 use Duon\Boiler\Exception\RenderException;
 use Duon\Boiler\Exception\RuntimeException;
+use Duon\Boiler\Exception\UnexpectedValueException;
 use Throwable;
 
 abstract class BaseTemplate
@@ -187,11 +188,10 @@ abstract class BaseTemplate
 			$content = (string) ob_get_clean();
 
 			return new Content($content, $templateContext);
+		} catch (RenderException $e) {
+			throw $e;
 		} catch (Throwable $e) {
-			throw new RenderException(
-				"Template rendering error ({$this->path}): " . $e->getMessage(),
-				previous: $e,
-			);
+			throw RenderException::fromThrowable($this->path, $e);
 		} finally {
 			while (ob_get_level() > $level) {
 				ob_end_clean();
@@ -208,7 +208,12 @@ abstract class BaseTemplate
 		bool $autoescape,
 	): string {
 		while ($layout = $template->layout()) {
-			$file = $template->engine->resolve($layout->path);
+			try {
+				$file = $template->engine->resolve($layout->path);
+			} catch (LookupException|UnexpectedValueException $e) {
+				self::throwLayoutException($layout, $e);
+			}
+
 			$methods = $template->methods();
 			$template = new Layout(
 				$file,
@@ -226,5 +231,21 @@ abstract class BaseTemplate
 		}
 
 		return $content;
+	}
+
+	private static function throwLayoutException(
+		LayoutSpec $layout,
+		LookupException|UnexpectedValueException $exception,
+	): never {
+		$location = $layout->location;
+		$message = $location === null
+			? $exception->getMessage()
+			: $exception->getMessage() . " (referenced at {$location})";
+
+		if ($exception instanceof LookupException) {
+			throw new LookupException($message, $exception->getCode(), $exception, $location);
+		}
+
+		throw new UnexpectedValueException($message, $exception->getCode(), $exception, $location);
 	}
 }
