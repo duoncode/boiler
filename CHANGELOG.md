@@ -2,8 +2,13 @@
 
 ## [Unreleased](https://github.com/duonrun/boiler/compare/0.3.2...HEAD)
 
+### Added
+
+- Added `Location` and `location()` on Boiler runtime/render exceptions so integrations can read structured template file and line information.
+
 ### Fixed
 
+- Improved render error reporting so runtime errors, inserted-template errors, missing layouts, and unclosed sections point to the relevant template file and line.
 - Allowed inserted templates to render inside active section capture blocks without being reported as unclosed sections, while still detecting inserts that close a parent section unexpectedly.
 
 ## [0.3.2](https://github.com/duonrun/boiler/releases/tag/0.3.2) (2026-04-23)
