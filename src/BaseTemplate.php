@@ -170,6 +170,7 @@ abstract class BaseTemplate
 		};
 
 		$level = ob_get_level();
+		$sections = $this->sections->checkpoint();
 
 		try {
 			ob_start();
@@ -181,7 +182,7 @@ abstract class BaseTemplate
 					? $templateContext->get()
 					: $context,
 			);
-			$this->sections->assertClosed();
+			$this->sections->assertClosed($sections);
 
 			$content = (string) ob_get_clean();
 

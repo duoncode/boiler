@@ -472,6 +472,25 @@ final class EngineTest extends TestCase
 		);
 	}
 
+	public function testInsertRenderingInsideSection(): void
+	{
+		$engine = Engine::create($this->templates());
+
+		$this->assertSame(
+			'<div><p>boiler</p>boiler</div><ul><li>boiler</li></ul>',
+			$this->fullTrim($engine->render('insertinsection', ['text' => 'boiler'])),
+		);
+	}
+
+	public function testInsertCannotCloseParentSection(): void
+	{
+		$this->throws(RenderException::class, 'active output buffer');
+
+		$engine = Engine::create($this->templates());
+
+		$engine->render('closesectionfrominsert');
+	}
+
 	public function testAppendPrependToSection(): void
 	{
 		$engine = Engine::create($this->templates());
