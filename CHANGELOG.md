@@ -1,10 +1,10 @@
 # Changelog
 
-## [Unreleased](https://github.com/duonrun/boiler/compare/0.3.3...HEAD)
+## [Unreleased](https://github.com/duoncode/boiler/compare/0.3.3...HEAD)
 
 No significant changes have been made.
 
-## [0.3.3](https://github.com/duonrun/boiler/releases/tag/0.3.3) (2026-04-24)
+## [0.3.3](https://github.com/duoncode/boiler/releases/tag/0.3.3) (2026-04-24)
 
 ### Breaking
 
@@ -19,17 +19,17 @@ No significant changes have been made.
 
 - Allowed inserted templates to render inside active section capture blocks without being reported as unclosed sections, while still detecting inserts that close a parent section unexpectedly.
 
-## [0.3.2](https://github.com/duonrun/boiler/releases/tag/0.3.2) (2026-04-23)
+## [0.3.2](https://github.com/duoncode/boiler/releases/tag/0.3.2) (2026-04-23)
 
 ### Added
 
 - Added `safe: true` support to `Engine::method()` and `Template::method()` so helpers can return safe HTML in escaped renders without manual unwrapping while still allowing safety-preserving string filter chains.
 
-## [0.3.1](https://github.com/duonrun/boiler/releases/tag/0.3.1) (2026-04-15)
+## [0.3.1](https://github.com/duoncode/boiler/releases/tag/0.3.1) (2026-04-15)
 
 Included repository housekeeping updates and enabled CI runs for pull requests.
 
-## [0.3.0](https://github.com/duonrun/boiler/releases/tag/0.3.0) (2026-04-11)
+## [0.3.0](https://github.com/duoncode/boiler/releases/tag/0.3.0) (2026-04-11)
 
 ### Breaking
 
@@ -66,7 +66,7 @@ Included repository housekeeping updates and enabled CI runs for pull requests.
 - Removed `Contract\Engine`, `Contract\Template`, and `Contract\MethodRegister`.
 - Removed support for subclassing `Engine`, `Template`, and `TemplateContext`; these classes are now final.
 
-## [0.2.0](https://github.com/duonrun/boiler/releases/tag/0.2.0) (2026-03-25)
+## [0.2.0](https://github.com/duoncode/boiler/releases/tag/0.2.0) (2026-03-25)
 
 ### Breaking
 
@@ -91,7 +91,7 @@ Included repository housekeeping updates and enabled CI runs for pull requests.
 - Allowed resources in template context values without triggering unsupported type errors.
 - Reset per-render template state so a `Template` instance can be reused safely across multiple renders.
 
-## [0.1.2](https://github.com/duonrun/boiler/releases/tag/0.1.2) (2026-01-30)
+## [0.1.2](https://github.com/duoncode/boiler/releases/tag/0.1.2) (2026-01-30)
 
 ### Added
 
@@ -107,13 +107,13 @@ Included repository housekeeping updates and enabled CI runs for pull requests.
 
 - Removed MkDocs-based documentation tooling.
 
-## [0.1.1](https://github.com/duonrun/boiler/releases/tag/0.1.1) (2026-01-26)
+## [0.1.1](https://github.com/duoncode/boiler/releases/tag/0.1.1) (2026-01-26)
 
 ### Fixed
 
 - Fixed `Engine` handling of `is_null` condition checks.
 
-## [0.1.0](https://github.com/duonrun/boiler/releases/tag/0.1.0) (2026-01-25)
+## [0.1.0](https://github.com/duoncode/boiler/releases/tag/0.1.0) (2026-01-25)
 
 Initial version.
 
