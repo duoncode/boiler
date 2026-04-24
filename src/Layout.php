@@ -13,9 +13,9 @@ final class Layout extends BaseTemplate
 	 */
 	public function __construct(
 		string $path,
-		protected readonly string $body,
+		private readonly string $body,
 		Sections $sections,
-		?Engine $engine = null,
+		Engine $engine,
 	) {
 		parent::__construct($path, $sections, $engine);
 	}
