@@ -6,6 +6,7 @@ namespace Duon\Boiler;
 
 use Closure;
 
+/** @internal */
 final readonly class Method
 {
 	public Closure $callable;

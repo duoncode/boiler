@@ -6,6 +6,7 @@ namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\LogicException;
 
+/** @internal */
 final class Sections
 {
 	/** @var array<string, Section> */

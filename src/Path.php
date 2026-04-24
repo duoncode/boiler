@@ -6,6 +6,7 @@ namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\LookupException;
 
+/** @internal */
 final class Path
 {
 	private bool $isValid = false;

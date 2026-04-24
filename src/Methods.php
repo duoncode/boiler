@@ -6,6 +6,7 @@ namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\UnexpectedValueException;
 
+/** @internal */
 final class Methods
 {
 	/** @psalm-var array<non-empty-string, Method> */

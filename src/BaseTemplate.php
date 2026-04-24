@@ -20,6 +20,7 @@ abstract class BaseTemplate
 		get => $this->engine;
 		set(Engine $value) => $this->engine = $value;
 	}
+	/** @internal */
 	public private(set) Sections $sections {
 		get => $this->sections;
 		set(Sections $value) => $this->sections = $value;
@@ -78,6 +79,8 @@ abstract class BaseTemplate
 	 * Defines a layout template that will be wrapped around this instance.
 	 *
 	 * Typically it’s placed at the top of the file.
+	 *
+	 * @internal
 	 */
 	public function setLayout(LayoutSpec $layout): void
 	{

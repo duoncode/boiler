@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
+/** @internal */
 enum SectionMode
 {
 	case Assign;

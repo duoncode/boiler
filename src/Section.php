@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
+/** @internal */
 final class Section
 {
 	/** @var list<string> */

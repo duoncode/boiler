@@ -6,6 +6,7 @@ namespace Duon\Boiler;
 
 use Override;
 
+/** @internal */
 final class Layout extends BaseTemplate
 {
 	/**
