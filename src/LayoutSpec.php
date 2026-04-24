@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Duon\Boiler;
 
-final class LayoutSpec
+final readonly class LayoutSpec
 {
 	/**
 	 * @psalm-param non-empty-string $path
 	 */
 	public function __construct(
-		public readonly string $path,
-		public readonly Location $location,
-		public readonly array $context = [],
+		public string $path,
+		public Location $location,
+		public array $context = [],
 	) {}
 }

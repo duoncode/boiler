@@ -7,11 +7,11 @@ namespace Duon\Boiler;
 use Throwable;
 
 /** @api */
-final class Location
+final readonly class Location
 {
 	public function __construct(
-		public readonly string $path,
-		public readonly ?int $line = null,
+		public string $path,
+		public ?int $line = null,
 	) {}
 
 	public static function fromThrowable(string $path, Throwable $throwable): self
