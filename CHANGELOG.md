@@ -2,6 +2,10 @@
 
 ## [Unreleased](https://github.com/duonrun/boiler/compare/0.3.2...HEAD)
 
+### Breaking
+
+- Tightened undocumented template internals and layout support APIs. The `$this->layout()` helper now requires an array context when a second argument is provided, and the undocumented `Template::layout()` inspection accessor was removed.
+
 ### Added
 
 - Added `Location` and `location()` on Boiler runtime/render exceptions so integrations can read structured template file and line information.
