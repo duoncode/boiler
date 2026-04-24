@@ -329,7 +329,7 @@ function benchmarkContext(): array
 			'name' => 'Duon & Partners <Store>',
 			'currency' => 'USD',
 			'support' => (object) [
-				'email' => 'support@duon.run',
+				'email' => 'ernst@duon.sh',
 				'timezone' => 'Europe/Berlin',
 			],
 		],
