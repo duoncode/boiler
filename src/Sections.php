@@ -93,18 +93,14 @@ final class Sections
 		];
 	}
 
-	/** @param array{mode: SectionMode, name: string|null, level: int|null, location: Location|null}|null $checkpoint */
-	public function assertClosed(?array $checkpoint = null): void
+	/** @param array{mode: SectionMode, name: string|null, level: int|null, location: Location|null} $checkpoint */
+	public function assertClosed(array $checkpoint): void
 	{
-		if ($checkpoint !== null && $this->checkpoint() === $checkpoint) {
+		if ($this->checkpoint() === $checkpoint) {
 			return;
 		}
 
 		if ($this->sectionMode === SectionMode::Closed) {
-			if ($checkpoint === null || $checkpoint['mode'] === SectionMode::Closed) {
-				return;
-			}
-
 			$name = $checkpoint['name'] ?? 'unknown';
 			$location = $checkpoint['location'] ?? null;
 
@@ -143,7 +139,15 @@ final class Sections
 		$last = array_key_last($this->capture);
 
 		if ($last === null) {
+			// This check is mostly necessary to satisfy Psalm.
+			//
+			// It serves as a defensive guard against corrupted internal state,
+			// which should never occur when Sections is used internally;
+			// public API calls cannot reach this branch.
+			// @codeCoverageIgnoreStart
 			throw new LogicException('No section started');
+
+			// @codeCoverageIgnoreEnd
 		}
 
 		return $this->capture[$last];
