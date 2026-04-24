@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Duon\Boiler\Tests;
 
 use Duon\Boiler\Exception\LookupException;
-use Duon\Boiler\TemplatePath;
+use Duon\Boiler\Path;
 use PHPUnit\Framework\Attributes\TestDox;
 
-final class TemplatePathTest extends TestCase
+final class PathTest extends TestCase
 {
 	public function testInitialization(): void
 	{
-		$tplp = new TemplatePath($this::DEFAULT_DIR, 'simple');
+		$tplp = new Path($this::DEFAULT_DIR, 'simple');
 
 		$this->assertSame(true, $tplp->isValid());
 		$this->assertStringEndsWith('tests/templates/default/simple.php', $tplp->path());
@@ -22,7 +22,7 @@ final class TemplatePathTest extends TestCase
 	#[TestDox('Initialization with PHP extension')]
 	public function testInitializationWithPhpExtension(): void
 	{
-		$tplp = new TemplatePath($this::DEFAULT_DIR, 'simple.php');
+		$tplp = new Path($this::DEFAULT_DIR, 'simple.php');
 
 		$this->assertSame(true, $tplp->isValid());
 		$this->assertStringEndsWith('tests/templates/default/simple.php', $tplp->path());
@@ -31,7 +31,7 @@ final class TemplatePathTest extends TestCase
 
 	public function testInitializationWithCustomExtension(): void
 	{
-		$tplp = new TemplatePath($this::DEFAULT_DIR, 'extension.tpl');
+		$tplp = new Path($this::DEFAULT_DIR, 'extension.tpl');
 
 		$this->assertSame(true, $tplp->isValid());
 		$this->assertStringEndsWith('tests/templates/default/extension.tpl', $tplp->path());
@@ -40,7 +40,7 @@ final class TemplatePathTest extends TestCase
 
 	public function testFailingInitializationEmptyDirectoryString(): void
 	{
-		$tplp = new TemplatePath('', 'simple');
+		$tplp = new Path('', 'simple');
 
 		$this->assertSame(false, $tplp->isValid());
 		$this->assertSame('Template directory must not be an empty string', $tplp->error());
@@ -48,7 +48,7 @@ final class TemplatePathTest extends TestCase
 
 	public function testFailingInitializationNonExistentDirectory(): void
 	{
-		$tplp = new TemplatePath('doesnotexist', 'simple');
+		$tplp = new Path('doesnotexist', 'simple');
 
 		$this->assertSame(false, $tplp->isValid());
 		$this->assertSame("Template directory not found: 'doesnotexist'", $tplp->error());
@@ -56,7 +56,7 @@ final class TemplatePathTest extends TestCase
 
 	public function testFailingOutsideOfTemplateDirectory(): void
 	{
-		$tplp = new TemplatePath($this::DEFAULT_DIR, '../unreachable');
+		$tplp = new Path($this::DEFAULT_DIR, '../unreachable');
 
 		$this->assertSame(false, $tplp->isValid());
 		$this->assertStringStartsWith('Template resides outside of root directory', $tplp->error());
@@ -65,7 +65,7 @@ final class TemplatePathTest extends TestCase
 	#[TestDox('Failing outside of template directory with PHP extension')]
 	public function testFailingOutsideOfTemplateDirectoryWithPhpExtension(): void
 	{
-		$tplp = new TemplatePath($this::DEFAULT_DIR, '../unreachable.php');
+		$tplp = new Path($this::DEFAULT_DIR, '../unreachable.php');
 
 		$this->assertSame(false, $tplp->isValid());
 		$this->assertStringStartsWith('Template resides outside of root directory', $tplp->error());
@@ -83,7 +83,7 @@ final class TemplatePathTest extends TestCase
 		file_put_contents($file, 'PWN');
 
 		try {
-			$tplp = new TemplatePath($root, '../templates_evil/pwn');
+			$tplp = new Path($root, '../templates_evil/pwn');
 
 			$this->assertSame(false, $tplp->isValid());
 			$this->assertStringStartsWith('Template resides outside of root directory', $tplp->error());
@@ -99,7 +99,7 @@ final class TemplatePathTest extends TestCase
 	{
 		$this->throws(LookupException::class, 'Error while accessing path');
 
-		$tplp = new TemplatePath('', 'simple');
+		$tplp = new Path('', 'simple');
 		$tplp->path();
 	}
 }

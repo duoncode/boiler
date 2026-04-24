@@ -39,13 +39,13 @@ final class Resolver implements Contract\Resolver
 		}
 
 		[$namespace, $file] = $this->segments($path);
-		$templatePath = $this->templatePath($namespace, $file);
+		$candidate = $this->path($namespace, $file);
 
-		if (!$templatePath->isValid()) {
-			throw new LookupException($templatePath->error());
+		if (!$candidate->isValid()) {
+			throw new LookupException($candidate->error());
 		}
 
-		return $this->pathCache[$path] = $templatePath->path();
+		return $this->pathCache[$path] = $candidate->path();
 	}
 
 	/** @return list{null|non-empty-string, non-empty-string} */
@@ -77,25 +77,25 @@ final class Resolver implements Contract\Resolver
 	}
 
 	/** @psalm-param non-empty-string $file */
-	private function templatePath(?string $namespace, string $file): TemplatePath
+	private function path(?string $namespace, string $file): Path
 	{
 		if ($namespace !== null) {
 			if (array_key_exists($namespace, $this->dirs)) {
-				return new TemplatePath($this->dirs[$namespace], $file);
+				return new Path($this->dirs[$namespace], $file);
 			}
 
 			throw new LookupException("Template namespace `{$namespace}` does not exist");
 		}
 
 		foreach ($this->dirs as $dir) {
-			$templatePath = new TemplatePath($dir, $file);
+			$candidate = new Path($dir, $file);
 
-			if ($templatePath->isValid()) {
-				return $templatePath;
+			if ($candidate->isValid()) {
+				return $candidate;
 			}
 		}
 
-		return $templatePath;
+		return $candidate;
 	}
 
 	/**

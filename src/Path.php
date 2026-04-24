@@ -6,7 +6,7 @@ namespace Duon\Boiler;
 
 use Duon\Boiler\Exception\LookupException;
 
-final class TemplatePath
+final class Path
 {
 	private bool $isValid = false;
 	private string $path = '';
