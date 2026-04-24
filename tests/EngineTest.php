@@ -864,6 +864,22 @@ final class EngineTest extends TestCase
 		}
 	}
 
+	public function testInvalidLayoutLookupReportsDeclarationLocation(): void
+	{
+		$path = self::DEFAULT_DIR . '/invalidlayout.php';
+
+		try {
+			Engine::create($this->templates())->render('invalidlayout');
+			$this->fail('UnexpectedValueException was not thrown');
+		} catch (UnexpectedValueException $e) {
+			$this->assertSame($path, $e->getFile());
+			$this->assertSame(1, $e->getLine());
+			$this->assertSame($path, $e->location()?->path);
+			$this->assertSame(1, $e->location()?->line);
+			$this->assertStringContainsString($path . ':1', $e->getMessage());
+		}
+	}
+
 	public function testCustomTemplateMethod(): void
 	{
 		$engine = Engine::create($this->templates());
