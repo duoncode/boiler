@@ -1119,14 +1119,12 @@ final class EngineTest extends TestCase
 			'<div><p>first</p>first</div><ul><li>first</li></ul>',
 			$this->fullTrim($template->render(['text' => 'first'])),
 		);
-		$this->assertNull($template->layout());
 		$this->assertFalse($template->sections->has('list'));
 
 		$this->assertSame(
 			'<div><p>second</p>second</div><ul><li>second</li></ul>',
 			$this->fullTrim($template->render(['text' => 'second'])),
 		);
-		$this->assertNull($template->layout());
 		$this->assertFalse($template->sections->has('list'));
 	}
 }

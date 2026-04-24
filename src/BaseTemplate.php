@@ -12,9 +12,9 @@ use Throwable;
 
 abstract class BaseTemplate
 {
-	protected ?LayoutSpec $layout = null;
-	protected Methods $methods;
-	protected readonly bool $ownsSections;
+	private ?LayoutSpec $layout = null;
+	private Methods $methods;
+	private readonly bool $ownsSections;
 
 	public private(set) Engine $engine {
 		get => $this->engine;
@@ -90,11 +90,6 @@ abstract class BaseTemplate
 		throw new RuntimeException('Template error: layout already set');
 	}
 
-	public function layout(): ?LayoutSpec
-	{
-		return $this->layout;
-	}
-
 	/** @internal */
 	public function setMethods(Methods $methods): void
 	{
@@ -108,7 +103,7 @@ abstract class BaseTemplate
 	}
 
 	/** @psalm-param list<class-string> $trusted */
-	protected function renderIsolated(array $context, array $trusted, bool $autoescape): string
+	private function renderIsolated(array $context, array $trusted, bool $autoescape): string
 	{
 		$this->resetRenderState();
 
@@ -119,7 +114,7 @@ abstract class BaseTemplate
 		}
 	}
 
-	protected function resetRenderState(): void
+	private function resetRenderState(): void
 	{
 		$this->layout = null;
 
@@ -136,7 +131,7 @@ abstract class BaseTemplate
 	): Context;
 
 	/** @psalm-param list<class-string> $trusted */
-	protected function renderTemplate(array $context, array $trusted, bool $autoescape): string
+	final protected function renderTemplate(array $context, array $trusted, bool $autoescape): string
 	{
 		$content = $this->getContent($context, $trusted, $autoescape);
 
@@ -154,7 +149,7 @@ abstract class BaseTemplate
 	}
 
 	/** @psalm-param list<class-string> $trusted */
-	protected function getContent(array $context, array $trusted, bool $autoescape): Content
+	private function getContent(array $context, array $trusted, bool $autoescape): Content
 	{
 		$templateContext = $this->context($context, $trusted, $autoescape);
 
@@ -200,14 +195,14 @@ abstract class BaseTemplate
 	}
 
 	/** @psalm-param list<class-string> $trusted */
-	protected function renderLayouts(
+	private function renderLayouts(
 		BaseTemplate $template,
 		Context $context,
 		array $trusted,
 		string $content,
 		bool $autoescape,
 	): string {
-		while ($layout = $template->layout()) {
+		while (($layout = $template->layout) !== null) {
 			try {
 				$file = $template->engine->resolve($layout->path);
 			} catch (LookupException|UnexpectedValueException $e) {
