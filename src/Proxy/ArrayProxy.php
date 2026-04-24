@@ -175,7 +175,7 @@ final class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
 		return $this->sort($this->array, $mode);
 	}
 
-	protected function sort(array $array, string $mode): self
+	private function sort(array $array, string $mode): self
 	{
 		match ($mode) {
 			'' => sort($array),
@@ -191,7 +191,7 @@ final class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
 	}
 
 	/** @psalm-param ArrayCallable $callable */
-	protected function usort(array $array, string $mode, callable $callable): self
+	private function usort(array $array, string $mode, callable $callable): self
 	{
 		match ($mode) {
 			'ua' => uasort($array, $callable),

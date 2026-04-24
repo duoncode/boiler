@@ -7,17 +7,14 @@ namespace Duon\Boiler;
 /** @api */
 final class LayoutContext extends Context
 {
-	protected Layout $layout;
-
 	/** @psalm-param list<class-string> $trusted */
 	public function __construct(
-		Layout $template,
+		private readonly Layout $layout,
 		array $context,
 		array $trusted,
 		bool $autoescape,
 	) {
-		parent::__construct($template, $context, $trusted, $autoescape);
-		$this->layout = $template;
+		parent::__construct($layout, $context, $trusted, $autoescape);
 	}
 
 	public function body(): string
