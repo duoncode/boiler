@@ -10,7 +10,7 @@ use Override;
 final class Layout extends BaseTemplate
 {
 	/**
-	 * @psalm-param non-empty-string $path
+	 * @param non-empty-string $path
 	 */
 	public function __construct(
 		string $path,

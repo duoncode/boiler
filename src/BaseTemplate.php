@@ -55,7 +55,7 @@ abstract class BaseTemplate
 	}
 
 	/**
-	 * @psalm-param list<class-string> $trusted
+	 * @param list<class-string> $trusted
 	 * @psalm-suppress PossiblyUnusedMethod Called through inherited API on concrete templates
 	 */
 	public function render(array $context = [], array $trusted = []): string
@@ -63,13 +63,13 @@ abstract class BaseTemplate
 		return $this->renderIsolated($context, $trusted, autoescape: $this->engine->autoescape);
 	}
 
-	/** @psalm-param list<class-string> $trusted */
+	/** @param list<class-string> $trusted */
 	public function renderEscaped(array $context = [], array $trusted = []): string
 	{
 		return $this->renderIsolated($context, $trusted, autoescape: true);
 	}
 
-	/** @psalm-param list<class-string> $trusted */
+	/** @param list<class-string> $trusted */
 	public function renderUnescaped(array $context = [], array $trusted = []): string
 	{
 		return $this->renderIsolated($context, $trusted, autoescape: false);
@@ -105,7 +105,7 @@ abstract class BaseTemplate
 		return $this->methods;
 	}
 
-	/** @psalm-param list<class-string> $trusted */
+	/** @param list<class-string> $trusted */
 	private function renderIsolated(array $context, array $trusted, bool $autoescape): string
 	{
 		$this->resetRenderState();
@@ -126,14 +126,14 @@ abstract class BaseTemplate
 		}
 	}
 
-	/** @psalm-param list<class-string> $trusted */
+	/** @param list<class-string> $trusted */
 	abstract protected function context(
 		array $context,
 		array $trusted,
 		bool $autoescape,
 	): Context;
 
-	/** @psalm-param list<class-string> $trusted */
+	/** @param list<class-string> $trusted */
 	final protected function renderTemplate(array $context, array $trusted, bool $autoescape): string
 	{
 		$content = $this->getContent($context, $trusted, $autoescape);
@@ -151,7 +151,7 @@ abstract class BaseTemplate
 		);
 	}
 
-	/** @psalm-param list<class-string> $trusted */
+	/** @param list<class-string> $trusted */
 	private function getContent(array $context, array $trusted, bool $autoescape): Content
 	{
 		$templateContext = $this->context($context, $trusted, $autoescape);
@@ -197,7 +197,7 @@ abstract class BaseTemplate
 		}
 	}
 
-	/** @psalm-param list<class-string> $trusted */
+	/** @param list<class-string> $trusted */
 	private function renderLayouts(
 		BaseTemplate $template,
 		Context $context,

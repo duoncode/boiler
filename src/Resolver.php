@@ -16,7 +16,7 @@ final class Resolver implements Contract\Resolver
 {
 	/** @psalm-var Dirs */
 	private readonly array $dirs;
-	/** @psalm-var array<string, non-empty-string> */
+	/** @var array<string, non-empty-string> */
 	private array $pathCache = [];
 
 	/** @psalm-param DirsInput $dirs */
@@ -26,7 +26,7 @@ final class Resolver implements Contract\Resolver
 		$this->dirs = $this->prepareDirs($dirs);
 	}
 
-	/** @psalm-return non-empty-string */
+	/** @return non-empty-string */
 	#[Override]
 	public function resolve(string $path): string
 	{
@@ -61,9 +61,10 @@ final class Resolver implements Contract\Resolver
 		$segments = array_map(static fn($seg) => trim($seg), explode(':', $path));
 
 		if (count($segments) === 2) {
-			if (($segments[0] ?? '') && ($segments[1] ?? '')) {
-				/** @var list{non-empty-string, non-empty-string} */
-				return [$segments[0], $segments[1]];
+			[$namespace, $file] = $segments;
+
+			if ($namespace !== '' && $file !== '') {
+				return [$namespace, $file];
 			}
 
 			throw new LookupException(
@@ -76,7 +77,7 @@ final class Resolver implements Contract\Resolver
 		);
 	}
 
-	/** @psalm-param non-empty-string $file */
+	/** @param non-empty-string $file */
 	private function path(?string $namespace, string $file): Path
 	{
 		if ($namespace !== null) {

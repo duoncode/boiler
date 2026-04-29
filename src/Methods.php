@@ -9,10 +9,10 @@ use Duon\Boiler\Exception\UnexpectedValueException;
 /** @internal */
 final class Methods
 {
-	/** @psalm-var array<non-empty-string, Method> */
+	/** @var array<non-empty-string, Method> */
 	private array $methods = [];
 
-	/** @psalm-param non-empty-string $name */
+	/** @param non-empty-string $name */
 	public function add(string $name, callable $callable, bool $safe = false): void
 	{
 		$this->methods[$name] = new Method($callable, $safe);

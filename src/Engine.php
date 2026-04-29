@@ -18,10 +18,7 @@ final class Engine
 	private Methods $methods;
 	private ?Contract\Wrapper $wrapper = null;
 
-	/**
-	 * @psalm-param list<class-string> $trusted
-	 * @psalm-param Contract\Resolver $resolver
-	 */
+	/** @param list<class-string> $trusted */
 	public function __construct(
 		Contract\Resolver $resolver,
 		Contract\Environment $environment,
@@ -36,7 +33,7 @@ final class Engine
 
 	/**
 	 * @psalm-param DirsInput $dirs
-	 * @psalm-param list<class-string> $trusted
+	 * @param list<class-string> $trusted
 	 */
 	public static function create(
 		array|string $dirs,
@@ -48,7 +45,7 @@ final class Engine
 
 	/**
 	 * @psalm-param DirsInput $dirs
-	 * @psalm-param list<class-string> $trusted
+	 * @param list<class-string> $trusted
 	 */
 	public static function unescaped(
 		array|string $dirs,
@@ -58,7 +55,7 @@ final class Engine
 		return new self(new Resolver($dirs), new Environment(), false, $defaults, $trusted);
 	}
 
-	/** @psalm-param non-empty-string $name */
+	/** @param non-empty-string $name */
 	public function method(string $name, callable $callable, bool $safe = false): static
 	{
 		$this->methods->add($name, $callable, $safe);
@@ -85,7 +82,7 @@ final class Engine
 		return $this;
 	}
 
-	/** @psalm-param non-empty-string $path */
+	/** @param non-empty-string $path */
 	public function template(string $path): Template
 	{
 		$file = $this->resolve($path);
@@ -95,7 +92,7 @@ final class Engine
 		return $template;
 	}
 
-	/** @psalm-param non-empty-string $path */
+	/** @param non-empty-string $path */
 	public function render(
 		string $path,
 		array $context = [],
@@ -103,7 +100,7 @@ final class Engine
 		return $this->renderTemplate($path, $context, $this->autoescape);
 	}
 
-	/** @psalm-param non-empty-string $path */
+	/** @param non-empty-string $path */
 	public function renderEscaped(
 		string $path,
 		array $context = [],
@@ -111,7 +108,7 @@ final class Engine
 		return $this->renderTemplate($path, $context, true);
 	}
 
-	/** @psalm-param non-empty-string $path */
+	/** @param non-empty-string $path */
 	public function renderUnescaped(
 		string $path,
 		array $context = [],
@@ -119,7 +116,7 @@ final class Engine
 		return $this->renderTemplate($path, $context, false);
 	}
 
-	/** @psalm-param non-empty-string $path */
+	/** @param non-empty-string $path */
 	private function renderTemplate(
 		string $path,
 		array $context,
@@ -136,16 +133,16 @@ final class Engine
 	}
 
 	/**
-	 * @psalm-param non-empty-string $path
+	 * @param non-empty-string $path
 	 *
-	 * @psalm-return non-empty-string
+	 * @return non-empty-string
 	 */
 	public function resolve(string $path): string
 	{
 		return $this->resolver->resolve($path);
 	}
 
-	/** @psalm-param non-empty-string $path */
+	/** @param non-empty-string $path */
 	public function exists(string $path): bool
 	{
 		try {

@@ -20,7 +20,7 @@ abstract class Context
 	private readonly bool $hasTrusted;
 
 	/**
-	 * @psalm-param list<class-string> $trusted
+	 * @param list<class-string> $trusted
 	 */
 	public function __construct(
 		protected readonly BaseTemplate $template,
@@ -58,12 +58,11 @@ abstract class Context
 	}
 
 	/**
-	 * @psalm-param array<array-key, mixed> $values
-	 * @psalm-return array<array-key, mixed>
+	 * @param array<array-key, mixed> $values
+	 * @return array<array-key, mixed>
 	 */
 	protected function wrapAll(array $values): array
 	{
-		/** @var array<array-key, mixed> */
 		$wrapped = [];
 
 		/** @var mixed $value */
@@ -158,7 +157,7 @@ abstract class Context
 	}
 
 	/**
-	 * @psalm-param non-empty-string $path
+	 * @param non-empty-string $path
 	 */
 	public function layout(string $path, array $context = []): void
 	{
@@ -170,7 +169,7 @@ abstract class Context
 	 *
 	 * If no context is passed it shares the context of the calling template.
 	 *
-	 * @psalm-param non-empty-string $path
+	 * @param non-empty-string $path
 	 */
 	public function insert(string $path, array $context = []): void
 	{

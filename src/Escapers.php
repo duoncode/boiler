@@ -66,7 +66,6 @@ final class Escapers implements Contract\RegistersEscapers
 	 */
 	private function normalize(array $escapers): array
 	{
-		/** @var array<non-empty-string, Contract\Escaper> $normalized */
 		$normalized = [];
 
 		foreach ($escapers as $name => $escaper) {

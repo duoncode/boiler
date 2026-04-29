@@ -69,7 +69,6 @@ final class Filters implements Contract\RegistersFilters
 	 */
 	private function normalize(array $filters): array
 	{
-		/** @var array<non-empty-string, Contract\Filter> $normalized */
 		$normalized = [];
 
 		foreach ($filters as $name => $filter) {

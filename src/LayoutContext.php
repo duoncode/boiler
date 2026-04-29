@@ -7,7 +7,7 @@ namespace Duon\Boiler;
 /** @api */
 final class LayoutContext extends Context
 {
-	/** @psalm-param list<class-string> $trusted */
+	/** @param list<class-string> $trusted */
 	public function __construct(
 		private readonly Layout $layout,
 		array $context,

@@ -25,12 +25,12 @@ use Override;
  */
 final class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
 {
-	/** @psalm-var list<array-key> */
+	/** @var list<array-key> */
 	private array $keys;
 	private int $position;
 
 	/**
-	 * @psalm-param array<array-key, mixed> $array
+	 * @param array<array-key, mixed> $array
 	 */
 	public function __construct(
 		private array $array,
@@ -62,7 +62,7 @@ final class ArrayProxy implements ArrayAccess, Iterator, Countable, Proxy
 	}
 
 	/**
-	 * @psalm-return array-key
+	 * @return array-key
 	 */
 	#[Override]
 	public function key(): mixed

@@ -8,7 +8,7 @@ namespace Duon\Boiler;
 final readonly class LayoutSpec
 {
 	/**
-	 * @psalm-param non-empty-string $path
+	 * @param non-empty-string $path
 	 */
 	public function __construct(
 		public string $path,

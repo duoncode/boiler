@@ -9,7 +9,7 @@ use Override;
 /** @api */
 final class Template extends BaseTemplate
 {
-	/** @psalm-param non-empty-string $name */
+	/** @param non-empty-string $name */
 	public function method(string $name, callable $callable, bool $safe = false): static
 	{
 		$this->methods()->add($name, $callable, $safe);
@@ -17,7 +17,7 @@ final class Template extends BaseTemplate
 		return $this;
 	}
 
-	/** @psalm-param list<class-string> $trusted */
+	/** @param list<class-string> $trusted */
 	#[Override]
 	protected function context(array $context, array $trusted, bool $autoescape): Context
 	{
