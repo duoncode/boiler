@@ -2,7 +2,7 @@
 
 ## [Unreleased](https://github.com/duoncode/boiler/compare/0.3.3...HEAD)
 
-No significant changes have been made.
+No notable changes since the last release.
 
 ## [0.3.3](https://github.com/duoncode/boiler/releases/tag/0.3.3) (2026-04-24)
 
