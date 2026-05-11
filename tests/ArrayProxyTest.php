@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Tests;
+namespace Celemas\Boiler\Tests;
 
-use Duon\Boiler\Exception\OutOfBoundsException;
-use Duon\Boiler\Exception\RuntimeException;
-use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Proxy\ArrayProxy;
-use Duon\Boiler\Proxy\IteratorProxy;
-use Duon\Boiler\Proxy\ObjectProxy;
-use Duon\Boiler\Proxy\StringProxy;
+use Celemas\Boiler\Exception\OutOfBoundsException;
+use Celemas\Boiler\Exception\RuntimeException;
+use Celemas\Boiler\Exception\UnexpectedValueException;
+use Celemas\Boiler\Proxy\ArrayProxy;
+use Celemas\Boiler\Proxy\IteratorProxy;
+use Celemas\Boiler\Proxy\ObjectProxy;
+use Celemas\Boiler\Proxy\StringProxy;
 
 final class ArrayProxyTest extends TestCase
 {

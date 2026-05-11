@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler;
+namespace Celemas\Boiler;
 
 /** @internal */
 final class Section

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Contract;
+namespace Celemas\Boiler\Contract;
 
 /** @api */
 interface Wrapper

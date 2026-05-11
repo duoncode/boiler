@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Tests;
+namespace Celemas\Boiler\Tests;
 
-use Duon\Boiler\Proxy\ArrayProxy;
-use Duon\Boiler\Proxy\IteratorProxy;
-use Duon\Boiler\Proxy\StringProxy;
+use Celemas\Boiler\Proxy\ArrayProxy;
+use Celemas\Boiler\Proxy\IteratorProxy;
+use Celemas\Boiler\Proxy\StringProxy;
 
 final class IteratorProxyTest extends TestCase
 {

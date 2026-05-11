@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Proxy;
+namespace Celemas\Boiler\Proxy;
 
 /** @template-covariant TValue */
 interface Proxy

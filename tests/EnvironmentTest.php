@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Tests;
+namespace Celemas\Boiler\Tests;
 
-use Duon\Boiler\Contract;
-use Duon\Boiler\Contract\Escaper;
-use Duon\Boiler\Contract\Filter;
-use Duon\Boiler\Environment;
-use Duon\Boiler\Escapers;
-use Duon\Boiler\Exception\RuntimeException;
-use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Filters;
+use Celemas\Boiler\Contract;
+use Celemas\Boiler\Contract\Escaper;
+use Celemas\Boiler\Contract\Filter;
+use Celemas\Boiler\Environment;
+use Celemas\Boiler\Escapers;
+use Celemas\Boiler\Exception\RuntimeException;
+use Celemas\Boiler\Exception\UnexpectedValueException;
+use Celemas\Boiler\Filters;
 
 final class EnvironmentTest extends TestCase
 {

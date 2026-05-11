@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Proxy;
+namespace Celemas\Boiler\Proxy;
 
 use ArrayAccess;
+use Celemas\Boiler\Contract\Wrapper;
+use Celemas\Boiler\Exception\OutOfBoundsException;
+use Celemas\Boiler\Exception\RuntimeException;
+use Celemas\Boiler\Exception\UnexpectedValueException;
 use Countable;
-use Duon\Boiler\Contract\Wrapper;
-use Duon\Boiler\Exception\OutOfBoundsException;
-use Duon\Boiler\Exception\RuntimeException;
-use Duon\Boiler\Exception\UnexpectedValueException;
 use Iterator;
 use Override;
 

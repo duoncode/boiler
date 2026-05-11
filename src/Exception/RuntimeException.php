@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Exception;
+namespace Celemas\Boiler\Exception;
 
-use Duon\Boiler\Location;
+use Celemas\Boiler\Location;
 use Throwable;
 
 class RuntimeException extends \RuntimeException implements TemplateException

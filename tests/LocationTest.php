@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Tests;
+namespace Celemas\Boiler\Tests;
 
-use Duon\Boiler\Exception\RenderException;
-use Duon\Boiler\Location;
+use Celemas\Boiler\Exception\RenderException;
+use Celemas\Boiler\Location;
 
 final class LocationTest extends TestCase
 {

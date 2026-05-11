@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler;
+namespace Celemas\Boiler;
 
-use Duon\Boiler\Exception\LookupException;
-use Duon\Boiler\Exception\RenderException;
-use Duon\Boiler\Exception\RuntimeException;
-use Duon\Boiler\Exception\UnexpectedValueException;
+use Celemas\Boiler\Exception\LookupException;
+use Celemas\Boiler\Exception\RenderException;
+use Celemas\Boiler\Exception\RuntimeException;
+use Celemas\Boiler\Exception\UnexpectedValueException;
 use Throwable;
 
 abstract class BaseTemplate

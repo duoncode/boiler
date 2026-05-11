@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Tests;
+namespace Celemas\Boiler\Tests;
 
-use Duon\Boiler\Exception\LookupException;
-use Duon\Boiler\Exception\RenderException;
-use Duon\Boiler\Template;
+use Celemas\Boiler\Exception\LookupException;
+use Celemas\Boiler\Exception\RenderException;
+use Celemas\Boiler\Template;
 
 final class TemplateTest extends TestCase
 {

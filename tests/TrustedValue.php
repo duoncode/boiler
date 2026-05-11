@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Tests;
+namespace Celemas\Boiler\Tests;
 
 class TrustedValue extends TrustedBase
 {

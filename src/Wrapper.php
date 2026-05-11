@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler;
+namespace Celemas\Boiler;
 
-use Duon\Boiler\Escaper\Html;
-use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Proxy\ArrayProxy;
-use Duon\Boiler\Proxy\IteratorProxy;
-use Duon\Boiler\Proxy\ObjectProxy;
-use Duon\Boiler\Proxy\Proxy;
-use Duon\Boiler\Proxy\StringProxy;
+use Celemas\Boiler\Escaper\Html;
+use Celemas\Boiler\Exception\UnexpectedValueException;
+use Celemas\Boiler\Proxy\ArrayProxy;
+use Celemas\Boiler\Proxy\IteratorProxy;
+use Celemas\Boiler\Proxy\ObjectProxy;
+use Celemas\Boiler\Proxy\Proxy;
+use Celemas\Boiler\Proxy\StringProxy;
 use Override;
 use Traversable;
 

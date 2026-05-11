@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Tests;
+namespace Celemas\Boiler\Tests;
 
-use Duon\Boiler\Exception\LogicException;
-use Duon\Boiler\Location;
-use Duon\Boiler\Sections;
+use Celemas\Boiler\Exception\LogicException;
+use Celemas\Boiler\Location;
+use Celemas\Boiler\Sections;
 
 final class SectionsTest extends TestCase
 {

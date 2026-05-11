@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler;
+namespace Celemas\Boiler;
 
-use Duon\Boiler\Exception\RuntimeException;
+use Celemas\Boiler\Exception\RuntimeException;
 use Override;
 
 /** @api */

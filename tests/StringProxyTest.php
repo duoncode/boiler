@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Tests;
+namespace Celemas\Boiler\Tests;
 
-use Duon\Boiler\Contract;
-use Duon\Boiler\Contract\Escaper;
-use Duon\Boiler\Exception\UnexpectedValueException;
+use Celemas\Boiler\Contract;
+use Celemas\Boiler\Contract\Escaper;
+use Celemas\Boiler\Exception\UnexpectedValueException;
 
 final class StringProxyTest extends TestCase
 {
@@ -81,7 +81,7 @@ final class StringProxyTest extends TestCase
 	{
 		$proxy = $this->stringProxy(
 			'<b>boiler</b>',
-			new \Duon\Boiler\Filters([
+			new \Celemas\Boiler\Filters([
 				'append' => new class implements Contract\Filter {
 					public function apply(string $value, mixed ...$args): string
 					{
@@ -108,7 +108,7 @@ final class StringProxyTest extends TestCase
 	{
 		$proxy = $this->stringProxy(
 			'<b>boiler</b>',
-			new \Duon\Boiler\Filters([
+			new \Celemas\Boiler\Filters([
 				'append' => new class implements Contract\Filter, Contract\PreservesSafety {
 					public function apply(string $value, mixed ...$args): string
 					{

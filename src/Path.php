@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler;
+namespace Celemas\Boiler;
 
-use Duon\Boiler\Exception\LookupException;
+use Celemas\Boiler\Exception\LookupException;
 
 /** @internal */
 final class Path

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Proxy;
+namespace Celemas\Boiler\Proxy;
 
-use Duon\Boiler\Contract\Wrapper;
+use Celemas\Boiler\Contract\Wrapper;
 use Iterator;
 use IteratorIterator;
 use Override;

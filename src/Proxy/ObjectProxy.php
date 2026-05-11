@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Proxy;
+namespace Celemas\Boiler\Proxy;
 
-use Duon\Boiler\Contract\Wrapper;
-use Duon\Boiler\Exception\RuntimeException;
-use Duon\Boiler\Exception\UnexpectedValueException;
+use Celemas\Boiler\Contract\Wrapper;
+use Celemas\Boiler\Exception\RuntimeException;
+use Celemas\Boiler\Exception\UnexpectedValueException;
 use Override;
 use Stringable;
 use Traversable;

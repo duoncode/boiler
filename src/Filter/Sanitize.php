@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Filter;
+namespace Celemas\Boiler\Filter;
 
-use Duon\Boiler\Contract;
+use Celemas\Boiler\Contract;
 use Override;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler;
+namespace Celemas\Boiler;
 
-use Duon\Boiler\Exception\UnexpectedValueException;
+use Celemas\Boiler\Exception\UnexpectedValueException;
 
 /** @api */
 final class Escapers implements Contract\RegistersEscapers
@@ -77,7 +77,7 @@ final class Escapers implements Contract\RegistersEscapers
 
 			if (!$escaper instanceof Contract\Escaper) {
 				throw new UnexpectedValueException(
-					"Escaper `{$name}` must implement `Duon\\Boiler\\Contract\\Escaper`",
+					"Escaper `{$name}` must implement `Celemas\\Boiler\\Contract\\Escaper`",
 				);
 			}
 

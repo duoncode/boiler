@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Escaper;
+namespace Celemas\Boiler\Escaper;
 
-use Duon\Boiler\Contract\Escaper;
+use Celemas\Boiler\Contract\Escaper;
 use Override;
 
 /** @api */

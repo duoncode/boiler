@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Tests;
+namespace Celemas\Boiler\Tests;
 
-use Duon\Boiler\Contract\Escaper;
-use Duon\Boiler\Escapers;
-use Duon\Boiler\Filters;
-use Duon\Boiler\Proxy\ArrayProxy;
-use Duon\Boiler\Proxy\IteratorProxy;
-use Duon\Boiler\Proxy\ObjectProxy;
-use Duon\Boiler\Proxy\StringProxy;
-use Duon\Boiler\Wrapper;
+use Celemas\Boiler\Contract\Escaper;
+use Celemas\Boiler\Escapers;
+use Celemas\Boiler\Filters;
+use Celemas\Boiler\Proxy\ArrayProxy;
+use Celemas\Boiler\Proxy\IteratorProxy;
+use Celemas\Boiler\Proxy\ObjectProxy;
+use Celemas\Boiler\Proxy\StringProxy;
+use Celemas\Boiler\Wrapper;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Traversable;
 
@@ -120,7 +120,7 @@ class TestCase extends BaseTestCase
 	): StringProxy {
 		return new StringProxy(
 			$value,
-			new \Duon\Boiler\Wrapper(new Escapers($escapers, $default), $filters),
+			new \Celemas\Boiler\Wrapper(new Escapers($escapers, $default), $filters),
 		);
 	}
 }

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler;
+namespace Celemas\Boiler;
 
-use Duon\Boiler\Exception\UnexpectedValueException;
+use Celemas\Boiler\Exception\UnexpectedValueException;
 
 /** @internal */
 final class Methods

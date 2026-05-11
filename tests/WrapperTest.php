@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Tests;
+namespace Celemas\Boiler\Tests;
 
-use Duon\Boiler\Contract;
-use Duon\Boiler\Contract\Escaper;
-use Duon\Boiler\Escapers;
-use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Proxy\ArrayProxy;
-use Duon\Boiler\Proxy\IteratorProxy;
-use Duon\Boiler\Proxy\ObjectProxy;
-use Duon\Boiler\Proxy\StringProxy;
-use Duon\Boiler\Wrapper;
+use Celemas\Boiler\Contract;
+use Celemas\Boiler\Contract\Escaper;
+use Celemas\Boiler\Escapers;
+use Celemas\Boiler\Exception\UnexpectedValueException;
+use Celemas\Boiler\Proxy\ArrayProxy;
+use Celemas\Boiler\Proxy\IteratorProxy;
+use Celemas\Boiler\Proxy\ObjectProxy;
+use Celemas\Boiler\Proxy\StringProxy;
+use Celemas\Boiler\Wrapper;
 use Traversable;
 
 final class WrapperTest extends TestCase

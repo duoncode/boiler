@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Tests;
+namespace Celemas\Boiler\Tests;
 
-use Duon\Boiler\Contract\Escaper;
-use Duon\Boiler\Contract\Filter;
-use Duon\Boiler\Engine;
-use Duon\Boiler\Environment;
-use Duon\Boiler\Escapers;
-use Duon\Boiler\Exception\LookupException;
-use Duon\Boiler\Exception\RenderException;
-use Duon\Boiler\Exception\RuntimeException;
-use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Proxy\StringProxy;
-use Duon\Boiler\Resolver;
-use Duon\Boiler\Template;
-use Duon\Boiler\TemplateContext;
-use Duon\Boiler\Wrapper;
+use Celemas\Boiler\Contract\Escaper;
+use Celemas\Boiler\Contract\Filter;
+use Celemas\Boiler\Engine;
+use Celemas\Boiler\Environment;
+use Celemas\Boiler\Escapers;
+use Celemas\Boiler\Exception\LookupException;
+use Celemas\Boiler\Exception\RenderException;
+use Celemas\Boiler\Exception\RuntimeException;
+use Celemas\Boiler\Exception\UnexpectedValueException;
+use Celemas\Boiler\Proxy\StringProxy;
+use Celemas\Boiler\Resolver;
+use Celemas\Boiler\Template;
+use Celemas\Boiler\TemplateContext;
+use Celemas\Boiler\Wrapper;
 use PHPUnit\Framework\Attributes\TestDox;
 
 final class EngineTest extends TestCase
@@ -658,7 +658,7 @@ final class EngineTest extends TestCase
 	public function testConstructorAcceptsCustomResolver(): void
 	{
 		$resolver = new class(TestCase::DEFAULT_DIR . '/simple.php') implements
-			\Duon\Boiler\Contract\Resolver {
+			\Celemas\Boiler\Contract\Resolver {
 			public int $calls = 0;
 
 			public function __construct(

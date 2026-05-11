@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Tests;
+namespace Celemas\Boiler\Tests;
 
-use Duon\Boiler\Exception\LookupException;
-use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Resolver;
+use Celemas\Boiler\Exception\LookupException;
+use Celemas\Boiler\Exception\UnexpectedValueException;
+use Celemas\Boiler\Resolver;
 
 final class ResolverTest extends TestCase
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Exception;
+namespace Celemas\Boiler\Exception;
 
-use Duon\Boiler\Location;
+use Celemas\Boiler\Location;
 use Throwable;
 
 final class RenderException extends RuntimeException implements TemplateException

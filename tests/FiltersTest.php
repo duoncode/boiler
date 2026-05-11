@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Tests;
+namespace Celemas\Boiler\Tests;
 
-use Duon\Boiler\Contract;
-use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Filters;
+use Celemas\Boiler\Contract;
+use Celemas\Boiler\Exception\UnexpectedValueException;
+use Celemas\Boiler\Filters;
 
 final class FiltersTest extends TestCase
 {

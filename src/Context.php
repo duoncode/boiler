@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler;
+namespace Celemas\Boiler;
 
-use Duon\Boiler\Contract\Wrapper;
-use Duon\Boiler\Exception\RuntimeException;
-use Duon\Boiler\Proxy\ObjectProxy;
-use Duon\Boiler\Proxy\Proxy;
-use Duon\Boiler\Proxy\StringProxy;
+use Celemas\Boiler\Contract\Wrapper;
+use Celemas\Boiler\Exception\RuntimeException;
+use Celemas\Boiler\Proxy\ObjectProxy;
+use Celemas\Boiler\Proxy\Proxy;
+use Celemas\Boiler\Proxy\StringProxy;
 use Stringable;
 
 /** @api */

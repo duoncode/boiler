@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler\Tests;
+namespace Celemas\Boiler\Tests;
 
-use Duon\Boiler\Contract\Escaper;
-use Duon\Boiler\Engine;
-use Duon\Boiler\Exception\RuntimeException;
-use Duon\Boiler\Proxy\StringProxy;
-use Duon\Boiler\Template;
-use Duon\Boiler\TemplateContext;
+use Celemas\Boiler\Contract\Escaper;
+use Celemas\Boiler\Engine;
+use Celemas\Boiler\Exception\RuntimeException;
+use Celemas\Boiler\Proxy\StringProxy;
+use Celemas\Boiler\Template;
+use Celemas\Boiler\TemplateContext;
 
 final class TemplateContextTest extends TestCase
 {

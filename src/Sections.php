@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler;
+namespace Celemas\Boiler;
 
-use Duon\Boiler\Exception\LogicException;
+use Celemas\Boiler\Exception\LogicException;
 
 /** @internal */
 final class Sections

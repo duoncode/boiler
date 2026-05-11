@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Duon\Boiler;
+namespace Celemas\Boiler;
 
-use Duon\Boiler\Exception\UnexpectedValueException;
-use Duon\Boiler\Filter\Lower;
-use Duon\Boiler\Filter\Sanitize;
-use Duon\Boiler\Filter\StripTags;
-use Duon\Boiler\Filter\Trim;
-use Duon\Boiler\Filter\Upper;
+use Celemas\Boiler\Exception\UnexpectedValueException;
+use Celemas\Boiler\Filter\Lower;
+use Celemas\Boiler\Filter\Sanitize;
+use Celemas\Boiler\Filter\StripTags;
+use Celemas\Boiler\Filter\Trim;
+use Celemas\Boiler\Filter\Upper;
 
 /** @api */
 final class Filters implements Contract\RegistersFilters
@@ -80,7 +80,7 @@ final class Filters implements Contract\RegistersFilters
 
 			if (!$filter instanceof Contract\Filter) {
 				throw new UnexpectedValueException(
-					"Filter `{$name}` must implement `Duon\\Boiler\\Contract\\Filter`",
+					"Filter `{$name}` must implement `Celemas\\Boiler\\Contract\\Filter`",
 				);
 			}
 
