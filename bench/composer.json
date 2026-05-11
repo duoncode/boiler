@@ -1,9 +1,9 @@
 {
-	"name": "duon/boiler-bench",
+	"name": "celemas/boiler-bench",
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"require": {
-		"duon/boiler": "@dev",
+		"celemas/boiler": "@dev",
 		"league/plates": "^3",
 		"twig/twig": "^3",
 		"eftec/bladeone": "^4",
