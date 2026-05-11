@@ -18,7 +18,7 @@ Create `page.php`:
 
 ```php
 <?php $this->insert('item', ['title' => 'Boiler']) ?>
-<?php $this->insert('item', ['title' => 'Duon']) ?>
+<?php $this->insert('item', ['title' => 'Celemas']) ?>
 ```
 
 Create `item.php`:
@@ -31,7 +31,7 @@ Rendering `page` produces:
 
 ```html
 <p>Boiler</p>
-<p>Duon</p>
+<p>Celemas</p>
 ```
 
 ## Context inheritance

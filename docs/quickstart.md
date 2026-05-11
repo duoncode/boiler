@@ -3,7 +3,7 @@
 Install Boiler via Composer:
 
 ```bash
-composer require duon/boiler
+composer require celemas/boiler
 ```
 
 Then create a directory where your PHP templates live. Assume the following directory structure:
@@ -37,7 +37,7 @@ Create `/path/to/templates/layout.php`:
 Now create an `Engine` instance and render the template:
 
 ```php
-use Duon\Boiler\Engine;
+use Celemas\Boiler\Engine;
 
 $engine = Engine::create('/path/to/templates');
 $html = $engine->render('page', ['id' => 13]);
