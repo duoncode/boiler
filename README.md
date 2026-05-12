@@ -2,10 +2,9 @@
 
 <!-- prettier-ignore-start -->
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/a11454828b7e478b847d2910284b7cf9)](https://app.codacy.com/gh/duoncode/boiler/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/a11454828b7e478b847d2910284b7cf9)](https://app.codacy.com/gh/duoncode/boiler/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
-[![Psalm level](https://shepherd.dev/github/duoncode/boiler/level.svg?)](https://shepherd.dev/github/duoncode/boiler)
-[![Psalm coverage](https://shepherd.dev/github/duoncode/boiler/coverage.svg?)](https://shepherd.dev/github/duoncode/boiler)
+[![CI](https://github.com/celemas/boiler/actions/workflows/ci.yml/badge.svg)](https://github.com/celemas/boiler/actions)
+[![Psalm level](https://shepherd.dev/github/celemas/boiler/level.svg?)](https://shepherd.dev/github/celemas/boiler)
+[![Psalm coverage](https://shepherd.dev/github/celemas/boiler/coverage.svg?)](https://shepherd.dev/github/celemas/boiler)
 <!-- prettier-ignore-end -->
 
 Boiler is a small template engine for PHP 8.5+, inspired by [Plates](https://platesphp.com/). Like Plates, it uses native PHP as its templating language rather than introducing a custom syntax.
@@ -24,7 +23,7 @@ Other highlights:
 ## Installation
 
 ```console
-composer require duon/boiler
+composer require celemas/boiler
 ```
 
 Install Symfony's HTML sanitizer when you want Boiler's built-in `sanitize` filter:
@@ -68,7 +67,7 @@ Create a template file at `/path/to/templates/page.php` with this content:
 Then initialize the `Engine` and render your template:
 
 ```php
-use Duon\Boiler\Engine;
+use Celemas\Boiler\Engine;
 
 $engine = Engine::create('/path/to/templates');
 $html = $engine->render('page', ['id' => 13]);
@@ -110,7 +109,7 @@ Configure shared defaults and trusted classes:
 ```php
 $engine = Engine::create(
     '/path/to/templates',
-    defaults: ['siteName' => 'Duon'],
+    defaults: ['siteName' => 'Celemas'],
     trusted: [TrustedHtml::class],
 );
 ```
@@ -129,7 +128,7 @@ Methods are available as `$this->icon()` inside templates, inserts, and layouts.
 Register custom filters with the fluent `filter()` method:
 
 ```php
-use Duon\Boiler\Contract\Filter;
+use Celemas\Boiler\Contract\Filter;
 
 $engine = Engine::create('/path/to/templates')
     ->filter('upper', new class implements Filter {
