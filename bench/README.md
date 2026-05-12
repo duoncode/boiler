@@ -52,35 +52,35 @@ composer benchmark -- --lifecycle=request --runs=2000 --iterations=5
 
 1. Change into the benchmark directory:
 
-    ```bash
-    cd bench
-    ```
+   ```bash
+   cd bench
+   ```
 
 2. Install benchmark dependencies:
 
-    ```bash
-    composer install
-    ```
+   ```bash
+   composer install
+   ```
 
 3. Run the benchmark with the default settings:
 
-    ```bash
-    php -d xdebug.mode=off -d pcov.enabled=0 run.php
-    ```
+   ```bash
+   php -d xdebug.mode=off -d pcov.enabled=0 run.php
+   ```
 
 4. Override the default run count and iteration count when you want a slower or deeper run:
 
-    ```bash
-    php -d xdebug.mode=off -d pcov.enabled=0 run.php --runs=10000 --iterations=5
-    ```
+   ```bash
+   php -d xdebug.mode=off -d pcov.enabled=0 run.php --runs=10000 --iterations=5
+   ```
 
 5. Choose a lifecycle mode when you want to compare a reused engine with a freshly created engine per render:
 
-    ```bash
-    php -d xdebug.mode=off -d pcov.enabled=0 run.php --lifecycle=worker
-    php -d xdebug.mode=off -d pcov.enabled=0 run.php --lifecycle=request
-    php -d xdebug.mode=off -d pcov.enabled=0 run.php --lifecycle=both
-    ```
+   ```bash
+   php -d xdebug.mode=off -d pcov.enabled=0 run.php --lifecycle=worker
+   php -d xdebug.mode=off -d pcov.enabled=0 run.php --lifecycle=request
+   php -d xdebug.mode=off -d pcov.enabled=0 run.php --lifecycle=both
+   ```
 
 ## Defaults
 
