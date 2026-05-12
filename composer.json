@@ -1,28 +1,28 @@
 {
-	"name": "duon/boiler",
+	"name": "celemas/boiler",
 	"description": "A PHP template engine that doesn't require you to learn a new syntax",
 	"type": "library",
 	"license": "MIT",
 	"authors": [
 		{
 			"name": "Ernst",
-			"email": "ernst@duon.sh"
+			"email": "ernst@celemas.dev"
 		}
 	],
-	"homepage": "https://duon.sh/boiler",
+	"homepage": "https://celemas.dev/boiler",
 	"keywords": [
-		"duon",
+		"celemas",
 		"templating",
 		"templates"
 	],
 	"autoload": {
 		"psr-4": {
-			"Duon\\Boiler\\": "src/"
+			"Celemas\\Boiler\\": "src/"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Duon\\Boiler\\Tests\\": "tests"
+			"Celemas\\Boiler\\Tests\\": "tests"
 		}
 	},
 	"require": {
@@ -30,7 +30,7 @@
 		"ext-mbstring": "*"
 	},
 	"require-dev": {
-		"duon/dev": "^3.0",
+		"celemas/dev": "^3.0",
 		"symfony/html-sanitizer": "^8.0"
 	},
 	"suggest": {
