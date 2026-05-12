@@ -173,7 +173,7 @@ Run it with `composer benchmark`. For benchmark scope, caveats, and detailed usa
 composer test
 composer lint
 composer types
-composer mdlint
+composer docs:lint
 ```
 
 For the full verification pipeline, run:
