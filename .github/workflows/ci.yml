@@ -12,8 +12,8 @@ jobs:
         uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2
         with:
           php-version: '8.5'
-          extensions: curl, xml, zip, mbstring, json
-          coverage: xdebug
+          extensions: pcov, curl, xml, zip, mbstring, json
+          coverage: pcov
 
       - name: Checkout repo
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
